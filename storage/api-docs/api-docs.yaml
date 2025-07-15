@@ -1,0 +1,185 @@
+openapi: 3.0.0
+info:
+  title: API Documentation
+  version: 1.0.0
+paths:
+  /api/register:
+    post:
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '201':
+          description: User registered
+  /api/login:
+    post:
+      summary: Login a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Token response
+  /api/me:
+    get:
+      summary: Get current user
+      responses:
+        '200':
+          description: Authenticated user
+  /api/villages:
+    get:
+      summary: List villages
+      responses:
+        '200':
+          description: List of villages
+    post:
+      summary: Create village
+      responses:
+        '201':
+          description: Village created
+  /api/projets:
+    get:
+      summary: List projets
+      responses:
+        '200':
+          description: List of projets
+    post:
+      summary: Create projet
+      responses:
+        '201':
+          description: Projet created
+  /api/projets/{projet}:
+    get:
+      summary: Show projet
+      parameters:
+        - in: path
+          name: projet
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Projet detail
+    put:
+      summary: Update projet
+      parameters:
+        - in: path
+          name: projet
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Projet updated
+    delete:
+      summary: Delete projet
+      parameters:
+        - in: path
+          name: projet
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Projet deleted
+  /api/projets/{projet}/valider:
+    patch:
+      summary: Validate projet
+      parameters:
+        - in: path
+          name: projet
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Projet validated
+  /api/projets/{projet}/documents:
+    post:
+      summary: Upload document
+      parameters:
+        - in: path
+          name: projet
+          required: true
+          schema:
+            type: integer
+      responses:
+        '201':
+          description: Document uploaded
+    get:
+      summary: List documents
+      parameters:
+        - in: path
+          name: projet
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: List of documents
+  /api/projets/{projet}/offres:
+    post:
+      summary: Create offre de financement
+      parameters:
+        - in: path
+          name: projet
+          required: true
+          schema:
+            type: integer
+      responses:
+        '201':
+          description: Offre created
+    get:
+      summary: List offres
+      parameters:
+        - in: path
+          name: projet
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: List of offres
+  /api/notifications:
+    get:
+      summary: List notifications
+      responses:
+        '200':
+          description: Notifications list
+  /api/notifications/{notification}/marquer-lu:
+    patch:
+      summary: Mark notification read
+      parameters:
+        - in: path
+          name: notification
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Notification read
+  /api/stats:
+    get:
+      summary: Retrieve statistics
+      responses:
+        '200':
+          description: Stats object
