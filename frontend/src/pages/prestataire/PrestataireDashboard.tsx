@@ -21,33 +21,20 @@ import { Project, Village } from '../../types';
 const PrestataireDashboard: React.FC = () => {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
-  const [stats, setStats] = useState({
-    totalProjects: 0,
-    pendingProjects: 0,
-    approvedProjects: 0,
-    totalVillages: 0,
-    totalFunding: 0
-  });
+  const [error, setError] = useState<string | null>(null);
   const [projects, setProjects] = useState<Project[]>([]);
+  const [villages, setVillages] = useState<Village[]>([]);
 
   useEffect(() => {
     if (!user) return;
+    setLoading(true);
+    setError(null);
     Promise.all([api.get<Project[]>('/projets'), api.get<Village[]>('/villages')])
       .then(([projectsRes, villagesRes]) => {
-        const userProjects = projectsRes.data.filter((p) => p.prestataireId === user.id);
-        setProjects(userProjects);
-        const pendingProjects = userProjects.filter((p) => p.status === 'pending').length;
-        const approvedProjects = userProjects.filter((p) => p.status === 'validated' || p.status === 'funded').length;
-        const totalFunding = userProjects.reduce((sum: number, p) => sum + p.currentAmount, 0);
-
-        setStats({
-          totalProjects: userProjects.length,
-          pendingProjects,
-          approvedProjects,
-          totalVillages: villagesRes.data.length,
-          totalFunding
-        });
+        setProjects(projectsRes.data.filter((p) => p.prestataireId === user.id));
+        setVillages(villagesRes.data.filter((v) => v.created_by === user.id));
       })
+      .catch(() => setError("Impossible de charger les statistiques."))
       .finally(() => setLoading(false));
   }, [user]);
 
@@ -58,7 +45,15 @@ const PrestataireDashboard: React.FC = () => {
       </div>
     );
   }
+  if (error) {
+    return <div className="text-red-600 text-center py-8">{error}</div>;
+  }
 
+  const totalProjects = projects.length;
+  const pendingProjects = projects.filter((p) => p.status === 'pending').length;
+  const approvedProjects = projects.filter((p) => p.status === 'validated' || p.status === 'funded').length;
+  const totalFunding = projects.reduce((sum: number, p) => sum + (p.currentAmount || 0), 0);
+  const totalVillages = villages.length;
   const userProjects = projects;
 
   return (
@@ -79,7 +74,7 @@ const PrestataireDashboard: React.FC = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Mes Projets</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.totalProjects}</p>
+                <p className="text-2xl font-bold text-gray-900">{totalProjects}</p>
               </div>
               <div className="p-3 rounded-lg bg-blue-50">
                 <FolderCheck className="w-6 h-6 text-blue-600" />
@@ -93,7 +88,7 @@ const PrestataireDashboard: React.FC = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">En Attente</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.pendingProjects}</p>
+                <p className="text-2xl font-bold text-gray-900">{pendingProjects}</p>
               </div>
               <div className="p-3 rounded-lg bg-orange-50">
                 <Clock className="w-6 h-6 text-orange-600" />
@@ -107,7 +102,7 @@ const PrestataireDashboard: React.FC = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Approuvés</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.approvedProjects}</p>
+                <p className="text-2xl font-bold text-gray-900">{approvedProjects}</p>
               </div>
               <div className="p-3 rounded-lg bg-green-50">
                 <CheckCircle className="w-6 h-6 text-green-600" />
@@ -121,7 +116,7 @@ const PrestataireDashboard: React.FC = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Financements</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.totalFunding.toLocaleString()}€</p>
+                <p className="text-2xl font-bold text-gray-900">{totalFunding.toLocaleString()}€</p>
               </div>
               <div className="p-3 rounded-lg bg-cyan-50">
                 <MapPin className="w-6 h-6 text-cyan-600" />

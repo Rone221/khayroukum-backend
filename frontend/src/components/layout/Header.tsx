@@ -11,7 +11,7 @@ const Header: React.FC<HeaderProps> = ({ onMenuToggle }) => {
   const { user } = useAuth();
 
   return (
-    <header className="bg-white shadow-sm border-b border-gray-200 h-16 flex items-center justify-between px-4 lg:px-6">
+    <header className="bg-white shadow-sm border-b border-gray-200 h-16 flex items-center justify-between px-2 lg:px-4"> {/* Réduit le padding horizontal du header */}
       <div className="flex items-center space-x-4">
         <button
           onClick={onMenuToggle}

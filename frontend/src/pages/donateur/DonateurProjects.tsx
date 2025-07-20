@@ -20,14 +20,18 @@ import api from '../../lib/api';
 const DonateurProjects: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [sortBy, setSortBy] = useState<'newest' | 'urgent' | 'progress'>('newest');
 
   useEffect(() => {
+    setLoading(true);
+    setError(null);
     api
       .get('/projets')
       .then(res => setProjects(res.data.filter((p: Project) => p.status === 'validated')))
+      .catch(() => setError("Impossible de charger les projets."))
       .finally(() => setLoading(false));
   }, []);
 
@@ -87,6 +91,9 @@ const DonateurProjects: React.FC = () => {
         <LoadingSpinner size="lg" />
       </div>
     );
+  }
+  if (error) {
+    return <div className="text-red-600 text-center py-8">{error}</div>;
   }
 
   return (

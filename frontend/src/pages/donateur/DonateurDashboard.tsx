@@ -29,16 +29,20 @@ const DonateurDashboard: React.FC = () => {
   const [myContributions, setMyContributions] = useState<Contribution[]>([]);
 
   useEffect(() => {
-    api
-      .get('/projets')
-      .then(res => {
-        const available = res.data.filter((p: Project) => p.status === 'validated');
-        setStats(s => ({
-          ...s,
-          availableProjects: available.length,
-        }));
+    setLoading(true);
+    Promise.all([
+      api.get('/me/stats'),
+      api.get('/me/contributions'),
+      api.get('/projets')
+    ])
+      .then(([statsRes, contribRes, projetsRes]) => {
+        setStats(statsRes.data);
+        setMyContributions(contribRes.data);
+        const available = projetsRes.data.filter((p: Project) => p.status === 'validated');
+        setStats(s => ({ ...s, availableProjects: available.length }));
         setFeaturedProjects(available.slice(0, 3));
       })
+      .catch(() => {})
       .finally(() => setLoading(false));
   }, [user?.id]);
 

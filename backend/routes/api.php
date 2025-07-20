@@ -32,6 +32,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('stats', [DashboardController::class, 'index'])->middleware('role:administrateur');
 
+    Route::get('admin/activity', [DashboardController::class, 'activity'])->middleware('role:administrateur');
     Route::get('notifications', [NotificationController::class, 'index']);
     Route::patch('notifications/{notification}/marquer-lu', [NotificationController::class, 'markAsRead']);
 });

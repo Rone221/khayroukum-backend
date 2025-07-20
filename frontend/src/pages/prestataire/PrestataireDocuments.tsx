@@ -1,5 +1,8 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import api from '../../lib/api';
+import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
 import { 
   Upload, 
@@ -14,54 +17,20 @@ import {
 } from 'lucide-react';
 
 const PrestataireDocuments: React.FC = () => {
-  const [uploadProgress, setUploadProgress] = useState(0);
-  const [isUploading, setIsUploading] = useState(false);
+  const { id: projectId } = useParams();
+  const [documents, setDocuments] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const mockDocuments = [
-    {
-      id: '1',
-      name: 'Plans techniques - Station Mamou',
-      type: 'PDF',
-      size: '2.4 MB',
-      uploadDate: '2024-01-15',
-      status: 'approved',
-      projectName: 'Station de traitement - Mamou'
-    },
-    {
-      id: '2',
-      name: 'Étude de faisabilité - Kindia',
-      type: 'PDF',
-      size: '1.8 MB',
-      uploadDate: '2024-01-12',
-      status: 'pending',
-      projectName: 'Réseau de distribution - Kindia'
-    },
-    {
-      id: '3',
-      name: 'Photos terrain - Dinguiraye',
-      type: 'Images',
-      size: '5.2 MB',
-      uploadDate: '2024-01-10',
-      status: 'rejected',
-      projectName: 'Forage - Dinguiraye'
-    }
-  ];
+  useEffect(() => {
+    setLoading(true);
+    setError(null);
+    api.get(`/projets/${projectId}/documents`)
+      .then(res => setDocuments(res.data))
+      .catch(() => setError("Impossible de charger les documents."))
+      .finally(() => setLoading(false));
+  }, [projectId]);
 
-  const handleFileUpload = () => {
-    setIsUploading(true);
-    setUploadProgress(0);
-    
-    const interval = setInterval(() => {
-      setUploadProgress(prev => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          setIsUploading(false);
-          return 100;
-        }
-        return prev + 10;
-      });
-    }, 200);
-  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -98,49 +67,9 @@ const PrestataireDocuments: React.FC = () => {
 
       {/* Upload Section */}
       <Card className="border-2 border-dashed border-gray-300 hover:border-blue-400 transition-colors">
-        <CardContent className="p-8">
-          <div className="text-center">
-            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Upload className="w-8 h-8 text-blue-600" />
-            </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Télécharger un document</h3>
-            <p className="text-gray-600 mb-4">Glissez-déposez vos fichiers ici ou cliquez pour sélectionner</p>
-            
-            {isUploading ? (
-              <div className="w-full max-w-md mx-auto">
-                <div className="mb-2">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-600">Téléchargement en cours...</span>
-                    <span className="text-sm text-gray-600">{uploadProgress}%</span>
-                  </div>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div 
-                    className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-                    style={{ width: `${uploadProgress}%` }}
-                  ></div>
-                </div>
-              </div>
-            ) : (
-              <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                <button 
-                  onClick={handleFileUpload}
-                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
-                >
-                  <Plus className="w-4 h-4" />
-                  <span>Sélectionner des fichiers</span>
-                </button>
-                <button className="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors">
-                  Parcourir
-                </button>
-              </div>
-            )}
-            
-            <p className="text-xs text-gray-500 mt-4">
-              Formats acceptés: PDF, DOC, JPG, PNG - Taille max: 10MB
-            </p>
-          </div>
-        </CardContent>
+        {/* Section d'upload supprimée, à réintégrer plus tard si besoin */}
+        {/* Ajout d'un enfant vide pour corriger l'erreur */}
+        <></>
       </Card>
 
       {/* Documents List */}
@@ -150,44 +79,47 @@ const PrestataireDocuments: React.FC = () => {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {mockDocuments.map((doc) => (
-              <div key={doc.id} className="flex items-center justify-between p-4 border border-gray-100 rounded-lg hover:shadow-md transition-shadow">
-                <div className="flex items-center space-x-4">
-                  <div className="p-2 bg-gray-50 rounded-lg">
-                    {getFileIcon(doc.type)}
-                  </div>
-                  <div>
-                    <h4 className="font-medium text-gray-900">{doc.name}</h4>
-                    <p className="text-sm text-gray-600">{doc.projectName}</p>
-                    <div className="flex items-center space-x-4 text-xs text-gray-500 mt-1">
-                      <span className="flex items-center space-x-1">
-                        <Calendar className="w-3 h-3" />
-                        <span>{new Date(doc.uploadDate).toLocaleDateString()}</span>
+            {loading ? (
+              <LoadingSpinner size="lg" />
+            ) : error ? (
+              <div className="text-red-600">{error}</div>
+            ) : (
+              <div className="space-y-4">
+                {documents.map((doc: any) => (
+                  <div key={doc.id} className="flex items-center justify-between p-4 border border-gray-100 rounded-lg hover:shadow-md transition-shadow">
+                    <div className="flex items-center space-x-4">
+                      <div className="p-2 bg-gray-50 rounded-lg">
+                        {getFileIcon(doc.type)}
+                      </div>
+                      <div>
+                        <h4 className="font-medium text-gray-900">{doc.name}</h4>
+                        <p className="text-sm text-gray-600">{doc.projectName}</p>
+                        <div className="flex items-center space-x-4 text-xs text-gray-500 mt-1">
+                          <span className="flex items-center space-x-1">
+                            <Calendar className="w-3 h-3" />
+                            <span>{new Date(doc.created_at).toLocaleDateString()}</span>
+                          </span>
+                          <span>{doc.size}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex items-center space-x-3">
+                      <span className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(doc.status)}`}>
+                        {getStatusText(doc.status)}
                       </span>
-                      <span>{doc.size}</span>
+                      <div className="flex space-x-1">
+                        {doc.url && (
+                          <a href={doc.url} target="_blank" rel="noopener noreferrer" className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg">
+                            <Eye className="w-4 h-4" />
+                          </a>
+                        )}
+                        {/* ...download/delete buttons... */}
+                      </div>
                     </div>
                   </div>
-                </div>
-                
-                <div className="flex items-center space-x-3">
-                  <span className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(doc.status)}`}>
-                    {getStatusText(doc.status)}
-                  </span>
-                  
-                  <div className="flex space-x-1">
-                    <button className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
-                      <Eye className="w-4 h-4" />
-                    </button>
-                    <button className="p-2 text-gray-600 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors">
-                      <Download className="w-4 h-4" />
-                    </button>
-                    <button className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
+                ))}
               </div>
-            ))}
+            )}
           </div>
         </CardContent>
       </Card>

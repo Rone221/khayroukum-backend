@@ -9,18 +9,22 @@ import toast from 'react-hot-toast';
 const NotificationsPage: React.FC = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     api.get('/notifications')
       .then(res => setNotifications(res.data))
+      .catch(() => setError("Impossible de charger les notifications."))
       .finally(() => setLoading(false));
   }, []);
 
   const markAsRead = (id: string) => {
-    api.patch(`/notifications/${id}/marquer-lu`).then(() => {
-      setNotifications(n => n.map(notif => notif.id === id ? { ...notif, read: true } : notif));
-      toast.success('Notification marquée comme lue');
-    });
+    api.patch(`/notifications/${id}/marquer-lu`)
+      .then(() => {
+        setNotifications(n => n.map(notif => notif.id === id ? { ...notif, read: true } : notif));
+        toast.success('Notification marquée comme lue');
+      })
+      .catch(() => toast.error("Impossible de marquer la notification comme lue."));
   };
 
   if (loading) {
@@ -29,6 +33,9 @@ const NotificationsPage: React.FC = () => {
         <LoadingSpinner size="lg" />
       </div>
     );
+  }
+  if (error) {
+    return <div className="text-red-600 text-center py-8">{error}</div>;
   }
 
   return (

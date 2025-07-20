@@ -24,6 +24,9 @@ const AdminDashboard: React.FC = () => {
     completedProjects: 0
   });
   const [projects, setProjects] = useState<Project[]>([]);
+  const [activity, setActivity] = useState<any[]>([]);
+  const [loadingActivity, setLoadingActivity] = useState(true);
+  const [errorActivity, setErrorActivity] = useState<string | null>(null);
 
   useEffect(() => {
     Promise.all([api.get('/stats'), api.get('/projets')])
@@ -39,6 +42,11 @@ const AdminDashboard: React.FC = () => {
         setProjects(projectsRes.data);
       })
       .finally(() => setLoading(false));
+
+    api.get('/admin/activity')
+      .then(res => setActivity(res.data))
+      .catch(() => setErrorActivity("Impossible de charger l'activité récente."))
+      .finally(() => setLoadingActivity(false));
   }, []);
 
   if (loading) {
@@ -166,34 +174,25 @@ const AdminDashboard: React.FC = () => {
             <CardTitle>Activité Récente</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
-              <div className="flex items-center space-x-3 p-4 border border-gray-100 rounded-lg">
-                <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium text-gray-900">Nouveau projet soumis</p>
-                  <p className="text-xs text-gray-600">Station de traitement - Dinguiraye</p>
-                </div>
-                <span className="text-xs text-gray-500">Il y a 2h</span>
+            {loadingActivity ? (
+              <div className="flex justify-center"><LoadingSpinner size="md" /></div>
+            ) : errorActivity ? (
+              <div className="text-red-600 text-center">{errorActivity}</div>
+            ) : (
+              <div className="space-y-4">
+                {activity.length === 0 && <div className="text-gray-600 text-center">Aucune activité récente.</div>}
+                {activity.map((act, idx) => (
+                  <div key={idx} className="flex items-center space-x-3 p-4 border border-gray-100 rounded-lg">
+                    <div className={`w-2 h-2 rounded-full ${act.color || 'bg-gray-400'}`}></div>
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-gray-900">{act.title}</p>
+                      <p className="text-xs text-gray-600">{act.detail}</p>
+                    </div>
+                    <span className="text-xs text-gray-500">{act.date}</span>
+                  </div>
+                ))}
               </div>
-              
-              <div className="flex items-center space-x-3 p-4 border border-gray-100 rounded-lg">
-                <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium text-gray-900">Projet financé</p>
-                  <p className="text-xs text-gray-600">Réseau de distribution - Télimélé</p>
-                </div>
-                <span className="text-xs text-gray-500">Il y a 1j</span>
-              </div>
-              
-              <div className="flex items-center space-x-3 p-4 border border-gray-100 rounded-lg">
-                <div className="w-2 h-2 bg-purple-400 rounded-full"></div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium text-gray-900">Nouvel utilisateur</p>
-                  <p className="text-xs text-gray-600">Inscription prestataire</p>
-                </div>
-                <span className="text-xs text-gray-500">Il y a 2j</span>
-              </div>
-            </div>
+            )}
           </CardContent>
         </Card>
       </div>

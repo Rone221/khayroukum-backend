@@ -34,7 +34,7 @@ const PrestataireVillages: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 px-0 md:px-2 lg:px-4">
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Mes Villages</h1>
@@ -48,55 +48,60 @@ const PrestataireVillages: React.FC = () => {
         </Link>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="flex flex-col gap-10 py-8 items-center w-full">
         {villages.map((village) => (
-          <Card key={village.id} className="hover:shadow-lg transition-shadow duration-200">
-            <div className="h-48 bg-gradient-to-r from-green-400 to-blue-500 rounded-t-lg relative overflow-hidden">
+          <Card key={village.id} className="w-full max-w-xl shadow-2xl rounded-3xl overflow-hidden bg-white border border-gray-100 transition-transform duration-200 hover:scale-[1.03] hover:shadow-blue-200">
+            <div className="h-72 relative">
               <img 
                 src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158"
                 alt={village.name}
-                className="w-full h-full object-cover mix-blend-overlay"
+                className="w-full h-full object-cover"
               />
-              <div className="absolute inset-0 bg-black bg-opacity-20"></div>
-              <div className="absolute bottom-4 left-4 text-white">
-                <h3 className="text-xl font-bold">{village.name}</h3>
-                <p className="text-sm opacity-90">{village.region}</p>
+              <div className="absolute inset-0 bg-gradient-to-t from-blue-800 via-blue-600/70 to-transparent"></div>
+              <div className="absolute bottom-8 left-8 text-white drop-shadow-xl">
+                <h3 className="text-3xl font-extrabold tracking-tight mb-1">{village.name}</h3>
+                <p className="text-lg opacity-90 font-medium">{village.region}</p>
               </div>
             </div>
-            
-            <CardContent className="p-6">
-              <div className="space-y-4">
+            <CardContent className="p-10">
+              <div className="space-y-8">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <Users className="w-4 h-4 text-gray-600" />
-                    <span className="text-sm text-gray-600">Population</span>
+                  <div className="flex items-center space-x-4">
+                    <Users className="w-6 h-6 text-blue-600" />
+                    <span className="text-lg text-gray-700 fo                    php artisan migrate:refresh --seed                    php artisan migrate:refresh --seednt-semibold">Population</span>
                   </div>
-                  <span className="font-semibold text-gray-900">{village.population.toLocaleString()}</span>
+                  <span className="font-bold text-xl text-gray-900">{
+                    typeof village.population === 'number' && !isNaN(village.population)
+                      ? village.population.toLocaleString()
+                      : 'N/A'
+                  }</span>
                 </div>
-                
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <MapPin className="w-4 h-4 text-gray-600" />
-                    <span className="text-sm text-gray-600">Coordonnées</span>
+                  <div className="flex items-center space-x-4">
+                    <MapPin className="w-6 h-6 text-blue-600" />
+                    <span className="text-lg text-gray-700 font-semibold">Coordonnées</span>
                   </div>
-                  <span className="text-sm text-gray-600">
-                    {village.coordinates.lat.toFixed(2)}, {village.coordinates.lng.toFixed(2)}
+                  <span className="text-lg text-gray-700">
+                    {village.coordinates && typeof village.coordinates.lat === 'number' && typeof village.coordinates.lng === 'number'
+                      ? `${village.coordinates.lat.toFixed(2)}, ${village.coordinates.lng.toFixed(2)}`
+                      : 'N/A'}
                   </span>
                 </div>
-
-                <div className="pt-4 border-t border-gray-100">
-                  <div className="flex space-x-2">
-                    <button className="flex items-center space-x-1 px-3 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors">
-                      <Eye className="w-4 h-4" />
-                      <span className="text-sm">Voir</span>
+                <div className="pt-8 border-t border-gray-100">
+                  <div className="flex flex-row gap-4 justify-center items-center">
+                    <Link to={`/prestataire/villages/${village.id}`} className="w-full md:w-auto">
+                      <button className="flex items-center space-x-2 px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors font-semibold shadow-lg w-full justify-center">
+                        <Eye className="w-6 h-6" />
+                        <span className="text-base">Voir</span>
+                      </button>
+                    </Link>
+                    <button className="flex items-center space-x-2 px-6 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-colors font-semibold shadow-lg w-full md:w-auto justify-center">
+                      <Edit className="w-6 h-6" />
+                      <span className="text-base">Modifier</span>
                     </button>
-                    <button className="flex items-center space-x-1 px-3 py-2 bg-gray-50 text-gray-600 rounded-lg hover:bg-gray-100 transition-colors">
-                      <Edit className="w-4 h-4" />
-                      <span className="text-sm">Modifier</span>
-                    </button>
-                    <button className="flex items-center space-x-1 px-3 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors">
-                      <Trash2 className="w-4 h-4" />
-                      <span className="text-sm">Supprimer</span>
+                    <button className="flex items-center space-x-2 px-6 py-3 bg-red-100 text-red-600 rounded-xl hover:bg-red-200 transition-colors font-semibold shadow-lg w-full md:w-auto justify-center">
+                      <Trash2 className="w-6 h-6" />
+                      <span className="text-base">Supprimer</span>
                     </button>
                   </div>
                 </div>

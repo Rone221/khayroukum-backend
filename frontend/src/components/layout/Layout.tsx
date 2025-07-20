@@ -20,13 +20,16 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
-      <Sidebar isOpen={sidebarOpen} onClose={closeSidebar} />
-      
-      <div className="flex-1 flex flex-col lg:ml-64">
-        <Header onMenuToggle={toggleSidebar} />
+    <div className="flex h-screen overflow-hidden bg-gray-50">
+      {/* Sidebar */}
+      <aside className="w-[250px] fixed top-0 left-0 h-screen bg-white shadow-lg z-50">
+        <Sidebar isOpen={true} onClose={closeSidebar} />
+      </aside>
 
-        <main className="flex-1 p-4 lg:p-6">
+      {/* Contenu principal */}
+      <div className="ml-[250px] w-full h-screen overflow-y-auto flex flex-col">
+        <Header onMenuToggle={toggleSidebar} />
+        <main className="flex-1 px-4 py-6">
           {children}
         </main>
       </div>

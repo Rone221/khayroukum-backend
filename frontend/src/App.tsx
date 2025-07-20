@@ -20,6 +20,8 @@ import PrestataireDashboard from './pages/prestataire/PrestataireDashboard';
 import PrestataireVillages from './pages/prestataire/PrestataireVillages';
 import PrestataireProjects from './pages/prestataire/PrestataireProjects';
 import PrestataireDocuments from './pages/prestataire/PrestataireDocuments';
+import PrestataireVillageCreate from './pages/prestataire/PrestataireVillageCreate';
+import PrestataireVillageDetail from './pages/prestataire/PrestataireVillageDetail';
 
 // Donateur Pages
 import DonateurDashboard from './pages/donateur/DonateurDashboard';
@@ -67,6 +69,13 @@ function App() {
           } />
 
           {/* Prestataire Routes */}
+          <Route path="/prestataire/villages/:id" element={
+            <ProtectedRoute allowedRoles={['prestataire']}>
+              <Layout>
+                <PrestataireVillageDetail />
+              </Layout>
+            </ProtectedRoute>
+          } />
           <Route path="/prestataire/dashboard" element={
             <ProtectedRoute allowedRoles={['prestataire']}>
               <Layout>
@@ -78,6 +87,13 @@ function App() {
             <ProtectedRoute allowedRoles={['prestataire']}>
               <Layout>
                 <PrestataireVillages />
+              </Layout>
+            </ProtectedRoute>
+          } />
+          <Route path="/prestataire/villages/new" element={
+            <ProtectedRoute allowedRoles={['prestataire']}>
+              <Layout>
+                <PrestataireVillageCreate />
               </Layout>
             </ProtectedRoute>
           } />

@@ -24,13 +24,17 @@ const PrestataireProjects: React.FC = () => {
   const { user } = useAuth();
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState<'all' | 'pending' | 'validated' | 'funded' | 'completed'>('all');
 
   useEffect(() => {
     if (!user) return;
+    setLoading(true);
+    setError(null);
     api
       .get('/projets')
       .then(res => setProjects(res.data.filter((p: Project) => p.prestataireId === user.id)))
+      .catch(() => setError("Impossible de charger les projets."))
       .finally(() => setLoading(false));
   }, [user]);
 
@@ -65,6 +69,9 @@ const PrestataireProjects: React.FC = () => {
         <LoadingSpinner size="lg" />
       </div>
     );
+  }
+  if (error) {
+    return <div className="text-red-600 text-center py-8">{error}</div>;
   }
 
   return (

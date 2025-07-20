@@ -17,13 +17,18 @@ export interface Village {
   id: string;
   name: string;
   region: string;
-  population: number;
-  coordinates: {
+  departement?: string;
+  commune?: string;
+  population?: number;
+  coordinates?: {
     lat: number;
     lng: number;
   };
-  createdBy: string;
-  createdAt: string;
+  statut?: string;
+  description?: string;
+  photo?: string;
+  created_by?: string;
+  createdAt?: string;
 }
 
 export interface Project {
