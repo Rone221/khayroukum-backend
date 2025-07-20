@@ -22,7 +22,7 @@ const Header: React.FC<HeaderProps> = ({ onMenuToggle }) => {
         
         <div className="hidden lg:block">
           <h2 className="text-xl font-semibold text-gray-800">
-            Bienvenue, {user?.name}
+            Bienvenue, {user ? `${user.prenom} ${user.nom}` : ''}
           </h2>
         </div>
       </div>
@@ -40,7 +40,7 @@ const Header: React.FC<HeaderProps> = ({ onMenuToggle }) => {
             <User className="w-4 h-4 text-white" />
           </div>
           <div className="hidden md:block">
-            <p className="text-sm font-medium text-gray-800">{user?.name}</p>
+            <p className="text-sm font-medium text-gray-800">{user ? `${user.prenom} ${user.nom}` : ''}</p>
             <p className="text-xs text-gray-600 capitalize">{user?.role}</p>
           </div>
         </div>

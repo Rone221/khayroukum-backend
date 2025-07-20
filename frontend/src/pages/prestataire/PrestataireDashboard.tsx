@@ -67,7 +67,7 @@ const PrestataireDashboard: React.FC = () => {
       <div className="relative bg-gradient-to-r from-blue-600 to-cyan-600 rounded-lg p-8 text-white overflow-hidden">
         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1581091226825-a6a2a5aee158')] bg-cover bg-center opacity-10"></div>
         <div className="relative z-10">
-          <h1 className="text-3xl font-bold mb-2">Bienvenue, {user?.name}</h1>
+          <h1 className="text-3xl font-bold mb-2">Bienvenue, {user ? `${user.prenom} ${user.nom}` : ''}</h1>
           <p className="text-blue-100 text-lg">Gérez vos projets hydrauliques et contribuez à l'accès à l'eau potable</p>
         </div>
       </div>
