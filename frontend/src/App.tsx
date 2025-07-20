@@ -28,6 +28,7 @@ import DonateurContributions from './pages/donateur/DonateurContributions';
 import ProjectDetail from './pages/donateur/ProjectDetail';
 import NotificationsPage from './pages/notifications/NotificationsPage';
 import ProjectDocuments from './pages/prestataire/ProjectDocuments';
+import ProfilePage from './pages/ProfilePage';
 
 import './App.css';
 
@@ -136,6 +137,14 @@ function App() {
             <ProtectedRoute>
               <Layout>
                 <NotificationsPage />
+              </Layout>
+            </ProtectedRoute>
+          } />
+
+          <Route path="/profile" element={
+            <ProtectedRoute>
+              <Layout>
+                <ProfilePage />
               </Layout>
             </ProtectedRoute>
           } />
