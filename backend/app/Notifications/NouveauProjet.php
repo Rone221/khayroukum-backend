@@ -29,6 +29,10 @@ class NouveauProjet extends Notification
 
     public function toArray(object $notifiable): array
     {
-        return ['message' => 'Nouveau projet: '.$this->projet->titre];
+        return [
+            'title' => 'Nouveau projet soumis',
+            'message' => 'Un nouveau projet intitulé "' . $this->projet->titre . '" a été soumis et attend votre validation.',
+            'type' => 'info'
+        ];
     }
 }

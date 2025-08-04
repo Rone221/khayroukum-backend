@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test API</title>
+</head>
+<body>
+    <h1>Test API Khayroukum</h1>
+    <div id="status">En cours...</div>
+    <div id="results"></div>
+
+    <script>
+        async function testAPI() {
+            const status = document.getElementById('status');
+            const results = document.getElementById('results');
+            
+            try {
+                // Test de connexion
+                status.innerHTML = 'Test de connexion...';
+                const loginResponse = await fetch('http://localhost:8000/api/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: 'admin@example.com',
+                        password: 'password'
+                    })
+                });
+                
+                const loginData = await loginResponse.json();
+                console.log('Login response:', loginData);
+                
+                if (loginData.token) {
+                    status.innerHTML = 'Connexion réussie! Test des projets...';
+                    
+                    // Test des projets
+                    const projectsResponse = await fetch('http://localhost:8000/api/projets', {
+                        headers: {
+                            'Authorization': `Bearer ${loginData.token}`,
+                            'Accept': 'application/json'
+                        }
+                    });
+                    
+                    const projectsData = await projectsResponse.json();
+                    console.log('Projects response:', projectsData);
+                    
+                    // Affichage des résultats
+                    status.innerHTML = 'Tests terminés!';
+                    results.innerHTML = `
+                        <h2>Résultats:</h2>
+                        <p><strong>Token:</strong> ${loginData.token.substring(0, 20)}...</p>
+                        <p><strong>Nombre de projets:</strong> ${projectsData.length}</p>
+                        <h3>Projets:</h3>
+                        <ul>
+                            ${projectsData.map(p => `
+                                <li>
+                                    <strong>${p.title}</strong><br>
+                                    Village: ${p.village?.name || 'Non spécifié'}<br>
+                                    Statut: ${p.status}<br>
+                                    Montant: ${p.targetAmount}€
+                                </li>
+                            `).join('')}
+                        </ul>
+                    `;
+                } else {
+                    status.innerHTML = 'Erreur de connexion';
+                    results.innerHTML = `<p style="color: red">Erreur: ${JSON.stringify(loginData)}</p>`;
+                }
+            } catch (error) {
+                status.innerHTML = 'Erreur réseau';
+                results.innerHTML = `<p style="color: red">Erreur: ${error.message}</p>`;
+                console.error('Error:', error);
+            }
+        }
+        
+        // Lancer le test automatiquement
+        testAPI();
+    </script>
+</body>
+</html>

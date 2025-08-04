@@ -14,6 +14,9 @@ import NotFound from './pages/NotFound';
 // Admin Pages
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminProjects from './pages/admin/AdminProjects';
+import AdminProjectDetail from './pages/admin/AdminProjectDetail';
+import AdminUsers from './pages/admin/AdminUsers';
+import AdminNotifications from './pages/admin/AdminNotifications';
 
 // Prestataire Pages
 import PrestataireDashboard from './pages/prestataire/PrestataireDashboard';
@@ -64,6 +67,27 @@ function App() {
             <ProtectedRoute allowedRoles={['administrateur']}>
               <Layout>
                 <AdminProjects />
+              </Layout>
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/projects/:id" element={
+            <ProtectedRoute allowedRoles={['administrateur']}>
+              <Layout>
+                <AdminProjectDetail />
+              </Layout>
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/users" element={
+            <ProtectedRoute allowedRoles={['administrateur']}>
+              <Layout>
+                <AdminUsers />
+              </Layout>
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/notifications" element={
+            <ProtectedRoute allowedRoles={['administrateur']}>
+              <Layout>
+                <AdminNotifications />
               </Layout>
             </ProtectedRoute>
           } />

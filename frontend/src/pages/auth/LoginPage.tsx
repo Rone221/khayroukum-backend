@@ -34,7 +34,7 @@ const LoginPage: React.FC = () => {
             <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl mb-4">
               <Droplets className="w-8 h-8 text-white" />
             </div>
-            <h1 className="text-2xl font-bold text-gray-900">HydroManager</h1>
+            <h1 className="text-2xl font-bold text-gray-900">Khayroukoum</h1>
             <p className="text-gray-600 mt-2">Connectez-vous à votre compte</p>
           </div>
 
@@ -43,9 +43,9 @@ const LoginPage: React.FC = () => {
             <p className="text-sm font-medium text-blue-800 mb-2">Comptes de démonstration :</p>
             <div className="text-xs text-blue-700 space-y-1">
               <p><strong>Admin:</strong> admin@example.com</p>
-              <p><strong>Prestataire:</strong> jean.dupont@prestataire.com</p>
-              <p><strong>Donateur:</strong> marie.martin@donateur.com</p>
-              <p className="text-blue-600">Mot de passe : demo123</p>
+              <p><strong>Prestataire:</strong> prestataire@example.com</p>
+              <p><strong>Donateur:</strong> donateur@example.com</p>
+              <p className="text-blue-600">Mot de passe : password</p>
             </div>
           </div>
 

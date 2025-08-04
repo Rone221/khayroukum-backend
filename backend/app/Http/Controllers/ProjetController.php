@@ -16,7 +16,52 @@ class ProjetController extends Controller
      */
     public function index()
     {
-        return Projet::all();
+        $projets = Projet::with(['village', 'creator', 'documents', 'offres'])->get();
+        
+        return $projets->map(function ($projet) {
+            return [
+                'id' => $projet->id,
+                'title' => $projet->titre,
+                'description' => $projet->description ?? 'Aucune description disponible',
+                'village' => [
+                    'id' => $projet->village->id ?? null,
+                    'name' => $projet->village->nom ?? 'Village inconnu',
+                    'region' => $projet->village->region ?? 'Région inconnue',
+                    'population' => $projet->village->population ?? 0,
+                    'coordinates' => $projet->village->coordonnees ?? ['lat' => 14.0, 'lng' => -14.0],
+                ],
+                'prestataireId' => $projet->created_by,
+                'prestataireName' => ($projet->creator->prenom ?? '') . ' ' . ($projet->creator->nom ?? 'Prestataire inconnu'),
+                'targetAmount' => $projet->montant_total ?? 0,
+                'currentAmount' => $projet->offres->sum('montant') ?? 0,
+                'status' => $this->mapStatus($projet->statut),
+                'category' => 'well', // Valeur par défaut
+                'estimatedDuration' => 12, // Valeur par défaut
+                'documents' => $projet->documents->map(function ($doc) {
+                    return [
+                        'id' => $doc->id,
+                        'name' => basename($doc->fichier_path),
+                        'type' => $doc->type,
+                        'url' => $doc->fichier_path,
+                        'uploadedAt' => $doc->created_at->toISOString(),
+                    ];
+                }),
+                'createdAt' => $projet->created_at->toISOString(),
+                'updatedAt' => $projet->updated_at->toISOString(),
+            ];
+        });
+    }
+    
+    private function mapStatus($statut)
+    {
+        $mapping = [
+            'en_attente' => 'pending',
+            'valide' => 'validated',
+            'en_cours' => 'in_progress',
+            'termine' => 'completed',
+        ];
+        
+        return $mapping[$statut] ?? 'pending';
     }
 
     /**
@@ -49,7 +94,38 @@ class ProjetController extends Controller
      */
     public function show(string $id)
     {
-        return Projet::findOrFail($id);
+        $projet = Projet::with(['village', 'creator', 'documents', 'offres'])->findOrFail($id);
+        
+        return [
+            'id' => $projet->id,
+            'title' => $projet->titre,
+            'description' => $projet->description ?? 'Aucune description disponible',
+            'village' => [
+                'id' => $projet->village->id ?? null,
+                'name' => $projet->village->nom ?? 'Village inconnu',
+                'region' => $projet->village->region ?? 'Région inconnue',
+                'population' => $projet->village->population ?? 0,
+                'coordinates' => $projet->village->coordonnees ?? ['lat' => 14.0, 'lng' => -14.0],
+            ],
+            'prestataireId' => $projet->created_by,
+            'prestataireName' => ($projet->creator->prenom ?? '') . ' ' . ($projet->creator->nom ?? 'Prestataire inconnu'),
+            'targetAmount' => $projet->montant_total ?? 0,
+            'currentAmount' => $projet->offres->sum('montant') ?? 0,
+            'status' => $this->mapStatus($projet->statut),
+            'category' => 'well', // Valeur par défaut
+            'estimatedDuration' => 12, // Valeur par défaut
+            'documents' => $projet->documents->map(function ($doc) {
+                return [
+                    'id' => $doc->id,
+                    'name' => basename($doc->fichier_path),
+                    'type' => $doc->type,
+                    'url' => $doc->fichier_path,
+                    'uploadedAt' => $doc->created_at->toISOString(),
+                ];
+            }),
+            'createdAt' => $projet->created_at->toISOString(),
+            'updatedAt' => $projet->updated_at->toISOString(),
+        ];
     }
 
     /**

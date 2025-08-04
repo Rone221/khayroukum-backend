@@ -29,6 +29,10 @@ class ProjetValide extends Notification
 
     public function toArray(object $notifiable): array
     {
-        return ['message' => 'Projet "'.$this->projet->titre.'" validé'];
+        return [
+            'title' => 'Projet validé',
+            'message' => 'Votre projet "' . $this->projet->titre . '" a été validé par l\'administration.',
+            'type' => 'success'
+        ];
     }
 }

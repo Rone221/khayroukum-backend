@@ -26,6 +26,11 @@ class User extends Authenticatable
         'password',
         'role',
         'is_verified',
+        'telephone',
+        'adresse',
+        'date_naissance',
+        'profession',
+        'bio',
     ];
 
     /**
@@ -48,6 +53,40 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'date_naissance' => 'date',
+            'is_verified' => 'boolean',
         ];
+    }
+
+    /**
+     * Relation avec les villages (pour les prestataires)
+     */
+    public function villages()
+    {
+        return $this->hasMany(Village::class, 'created_by');
+    }
+
+    /**
+     * Relation avec les projets (pour les prestataires)
+     */
+    public function projets()
+    {
+        return $this->hasMany(Projet::class, 'created_by');
+    }
+
+    /**
+     * Relation avec les projets validés (pour les administrateurs)
+     */
+    public function projetsValides()
+    {
+        return $this->hasMany(Projet::class, 'validated_by');
+    }
+
+    /**
+     * Relation avec les offres de financement (pour les donateurs)
+     */
+    public function offres()
+    {
+        return $this->hasMany(OffreFinancement::class, 'donateur_id');
     }
 }

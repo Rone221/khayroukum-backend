@@ -2,6 +2,8 @@
 import React from 'react';
 import { Menu, Bell, User } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
+import { useNotifications } from '../../hooks/useNotifications';
+import { useNavigate } from 'react-router-dom';
 
 interface HeaderProps {
   onMenuToggle: () => void;
@@ -9,6 +11,12 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ onMenuToggle }) => {
   const { user } = useAuth();
+  const { unreadCount } = useNotifications();
+  const navigate = useNavigate();
+
+  const handleNotificationClick = () => {
+    navigate('/notifications');
+  };
 
   return (
     <header className="bg-white shadow-sm border-b border-gray-200 h-16 flex items-center justify-between px-2 lg:px-4"> {/* Réduit le padding horizontal du header */}
@@ -28,11 +36,21 @@ const Header: React.FC<HeaderProps> = ({ onMenuToggle }) => {
       </div>
 
       <div className="flex items-center space-x-4">
-        <button className="relative p-2 rounded-lg hover:bg-gray-100">
-          <Bell className="w-6 h-6 text-gray-600" />
-          <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
-            3
-          </span>
+        <button 
+          onClick={handleNotificationClick}
+          className={`relative p-2 rounded-lg transition-colors ${
+            unreadCount > 0 
+              ? 'hover:bg-blue-50 text-blue-600' 
+              : 'hover:bg-gray-100 text-gray-600'
+          }`}
+          title={`${unreadCount > 0 ? `${unreadCount} nouvelle${unreadCount > 1 ? 's' : ''} notification${unreadCount > 1 ? 's' : ''}` : 'Aucune nouvelle notification'}`}
+        >
+          <Bell className={`w-6 h-6 ${unreadCount > 0 ? 'animate-pulse' : ''}`} />
+          {unreadCount > 0 && (
+            <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-medium animate-pulse">
+              {unreadCount > 99 ? '99+' : unreadCount}
+            </span>
+          )}
         </button>
 
         <div className="flex items-center space-x-3">

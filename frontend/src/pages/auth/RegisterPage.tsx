@@ -49,7 +49,7 @@ const RegisterPage: React.FC = () => {
             <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl mb-4">
               <Droplets className="w-8 h-8 text-white" />
             </div>
-            <h1 className="text-2xl font-bold text-gray-900">HydroManager</h1>
+            <h1 className="text-2xl font-bold text-gray-900">Khayroukoum</h1>
             <p className="text-gray-600 mt-2">Créez votre compte</p>
           </div>
 

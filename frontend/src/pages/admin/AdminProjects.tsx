@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
 import { 
   Eye, 
@@ -21,9 +22,16 @@ const AdminProjects: React.FC = () => {
   const [filter, setFilter] = useState<'all' | 'pending' | 'validated' | 'rejected'>('all');
 
   useEffect(() => {
+    console.log('AdminProjects: Loading projects...');
     api
       .get('/projets')
-      .then(res => setProjects(res.data))
+      .then(res => {
+        console.log('AdminProjects: API Response:', res.data);
+        setProjects(res.data);
+      })
+      .catch(error => {
+        console.error('AdminProjects: API Error:', error);
+      })
       .finally(() => setLoading(false));
   }, []);
 
@@ -120,7 +128,10 @@ const AdminProjects: React.FC = () => {
                   <div className="flex items-center space-x-4 mt-2 text-sm text-gray-600">
                     <div className="flex items-center space-x-1">
                             <MapPin className="w-4 h-4" />
-                            <span>{project.village ? project.village.name : 'Village inconnu'}, {project.village ? project.village.region : 'Région inconnue'}</span>
+                            <span>
+                              {project.village?.name || 'Village inconnu'}
+                              {project.village?.region && `, ${project.village.region}`}
+                            </span>
                     </div>
                     <div className="flex items-center space-x-1">
                       <User className="w-4 h-4" />
@@ -183,10 +194,13 @@ const AdminProjects: React.FC = () => {
 
               {/* Actions */}
               <div className="flex space-x-3">
-                <button className="flex items-center space-x-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
+                <Link 
+                  to={`/admin/projects/${project.id}`}
+                  className="flex items-center space-x-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                >
                   <Eye className="w-4 h-4" />
                   <span>Voir détails</span>
-                </button>
+                </Link>
                 
                 {project.status === 'pending' && (
                   <>

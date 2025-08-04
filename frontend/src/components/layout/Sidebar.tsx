@@ -81,7 +81,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                 <Droplets className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="font-bold text-lg text-gray-800">HydroManager</h1>
+                <h1 className="font-bold text-lg text-gray-800">Khayroukoum</h1>
                 <p className="text-sm text-gray-600 capitalize">{user?.role}</p>
               </div>
             </div>

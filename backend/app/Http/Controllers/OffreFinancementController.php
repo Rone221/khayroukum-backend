@@ -7,6 +7,7 @@ use App\Models\OffreFinancement;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Projet;
 use App\Models\User;
+use App\Notifications\NouvelleOffreFinancement;
 
 class OffreFinancementController extends Controller
 {
@@ -33,6 +34,10 @@ class OffreFinancementController extends Controller
         $data['projet_id'] = $projet->id;
         $data['donateur_id'] = Auth::id();
         $offre = OffreFinancement::create($data);
+
+        // Notifier le créateur du projet
+        $projet->creator->notify(new NouvelleOffreFinancement($offre));
+
         return response()->json($offre, 201);
     }
 

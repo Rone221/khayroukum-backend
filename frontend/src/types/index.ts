@@ -9,6 +9,11 @@ export interface User {
   role: UserRole;
   email_verified_at?: string;
   is_verified?: boolean;
+  telephone?: string;
+  adresse?: string;
+  date_naissance?: string;
+  profession?: string;
+  bio?: string;
   created_at?: string;
   updated_at?: string;
 }

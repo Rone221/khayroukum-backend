@@ -29,6 +29,10 @@ class NouveauDocument extends Notification
 
     public function toArray(object $notifiable): array
     {
-        return ['message' => 'Document ajouté au projet '.$this->document->projet->titre];
+        return [
+            'title' => 'Nouveau document ajouté',
+            'message' => 'Un document technique a été ajouté au projet "' . $this->document->projet->titre . '".',
+            'type' => 'info'
+        ];
     }
 }
