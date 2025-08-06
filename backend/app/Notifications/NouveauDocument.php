@@ -11,9 +11,7 @@ class NouveauDocument extends Notification
 {
     use Queueable;
 
-    public function __construct(public DocumentTechnique $document)
-    {
-    }
+    public function __construct(public DocumentTechnique $document) {}
 
     public function via(object $notifiable): array
     {
@@ -24,7 +22,7 @@ class NouveauDocument extends Notification
     {
         return (new MailMessage())
             ->subject('Nouveau document soumis')
-            ->line('Un document a été ajouté au projet '.$this->document->projet->titre.'.');
+            ->line('Un document a été ajouté au projet ' . $this->document->projet->titre . '.');
     }
 
     public function toArray(object $notifiable): array

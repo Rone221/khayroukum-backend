@@ -18,24 +18,56 @@ import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import { Link } from 'react-router-dom';
 import { Project, Village } from '../../types';
 
+interface PrestataireDashboardStats {
+  totalProjects: number;
+  pendingProjects: number;
+  approvedProjects: number;
+  totalFunding: number;
+  totalVillages: number;
+}
+
+interface Activity {
+  type: string;
+  title: string;
+  description: string;
+  time: string;
+  color: string;
+  status?: string;
+}
+
 const PrestataireDashboard: React.FC = () => {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [villages, setVillages] = useState<Village[]>([]);
+  const [stats, setStats] = useState<PrestataireDashboardStats | null>(null);
+  const [recentProjects, setRecentProjects] = useState<Project[]>([]);
+  const [activities, setActivities] = useState<Activity[]>([]);
 
   useEffect(() => {
     if (!user) return;
-    setLoading(true);
-    setError(null);
-    Promise.all([api.get<Project[]>('/projets'), api.get<Village[]>('/villages')])
-      .then(([projectsRes, villagesRes]) => {
-        setProjects(projectsRes.data.filter((p) => p.prestataireId === user.id));
-        setVillages(villagesRes.data.filter((v) => v.created_by === user.id));
-      })
-      .catch(() => setError("Impossible de charger les statistiques."))
-      .finally(() => setLoading(false));
+    
+    const fetchData = async () => {
+      setLoading(true);
+      setError(null);
+      
+      try {
+        const [statsRes, activityRes] = await Promise.all([
+          api.get<{stats: PrestataireDashboardStats, recentProjects: Project[]}>('/prestataire/stats'),
+          api.get<{activities: Activity[]}>('/prestataire/activity')
+        ]);
+        
+        setStats(statsRes.data.stats);
+        setRecentProjects(statsRes.data.recentProjects);
+        setActivities(activityRes.data.activities);
+      } catch (error) {
+        console.error('Error fetching prestataire data:', error);
+        setError("Impossible de charger les statistiques.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchData();
   }, [user]);
 
   if (loading) {
@@ -45,16 +77,14 @@ const PrestataireDashboard: React.FC = () => {
       </div>
     );
   }
+  
   if (error) {
     return <div className="text-red-600 text-center py-8">{error}</div>;
   }
-
-  const totalProjects = projects.length;
-  const pendingProjects = projects.filter((p) => p.status === 'pending').length;
-  const approvedProjects = projects.filter((p) => p.status === 'validated' || p.status === 'funded').length;
-  const totalFunding = projects.reduce((sum: number, p) => sum + (p.currentAmount || 0), 0);
-  const totalVillages = villages.length;
-  const userProjects = projects;
+  
+  if (!stats) {
+    return <div className="text-gray-600 text-center py-8">Aucune donnée disponible</div>;
+  }
 
   return (
     <div className="space-y-6">
@@ -74,7 +104,7 @@ const PrestataireDashboard: React.FC = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Mes Projets</p>
-                <p className="text-2xl font-bold text-gray-900">{totalProjects}</p>
+                <p className="text-2xl font-bold text-gray-900">{stats.totalProjects}</p>
               </div>
               <div className="p-3 rounded-lg bg-blue-50">
                 <FolderCheck className="w-6 h-6 text-blue-600" />
@@ -88,7 +118,7 @@ const PrestataireDashboard: React.FC = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">En Attente</p>
-                <p className="text-2xl font-bold text-gray-900">{pendingProjects}</p>
+                <p className="text-2xl font-bold text-gray-900">{stats.pendingProjects}</p>
               </div>
               <div className="p-3 rounded-lg bg-orange-50">
                 <Clock className="w-6 h-6 text-orange-600" />
@@ -102,7 +132,7 @@ const PrestataireDashboard: React.FC = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Approuvés</p>
-                <p className="text-2xl font-bold text-gray-900">{approvedProjects}</p>
+                <p className="text-2xl font-bold text-gray-900">{stats.approvedProjects}</p>
               </div>
               <div className="p-3 rounded-lg bg-green-50">
                 <CheckCircle className="w-6 h-6 text-green-600" />
@@ -116,7 +146,7 @@ const PrestataireDashboard: React.FC = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Financements</p>
-                <p className="text-2xl font-bold text-gray-900">{totalFunding.toLocaleString()}€</p>
+                <p className="text-2xl font-bold text-gray-900">{stats.totalFunding.toLocaleString()}€</p>
               </div>
               <div className="p-3 rounded-lg bg-cyan-50">
                 <MapPin className="w-6 h-6 text-cyan-600" />
@@ -128,7 +158,7 @@ const PrestataireDashboard: React.FC = () => {
 
       {/* Actions Rapides */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Link to="/prestataire/villages/new" className="group">
+        <Link to="/prestataire/villages/create" className="group">
           <Card className="hover:shadow-lg transition-all duration-200 group-hover:scale-105">
             <CardContent className="p-6 text-center">
               <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-blue-200 transition-colors">
@@ -178,31 +208,43 @@ const PrestataireDashboard: React.FC = () => {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {userProjects.slice(0, 3).map((project) => (
-                <div key={project.id} className="flex items-center justify-between p-4 border border-gray-100 rounded-lg hover:shadow-md transition-shadow">
-                  <div className="flex items-center space-x-4">
-                    <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center">
-                      <FolderCheck className="w-6 h-6 text-white" />
+              {recentProjects && recentProjects.length > 0 ? (
+                recentProjects.slice(0, 3).map((project) => (
+                  <div key={project.id} className="flex items-center justify-between p-4 border border-gray-100 rounded-lg hover:shadow-md transition-shadow">
+                    <div className="flex items-center space-x-4">
+                      <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center">
+                        <FolderCheck className="w-6 h-6 text-white" />
+                      </div>
+                      <div>
+                        <h4 className="font-medium text-gray-900">{project.title}</h4>
+                        <p className="text-sm text-gray-600">{project.village.name}</p>
+                      </div>
                     </div>
-                    <div>
-                      <h4 className="font-medium text-gray-900">{project.title}</h4>
-                      <p className="text-sm text-gray-600">{project.village.name}</p>
+                    <div className="text-right">
+                      <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
+                        project.status === 'validated' ? 'bg-green-100 text-green-800' :
+                        project.status === 'completed' ? 'bg-green-100 text-green-800' :
+                        project.status === 'pending' ? 'bg-orange-100 text-orange-800' :
+                        project.status === 'in_progress' ? 'bg-blue-100 text-blue-800' :
+                        project.status === 'funded' ? 'bg-blue-100 text-blue-800' :
+                        'bg-gray-100 text-gray-800'
+                      }`}>
+                        {project.status === 'validated' ? 'Validé' :
+                         project.status === 'completed' ? 'Terminé' :
+                         project.status === 'pending' ? 'En attente' :
+                         project.status === 'in_progress' ? 'En cours' :
+                         project.status === 'funded' ? 'Financé' : project.status}
+                      </span>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
-                      project.status === 'validated' ? 'bg-green-100 text-green-800' :
-                      project.status === 'pending' ? 'bg-orange-100 text-orange-800' :
-                      project.status === 'funded' ? 'bg-blue-100 text-blue-800' :
-                      'bg-gray-100 text-gray-800'
-                    }`}>
-                      {project.status === 'validated' ? 'Validé' :
-                       project.status === 'pending' ? 'En attente' :
-                       project.status === 'funded' ? 'Financé' : project.status}
-                    </span>
-                  </div>
+                ))
+              ) : (
+                <div className="text-center py-8 text-gray-500">
+                  <FolderCheck className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+                  <p className="text-sm">Aucun projet récent</p>
+                  <p className="text-xs text-gray-400 mt-1">Créez votre premier projet pour commencer</p>
                 </div>
-              ))}
+              )}
             </div>
           </CardContent>
         </Card>
@@ -213,32 +255,22 @@ const PrestataireDashboard: React.FC = () => {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              <div className="flex items-center space-x-3 p-4 border border-gray-100 rounded-lg">
-                <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium text-gray-900">Projet validé</p>
-                  <p className="text-xs text-gray-600">Station de traitement approuvée</p>
+              {activities.length > 0 ? (
+                activities.slice(0, 5).map((activity, index) => (
+                  <div key={index} className="flex items-center space-x-3 p-4 border border-gray-100 rounded-lg">
+                    <div className={`w-2 h-2 rounded-full bg-${activity.color}-400`}></div>
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-gray-900">{activity.title}</p>
+                      <p className="text-xs text-gray-600">{activity.description}</p>
+                    </div>
+                    <span className="text-xs text-gray-500">{activity.time}</span>
+                  </div>
+                ))
+              ) : (
+                <div className="text-center py-8 text-gray-500">
+                  <p>Aucune activité récente</p>
                 </div>
-                <span className="text-xs text-gray-500">Il y a 2h</span>
-              </div>
-              
-              <div className="flex items-center space-x-3 p-4 border border-gray-100 rounded-lg">
-                <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium text-gray-900">Document téléchargé</p>
-                  <p className="text-xs text-gray-600">Plans techniques ajoutés</p>
-                </div>
-                <span className="text-xs text-gray-500">Il y a 1j</span>
-              </div>
-              
-              <div className="flex items-center space-x-3 p-4 border border-gray-100 rounded-lg">
-                <div className="w-2 h-2 bg-purple-400 rounded-full"></div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium text-gray-900">Nouveau village ajouté</p>
-                  <p className="text-xs text-gray-600">Koundara référencé</p>
-                </div>
-                <span className="text-xs text-gray-500">Il y a 3j</span>
-              </div>
+              )}
             </div>
           </CardContent>
         </Card>

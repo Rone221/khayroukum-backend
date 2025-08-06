@@ -17,7 +17,7 @@ class ProjetController extends Controller
     public function index()
     {
         $projets = Projet::with(['village', 'creator', 'documents', 'offres'])->get();
-        
+
         return $projets->map(function ($projet) {
             return [
                 'id' => $projet->id,
@@ -51,7 +51,7 @@ class ProjetController extends Controller
             ];
         });
     }
-    
+
     private function mapStatus($statut)
     {
         $mapping = [
@@ -60,7 +60,7 @@ class ProjetController extends Controller
             'en_cours' => 'in_progress',
             'termine' => 'completed',
         ];
-        
+
         return $mapping[$statut] ?? 'pending';
     }
 
@@ -95,7 +95,7 @@ class ProjetController extends Controller
     public function show(string $id)
     {
         $projet = Projet::with(['village', 'creator', 'documents', 'offres'])->findOrFail($id);
-        
+
         return [
             'id' => $projet->id,
             'title' => $projet->titre,

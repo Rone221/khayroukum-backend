@@ -381,19 +381,6 @@ const AdminDashboard: React.FC = () => {
             </Link>
 
             <Link 
-              to="/admin/analytics" 
-              className="flex items-center space-x-3 p-4 bg-purple-50 rounded-xl hover:bg-purple-100 transition-colors group"
-            >
-              <div className="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
-                <BarChart3 className="w-5 h-5 text-white" />
-              </div>
-              <div>
-                <p className="font-medium text-gray-900">Analytiques</p>
-                <p className="text-sm text-gray-600">Rapports détaillés</p>
-              </div>
-            </Link>
-
-            <Link 
               to="/admin/notifications" 
               className="flex items-center space-x-3 p-4 bg-orange-50 rounded-xl hover:bg-orange-100 transition-colors group"
             >

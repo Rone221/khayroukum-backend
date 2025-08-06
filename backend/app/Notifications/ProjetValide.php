@@ -11,9 +11,7 @@ class ProjetValide extends Notification
 {
     use Queueable;
 
-    public function __construct(public Projet $projet)
-    {
-    }
+    public function __construct(public Projet $projet) {}
 
     public function via(object $notifiable): array
     {
@@ -24,7 +22,7 @@ class ProjetValide extends Notification
     {
         return (new MailMessage())
             ->subject('Projet validé')
-            ->line('Votre projet "'.$this->projet->titre.'" a été validé.');
+            ->line('Votre projet "' . $this->projet->titre . '" a été validé.');
     }
 
     public function toArray(object $notifiable): array

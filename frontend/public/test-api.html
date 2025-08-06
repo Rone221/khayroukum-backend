@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Test API</title>
 </head>
+
 <body>
     <h1>Test API Khayroukum</h1>
     <div id="status">En cours...</div>
@@ -12,7 +14,7 @@
         async function testAPI() {
             const status = document.getElementById('status');
             const results = document.getElementById('results');
-            
+
             try {
                 // Test de connexion
                 status.innerHTML = 'Test de connexion...';
@@ -27,13 +29,13 @@
                         password: 'password'
                     })
                 });
-                
+
                 const loginData = await loginResponse.json();
                 console.log('Login response:', loginData);
-                
+
                 if (loginData.token) {
                     status.innerHTML = 'Connexion réussie! Test des projets...';
-                    
+
                     // Test des projets
                     const projectsResponse = await fetch('http://localhost:8000/api/projets', {
                         headers: {
@@ -41,10 +43,10 @@
                             'Accept': 'application/json'
                         }
                     });
-                    
+
                     const projectsData = await projectsResponse.json();
                     console.log('Projects response:', projectsData);
-                    
+
                     // Affichage des résultats
                     status.innerHTML = 'Tests terminés!';
                     results.innerHTML = `
@@ -73,9 +75,10 @@
                 console.error('Error:', error);
             }
         }
-        
+
         // Lancer le test automatiquement
         testAPI();
     </script>
 </body>
+
 </html>

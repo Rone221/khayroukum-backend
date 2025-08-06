@@ -62,27 +62,27 @@ class DocumentTechniqueController extends Controller
     public function download(string $id)
     {
         $document = DocumentTechnique::findOrFail($id);
-        
+
         // Vérifier que le fichier existe
         $fullPath = storage_path('app/public/' . $document->fichier_path);
-        
+
         if (!file_exists($fullPath)) {
             abort(404, 'Document non trouvé');
         }
-        
+
         // Récupérer le nom original du fichier
         $originalName = basename($document->fichier_path);
-        
+
         // Créer un nom plus lisible basé sur le type de document
         $friendlyNames = [
             'devis' => 'devis-technique.pdf',
-            'contrat' => 'contrat-prestation.pdf', 
+            'contrat' => 'contrat-prestation.pdf',
             'plan' => 'plan-technique.pdf',
             'rapport' => 'rapport-evaluation.pdf'
         ];
-        
+
         $displayName = $friendlyNames[$document->type] ?? $originalName;
-        
+
         // Retourner le fichier pour téléchargement
         return response()->download($fullPath, $displayName);
     }

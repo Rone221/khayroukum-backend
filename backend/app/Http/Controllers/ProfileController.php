@@ -16,10 +16,10 @@ class ProfileController extends Controller
     public function show()
     {
         $user = Auth::user();
-        
+
         // Calculer les statistiques selon le rôle
         $stats = $this->getUserStats($user);
-        
+
         return response()->json([
             'user' => $user,
             'stats' => $stats
@@ -32,7 +32,7 @@ class ProfileController extends Controller
     public function update(Request $request)
     {
         $user = Auth::user();
-        
+
         try {
             $data = $request->validate([
                 'prenom' => 'sometimes|string|max:255',

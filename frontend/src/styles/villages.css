@@ -1,0 +1,269 @@
+/* Styles personnalisés pour l'interface des villages */
+
+/* Animation pour les cartes */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.village-card {
+  animation: fadeInUp 0.5s ease-out;
+}
+
+/* Cartes de villages cliquables */
+.village-card.cursor-pointer:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.15);
+}
+
+.village-card.cursor-pointer:hover .village-image {
+  transform: scale(1.08);
+}
+
+.village-card.cursor-pointer a:hover {
+  text-decoration: none;
+}
+
+/* Effet de survol pour les cartes */
+.village-card:hover .village-image {
+  transform: scale(1.05);
+}
+
+.village-image {
+  transition: transform 0.3s ease;
+}
+
+/* Lignes de tableau cliquables */
+.table-row.cursor-pointer:hover {
+  background-color: rgb(239 246 255) !important; /* bg-blue-50 */
+  transform: scale(1.005);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.table-row.cursor-pointer a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.table-row.cursor-pointer a:hover {
+  color: rgb(29 78 216); /* text-blue-700 */
+}
+
+/* Amélioration des liens dans les cellules */
+.table-row td a {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+}
+
+/* Dropdown menu avec animation */
+.dropdown-menu {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.2s ease;
+}
+
+.dropdown-menu.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+/* Line clamp pour limiter le texte */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Effet de focus amélioré pour les inputs */
+.focus-ring:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgb(59 130 246);
+  border-color: transparent;
+}
+
+/* Transition douce pour les boutons */
+.btn-transition {
+  transition: all 0.2s ease;
+}
+
+.btn-transition:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Style pour la barre de recherche */
+.search-input {
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border: 1px solid #e2e8f0;
+  transition: all 0.3s ease;
+}
+
+.search-input:focus {
+  background: white;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Badge de statut avec animation */
+.status-badge {
+  position: relative;
+  overflow: hidden;
+}
+
+.status-badge::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s ease;
+}
+
+.status-badge:hover::before {
+  left: 100%;
+}
+
+/* Grille responsive améliorée */
+.village-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .village-grid {
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .village-grid {
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 2rem;
+  }
+}
+
+/* Skeleton loader pour le chargement */
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Amélioration de la table responsive */
+.village-table {
+  overflow-x: auto;
+  scroll-behavior: smooth;
+}
+
+.village-table::-webkit-scrollbar {
+  height: 6px;
+}
+
+.village-table::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.village-table::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.village-table::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Effet de survol pour les lignes du tableau */
+.table-row {
+  transition: all 0.2s ease;
+}
+
+.table-row:hover {
+  background-color: #f8fafc;
+  transform: translateX(4px);
+  box-shadow: 4px 0 0 #3b82f6;
+}
+
+/* Style pour les filtres */
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  background: #f3f4f6;
+  color: #374151;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.filter-chip:hover {
+  background: #e5e7eb;
+  transform: translateY(-1px);
+}
+
+.filter-chip.active {
+  background: #3b82f6;
+  color: white;
+}
+
+/* Animation d'apparition pour les éléments */
+.fade-in {
+  animation: fadeIn 0.6s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Style pour les stats */
+.stat-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100px;
+  height: 100px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  transform: translate(50%, -50%);
+}

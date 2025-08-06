@@ -11,9 +11,7 @@ class NouvelleOffreFinancement extends Notification
 {
     use Queueable;
 
-    public function __construct(public OffreFinancement $offre)
-    {
-    }
+    public function __construct(public OffreFinancement $offre) {}
 
     public function via(object $notifiable): array
     {

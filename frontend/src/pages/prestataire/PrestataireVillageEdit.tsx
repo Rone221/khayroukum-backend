@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Card, CardContent } from '../../components/ui/card';
 import api from '../../lib/api';
 import { 
@@ -12,8 +12,10 @@ import {
   ArrowLeft,
   Map,
   FileText,
-  Settings
+  Settings,
+  Save
 } from 'lucide-react';
+import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import '../../styles/village-create.css';
 
 interface FormData {
@@ -25,6 +27,7 @@ interface FormData {
   lat: string;
   lng: string;
   photo: string;
+  telephone: string;
   description: string;
   statut: string;
 }
@@ -35,8 +38,9 @@ const REGIONS_SENEGAL = [
   'Kaffrine', 'Kédougou', 'Kolda', 'Sédhiou', 'Ziguinchor'
 ];
 
-const PrestataireVillageCreate: React.FC = () => {
+const PrestataireVillageEdit: React.FC = () => {
   const navigate = useNavigate();
+  const { id } = useParams<{ id: string }>();
   const [formData, setFormData] = useState<FormData>({
     nom: '',
     region: '',
@@ -46,20 +50,50 @@ const PrestataireVillageCreate: React.FC = () => {
     lat: '',
     lng: '',
     photo: '',
+    telephone: '',
     description: '',
     statut: 'actif'
   });
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [locationLoading, setLocationLoading] = useState(false);
   const [formProgress, setFormProgress] = useState(0);
 
+  // Charger les données du village
+  useEffect(() => {
+    if (id) {
+      api.get(`/villages/${id}`)
+        .then(res => {
+          const village = res.data.data; // Accéder à la propriété data
+          setFormData({
+            nom: village.nom || '',
+            region: village.region || '',
+            departement: village.departement || '',
+            commune: village.commune || '',
+            population: village.population?.toString() || '',
+            lat: village.latitude?.toString() || '',
+            lng: village.longitude?.toString() || '',
+            photo: village.photo || '',
+            telephone: village.telephone || '',
+            description: village.description || '',
+            statut: village.statut || 'actif'
+          });
+        })
+        .catch(err => {
+          setError('Erreur lors du chargement du village');
+          console.error('Erreur:', err);
+        })
+        .finally(() => setLoading(false));
+    }
+  }, [id]);
+
   // Calcul du progrès du formulaire
   useEffect(() => {
     const requiredFields = ['nom', 'region'];
-    const optionalFields = ['departement', 'commune', 'population', 'lat', 'lng', 'photo', 'description'];
+    const optionalFields = ['departement', 'commune', 'population', 'lat', 'lng', 'photo', 'telephone', 'description'];
     
     const filledRequired = requiredFields.filter(field => formData[field as keyof FormData] !== '').length;
     const filledOptional = optionalFields.filter(field => formData[field as keyof FormData] !== '').length;
@@ -135,39 +169,52 @@ const PrestataireVillageCreate: React.FC = () => {
       return;
     }
 
-    setLoading(true);
+    setSubmitting(true);
     setError(null);
 
     try {
-      await api.post('/villages', {
+      await api.put(`/villages/${id}`, {
         nom: formData.nom,
         region: formData.region,
         departement: formData.departement || null,
         commune: formData.commune || null,
-        population: formData.population === '' ? null : formData.population,
-        coordinates: formData.lat && formData.lng ? { 
+        population: formData.population === '' ? null : Number(formData.population),
+        coordonnees: formData.lat && formData.lng ? { 
           lat: Number(formData.lat), 
           lng: Number(formData.lng) 
         } : null,
         photo: formData.photo || null,
+        telephone: formData.telephone || null,
         description: formData.description || null,
         statut: formData.statut,
       });
       
       setSuccess(true);
       setTimeout(() => {
-        navigate('/prestataire/villages');
+        navigate(`/prestataire/villages/${id}`);
       }, 1500);
     } catch (err: unknown) {
       const errorMessage = err instanceof Error && err.message 
         ? err.message
         : (err as { response?: { data?: { message?: string } } })?.response?.data?.message
-        || "Erreur lors de la création du village.";
+        || "Erreur lors de la modification du village.";
       setError(errorMessage);
     } finally {
-      setLoading(false);
+      setSubmitting(false);
     }
   };
+
+  if (loading) {
+    return (
+      <div className="village-create-container">
+        <div className="village-form-wrapper">
+          <div className="flex items-center justify-center py-20">
+            <LoadingSpinner size="lg" />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="village-create-container">
@@ -175,15 +222,15 @@ const PrestataireVillageCreate: React.FC = () => {
         {/* En-tête avec design moderne */}
         <div className="form-header">
           <button 
-            onClick={() => navigate('/prestataire/villages')}
+            onClick={() => navigate(`/prestataire/villages/${id}`)}
             className="absolute top-4 left-4 p-2 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200 z-10"
             title="Retour"
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
           
-          <h1>Nouveau Village</h1>
-          <p>Enrichissez votre portfolio avec un nouveau village</p>
+          <h1>Modifier le Village</h1>
+          <p>Mettez à jour les informations de votre village</p>
           
           {/* Barre de progression */}
           <div className="progress-bar mt-6">
@@ -346,6 +393,21 @@ const PrestataireVillageCreate: React.FC = () => {
               )}
             </div>
 
+            {/* Téléphone */}
+            <div className="form-group">
+              <label className="form-label">
+                <Building className="w-4 h-4 inline mr-1" />
+                Téléphone
+              </label>
+              <input
+                type="tel"
+                className="form-input"
+                value={formData.telephone}
+                onChange={e => handleInputChange('telephone', e.target.value)}
+                placeholder="Numéro de téléphone (optionnel)"
+              />
+            </div>
+
             {/* Description */}
             <div className="form-group">
               <label className="form-label">
@@ -391,7 +453,7 @@ const PrestataireVillageCreate: React.FC = () => {
             {success && (
               <div className="success-message">
                 <CheckCircle className="w-5 h-5" />
-                Village créé avec succès ! Redirection en cours...
+                Village modifié avec succès ! Redirection en cours...
               </div>
             )}
 
@@ -399,20 +461,23 @@ const PrestataireVillageCreate: React.FC = () => {
             <button
               type="submit"
               className="submit-button"
-              disabled={loading || success}
+              disabled={submitting || success}
             >
-              {loading ? (
+              {submitting ? (
                 <>
                   <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-                  Création en cours...
+                  Modification en cours...
                 </>
               ) : success ? (
                 <>
                   <CheckCircle className="w-5 h-5 mr-2" />
-                  Village créé !
+                  Village modifié !
                 </>
               ) : (
-                'Créer le village'
+                <>
+                  <Save className="w-5 h-5 mr-2" />
+                  Enregistrer les modifications
+                </>
               )}
             </button>
           </form>
@@ -422,4 +487,4 @@ const PrestataireVillageCreate: React.FC = () => {
   );
 };
 
-export default PrestataireVillageCreate;
+export default PrestataireVillageEdit;

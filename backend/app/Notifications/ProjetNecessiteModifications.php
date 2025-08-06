@@ -11,9 +11,7 @@ class ProjetNecessiteModifications extends Notification
 {
     use Queueable;
 
-    public function __construct(public Projet $projet, public string $raison)
-    {
-    }
+    public function __construct(public Projet $projet, public string $raison) {}
 
     public function via(object $notifiable): array
     {

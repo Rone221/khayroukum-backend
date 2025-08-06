@@ -25,6 +25,10 @@ import PrestataireProjects from './pages/prestataire/PrestataireProjects';
 import PrestataireDocuments from './pages/prestataire/PrestataireDocuments';
 import PrestataireVillageCreate from './pages/prestataire/PrestataireVillageCreate';
 import PrestataireVillageDetail from './pages/prestataire/PrestataireVillageDetail';
+import PrestataireVillageEdit from './pages/prestataire/PrestataireVillageEdit';
+import PrestataireProjectCreate from './pages/prestataire/PrestataireProjectCreate';
+import PrestataireProjectDetail from './pages/prestataire/PrestataireProjectDetail';
+import PrestataireProjectEdit from './pages/prestataire/PrestataireProjectEdit';
 
 // Donateur Pages
 import DonateurDashboard from './pages/donateur/DonateurDashboard';
@@ -100,6 +104,13 @@ function App() {
               </Layout>
             </ProtectedRoute>
           } />
+          <Route path="/prestataire/villages/:id/edit" element={
+            <ProtectedRoute allowedRoles={['prestataire']}>
+              <Layout>
+                <PrestataireVillageEdit />
+              </Layout>
+            </ProtectedRoute>
+          } />
           <Route path="/prestataire/dashboard" element={
             <ProtectedRoute allowedRoles={['prestataire']}>
               <Layout>
@@ -114,10 +125,45 @@ function App() {
               </Layout>
             </ProtectedRoute>
           } />
-          <Route path="/prestataire/villages/new" element={
+          <Route path="/prestataire/villages/create" element={
             <ProtectedRoute allowedRoles={['prestataire']}>
               <Layout>
                 <PrestataireVillageCreate />
+              </Layout>
+            </ProtectedRoute>
+          } />
+          <Route path="/prestataire/projets" element={
+            <ProtectedRoute allowedRoles={['prestataire']}>
+              <Layout>
+                <PrestataireProjects />
+              </Layout>
+            </ProtectedRoute>
+          } />
+          <Route path="/prestataire/projets/nouveau" element={
+            <ProtectedRoute allowedRoles={['prestataire']}>
+              <Layout>
+                <PrestataireProjectCreate />
+              </Layout>
+            </ProtectedRoute>
+          } />
+          <Route path="/prestataire/projets/:id" element={
+            <ProtectedRoute allowedRoles={['prestataire']}>
+              <Layout>
+                <PrestataireProjectDetail />
+              </Layout>
+            </ProtectedRoute>
+          } />
+          <Route path="/prestataire/projets/:id/edit" element={
+            <ProtectedRoute allowedRoles={['prestataire']}>
+              <Layout>
+                <PrestataireProjectEdit />
+              </Layout>
+            </ProtectedRoute>
+          } />
+          <Route path="/prestataire/projets/:id/documents" element={
+            <ProtectedRoute allowedRoles={['prestataire']}>
+              <Layout>
+                <ProjectDocuments />
               </Layout>
             </ProtectedRoute>
           } />

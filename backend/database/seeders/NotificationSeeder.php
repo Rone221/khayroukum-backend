@@ -20,7 +20,7 @@ class NotificationSeeder extends Seeder
         foreach ($users as $user) {
             // Créer 3-5 notifications par utilisateur
             $notificationCount = rand(3, 5);
-            
+
             for ($i = 0; $i < $notificationCount; $i++) {
                 $notifications = [
                     [
@@ -56,7 +56,7 @@ class NotificationSeeder extends Seeder
                 ];
 
                 $notification = $notifications[array_rand($notifications)];
-                
+
                 DB::table('notifications')->insert([
                     'id' => Str::uuid(),
                     'type' => 'App\\Notifications\\' . ucfirst($notification['type']) . 'Notification',

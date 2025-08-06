@@ -20,7 +20,7 @@ class AdminUserController extends Controller
                 ->select([
                     'id',
                     'prenom',
-                    'nom', 
+                    'nom',
                     'email',
                     'role',
                     'email_verified_at',
@@ -40,15 +40,14 @@ class AdminUserController extends Controller
                         'updated_at' => $user->updated_at->toISOString(),
                         'village_count' => $user->villages ? $user->villages->count() : 0,
                         'project_count' => $user->projets ? $user->projets->count() : 0,
-                        'contribution_count' => $user->role === 'donateur' ? 
+                        'contribution_count' => $user->role === 'donateur' ?
                             $this->getUserContributionCount($user->id) : 0,
-                        'total_contributions' => $user->role === 'donateur' ? 
+                        'total_contributions' => $user->role === 'donateur' ?
                             $this->getUserTotalContributions($user->id) : 0,
                     ];
                 });
 
             return response()->json($users);
-            
         } catch (\Exception $e) {
             Log::error('AdminUserController@index error: ' . $e->getMessage());
             return response()->json([
@@ -95,7 +94,6 @@ class AdminUserController extends Controller
             ];
 
             return response()->json($userData);
-            
         } catch (\Exception $e) {
             Log::error('AdminUserController@show error: ' . $e->getMessage());
             return response()->json([
@@ -112,7 +110,7 @@ class AdminUserController extends Controller
     {
         try {
             $user = User::findOrFail($id);
-            
+
             if ($user->email_verified_at) {
                 $user->email_verified_at = null;
                 $message = 'Utilisateur dé-vérifié avec succès';
@@ -120,14 +118,13 @@ class AdminUserController extends Controller
                 $user->email_verified_at = now();
                 $message = 'Utilisateur vérifié avec succès';
             }
-            
+
             $user->save();
 
             return response()->json([
                 'message' => $message,
                 'is_verified' => !is_null($user->email_verified_at)
             ]);
-            
         } catch (\Exception $e) {
             Log::error('AdminUserController@toggleVerification error: ' . $e->getMessage());
             return response()->json([
@@ -144,21 +141,20 @@ class AdminUserController extends Controller
     {
         try {
             $user = User::findOrFail($id);
-            
+
             // Empêcher de bannir les administrateurs
             if ($user->role === 'administrateur') {
                 return response()->json([
                     'error' => 'Impossible de bannir un administrateur'
                 ], 403);
             }
-            
+
             // Soft delete de l'utilisateur
             $user->delete();
 
             return response()->json([
                 'message' => 'Utilisateur banni avec succès'
             ]);
-            
         } catch (\Exception $e) {
             Log::error('AdminUserController@banUser error: ' . $e->getMessage());
             return response()->json([
@@ -180,7 +176,6 @@ class AdminUserController extends Controller
             return response()->json([
                 'message' => 'Utilisateur réactivé avec succès'
             ]);
-            
         } catch (\Exception $e) {
             Log::error('AdminUserController@unbanUser error: ' . $e->getMessage());
             return response()->json([
@@ -211,7 +206,6 @@ class AdminUserController extends Controller
                     'role' => $user->role
                 ]
             ]);
-            
         } catch (\Exception $e) {
             Log::error('AdminUserController@changeRole error: ' . $e->getMessage());
             return response()->json([

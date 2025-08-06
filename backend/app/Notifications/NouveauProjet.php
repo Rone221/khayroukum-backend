@@ -11,9 +11,7 @@ class NouveauProjet extends Notification
 {
     use Queueable;
 
-    public function __construct(public Projet $projet)
-    {
-    }
+    public function __construct(public Projet $projet) {}
 
     public function via(object $notifiable): array
     {
@@ -24,7 +22,7 @@ class NouveauProjet extends Notification
     {
         return (new MailMessage())
             ->subject('Nouveau projet soumis')
-            ->line('Un nouveau projet intitulé "'.$this->projet->titre.'" a été soumis.');
+            ->line('Un nouveau projet intitulé "' . $this->projet->titre . '" a été soumis.');
     }
 
     public function toArray(object $notifiable): array

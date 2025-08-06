@@ -10,6 +10,7 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AdminUserController;
+use App\Http\Controllers\PrestataireDashboardController;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -18,6 +19,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('villages', [VillageController::class, 'index']);
     Route::post('villages', [VillageController::class, 'store'])->middleware('role:prestataire');
+    Route::get('villages/{village}', [VillageController::class, 'show']);
+    Route::put('villages/{village}', [VillageController::class, 'update'])->middleware('role:prestataire');
+    Route::delete('villages/{village}', [VillageController::class, 'destroy'])->middleware('role:prestataire');
 
     Route::get('projets', [ProjetController::class, 'index']);
     Route::post('projets', [ProjetController::class, 'store'])->middleware('role:prestataire');
@@ -36,7 +40,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('stats', [DashboardController::class, 'index'])->middleware('role:administrateur');
 
     Route::get('admin/activity', [DashboardController::class, 'activity'])->middleware('role:administrateur');
-    
+
     // Routes d'administration des utilisateurs
     Route::get('admin/users', [AdminUserController::class, 'index'])->middleware('role:administrateur');
     Route::get('admin/users/{user}', [AdminUserController::class, 'show'])->middleware('role:administrateur');
@@ -44,13 +48,17 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::patch('admin/users/{user}/ban', [AdminUserController::class, 'banUser'])->middleware('role:administrateur');
     Route::patch('admin/users/{user}/unban', [AdminUserController::class, 'unbanUser'])->middleware('role:administrateur');
     Route::patch('admin/users/{user}/role', [AdminUserController::class, 'changeRole'])->middleware('role:administrateur');
-    
+
     Route::get('notifications', [NotificationController::class, 'index']);
     Route::patch('notifications/{notification}/marquer-lu', [NotificationController::class, 'markAsRead']);
-    
+
     // Routes de profil
     Route::get('profile', [ProfileController::class, 'show']);
     Route::put('profile', [ProfileController::class, 'update']);
     Route::put('profile/password', [ProfileController::class, 'updatePassword']);
     Route::get('profile/activity', [ProfileController::class, 'activity']);
+
+    // Routes du dashboard prestataire
+    Route::get('prestataire/stats', [PrestataireDashboardController::class, 'stats'])->middleware('role:prestataire');
+    Route::get('prestataire/activity', [PrestataireDashboardController::class, 'activity'])->middleware('role:prestataire');
 });
