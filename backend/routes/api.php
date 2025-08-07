@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\VillageController;
 use App\Http\Controllers\ProjetController;
 use App\Http\Controllers\DocumentTechniqueController;
+use App\Http\Controllers\Api\ProjetDocumentController;
 use App\Http\Controllers\OffreFinancementController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\DashboardController;
@@ -18,6 +19,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
 
     Route::get('villages', [VillageController::class, 'index']);
+    Route::get('villages/user', [VillageController::class, 'userVillages'])->middleware('role:prestataire');
     Route::post('villages', [VillageController::class, 'store'])->middleware('role:prestataire');
     Route::get('villages/{village}', [VillageController::class, 'show']);
     Route::put('villages/{village}', [VillageController::class, 'update'])->middleware('role:prestataire');
@@ -30,9 +32,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('projets/{projet}', [ProjetController::class, 'destroy']);
     Route::patch('projets/{projet}/valider', [ProjetController::class, 'valider'])->middleware('role:administrateur');
 
-    Route::post('projets/{projet}/documents', [DocumentTechniqueController::class, 'store'])->middleware('role:prestataire');
-    Route::get('projets/{projet}/documents', [DocumentTechniqueController::class, 'index']);
-    Route::get('documents/{document}/download', [DocumentTechniqueController::class, 'download']);
+    Route::post('projets/{projet}/documents', [ProjetDocumentController::class, 'store']);
+    Route::get('projets/{projet}/documents', [ProjetDocumentController::class, 'index']);
+    Route::get('documents/{document}/download', [ProjetDocumentController::class, 'download']);
+    Route::delete('documents/{document}', [ProjetDocumentController::class, 'destroy']);
 
     Route::post('projets/{projet}/offres', [OffreFinancementController::class, 'store'])->middleware('role:donateur');
     Route::get('projets/{projet}/offres', [OffreFinancementController::class, 'index']);

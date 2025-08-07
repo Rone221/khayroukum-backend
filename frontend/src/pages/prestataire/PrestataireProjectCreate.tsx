@@ -145,7 +145,7 @@ const PrestataireProjectCreate: React.FC = () => {
       
       setSuccess(true);
       setTimeout(() => {
-        navigate('/prestataire/projects');
+        navigate('/prestataire/projets');
       }, 2000);
 
     } catch (error) {
@@ -193,7 +193,7 @@ const PrestataireProjectCreate: React.FC = () => {
       <div className="project-create-wrapper">
         {/* Header */}
         <div className="project-create-header">
-          <Link to="/prestataire/projects" className="back-button">
+          <Link to="/prestataire/projets" className="back-button">
             <ArrowLeft className="w-5 h-5" />
             <span>Retour aux projets</span>
           </Link>
@@ -235,7 +235,7 @@ const PrestataireProjectCreate: React.FC = () => {
                   required
                 >
                   <option value="">Sélectionnez un village</option>
-                  {villages.map(village => (
+                  {villages && villages.length > 0 && villages.map(village => (
                     <option key={village.id} value={village.id}>
                       {village.name} - {village.region}
                     </option>
@@ -385,7 +385,7 @@ const PrestataireProjectCreate: React.FC = () => {
 
               {/* Submit buttons */}
               <div className="form-actions">
-                <Link to="/prestataire/projects" className="btn-cancel">
+                <Link to="/prestataire/projets" className="btn-cancel">
                   Annuler
                 </Link>
                 <button

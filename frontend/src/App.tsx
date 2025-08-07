@@ -167,20 +167,6 @@ function App() {
               </Layout>
             </ProtectedRoute>
           } />
-          <Route path="/prestataire/projects" element={
-            <ProtectedRoute allowedRoles={['prestataire']}>
-              <Layout>
-                <PrestataireProjects />
-              </Layout>
-            </ProtectedRoute>
-          } />
-          <Route path="/prestataire/projects/:id/documents" element={
-            <ProtectedRoute allowedRoles={['prestataire']}>
-              <Layout>
-                <ProjectDocuments />
-              </Layout>
-            </ProtectedRoute>
-          } />
           <Route path="/prestataire/documents" element={
             <ProtectedRoute allowedRoles={['prestataire']}>
               <Layout>

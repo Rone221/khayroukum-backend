@@ -170,7 +170,7 @@ const PrestataireDashboard: React.FC = () => {
           </Card>
         </Link>
 
-        <Link to="/prestataire/projects/new" className="group">
+        <Link to="/prestataire/projets/nouveau" className="group">
           <Card className="hover:shadow-lg transition-all duration-200 group-hover:scale-105">
             <CardContent className="p-6 text-center">
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-green-200 transition-colors">
@@ -201,7 +201,7 @@ const PrestataireDashboard: React.FC = () => {
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
               <span>Mes Projets Récents</span>
-              <Link to="/prestataire/projects" className="text-sm text-blue-600 hover:text-blue-800">
+              <Link to="/prestataire/projets" className="text-sm text-blue-600 hover:text-blue-800">
                 Voir tous
               </Link>
             </CardTitle>

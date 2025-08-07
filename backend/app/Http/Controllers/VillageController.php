@@ -128,6 +128,44 @@ class VillageController extends Controller
     }
 
     /**
+     * Get villages for the authenticated user
+     */
+    public function userVillages()
+    {
+        $user = Auth::user();
+        $villages = Village::where('created_by', $user->id)->get();
+
+        // Transformer les données pour correspondre au format frontend
+        $transformedVillages = $villages->map(function ($village) {
+            return [
+                'id' => $village->id,
+                'nom' => $village->nom,
+                'name' => $village->nom, // Alias pour compatibilité
+                'region' => $village->region,
+                'departement' => $village->departement,
+                'commune' => $village->commune,
+                'population' => $village->population,
+                'coordinates' => $village->coordonnees ? [
+                    'lat' => $village->coordonnees['lat'] ?? null,
+                    'lng' => $village->coordonnees['lng'] ?? null,
+                ] : null,
+                'latitude' => $village->coordonnees['lat'] ?? null,
+                'longitude' => $village->coordonnees['lng'] ?? null,
+                'statut' => $village->statut,
+                'description' => $village->description,
+                'photo' => $village->photo,
+                'telephone' => $village->telephone,
+                'chef_village' => $village->chef_village,
+                'created_by' => $village->created_by,
+                'created_at' => $village->created_at,
+                'updated_at' => $village->updated_at,
+            ];
+        });
+
+        return response()->json($transformedVillages);
+    }
+
+    /**
      * Remove the specified resource from storage.
      */
     public function destroy(string $id)

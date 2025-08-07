@@ -11,8 +11,10 @@ class DocumentTechnique extends Model
     use HasFactory;
     protected $fillable = [
         'projet_id',
-        'type',
-        'fichier_path',
+        'nom',
+        'type_document',
+        'chemin_fichier',
+        'taille_fichier',
         'uploaded_by',
     ];
 

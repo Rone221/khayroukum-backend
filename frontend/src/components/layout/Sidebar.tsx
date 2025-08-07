@@ -39,7 +39,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         return [
           { icon: LayoutDashboard, label: 'Dashboard', path: '/prestataire/dashboard' },
           { icon: MapPin, label: 'Mes villages', path: '/prestataire/villages' },
-          { icon: FileText, label: 'Mes projets', path: '/prestataire/projects' },
+          { icon: FileText, label: 'Mes projets', path: '/prestataire/projets' },
           { icon: Upload, label: 'Documents', path: '/prestataire/documents' },
           { icon: Bell, label: 'Notifications', path: '/notifications' },
         ];

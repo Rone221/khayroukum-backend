@@ -121,17 +121,11 @@ const ProjectDocuments: React.FC = () => {
 
     try {
       const token = localStorage.getItem('token');
-      console.log('Token:', token ? 'Présent' : 'Absent');
-      console.log('Project ID:', id);
-      console.log('Upload data:', uploadData);
-      
       const formData = new FormData();
       
       formData.append('nom', uploadData.nom);
       formData.append('type_document', uploadData.type_document);
       formData.append('fichier', uploadData.fichier);
-
-      console.log('FormData préparée, envoi en cours...');
 
       const response = await fetch(`http://localhost:8000/api/projets/${id}/documents`, {
         method: 'POST',
@@ -141,11 +135,7 @@ const ProjectDocuments: React.FC = () => {
         body: formData,
       });
 
-      console.log('Réponse reçue:', response.status, response.statusText);
-
       if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Erreur détaillée:', errorText);
         throw new Error('Erreur lors de l\'upload');
       }
 

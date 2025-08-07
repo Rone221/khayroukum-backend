@@ -87,7 +87,7 @@ const PrestataireProjectDetail: React.FC = () => {
     try {
       setDeleting(true);
       await api.delete(`/projets/${id}`);
-      navigate('/prestataire/projects');
+      navigate('/prestataire/projets');
     } catch (error) {
       console.error('Erreur lors de la suppression:', error);
       alert('Erreur lors de la suppression du projet');
@@ -154,7 +154,7 @@ const PrestataireProjectDetail: React.FC = () => {
         <div className="project-detail-wrapper">
           <div className="text-center py-12">
             <div className="text-red-600 mb-4">{error || 'Projet introuvable'}</div>
-            <Link to="/prestataire/projects" className="action-button back">
+            <Link to="/prestataire/projets" className="action-button back">
               <ArrowLeft className="w-4 h-4" />
               Retour aux projets
             </Link>
@@ -169,7 +169,7 @@ const PrestataireProjectDetail: React.FC = () => {
       <div className="project-detail-wrapper">
         {/* Header */}
         <div className="project-detail-header">
-          <Link to="/prestataire/projects" className="back-button">
+          <Link to="/prestataire/projets" className="back-button">
             <ArrowLeft className="w-5 h-5" />
             <span>Retour aux projets</span>
           </Link>
@@ -344,12 +344,12 @@ const PrestataireProjectDetail: React.FC = () => {
 
           {/* Actions */}
           <div className="action-buttons">
-            <Link to={`/prestataire/projects/${project.id}/edit`} className="action-button edit">
+            <Link to={`/prestataire/projets/${project.id}/edit`} className="action-button edit">
               <Edit className="w-4 h-4" />
               <span>Modifier</span>
             </Link>
             
-            <Link to={`/prestataire/projects/${project.id}/documents`} className="action-button documents">
+            <Link to={`/prestataire/projets/${project.id}/documents`} className="action-button documents">
               <Upload className="w-4 h-4" />
               <span>Gérer les documents</span>
             </Link>

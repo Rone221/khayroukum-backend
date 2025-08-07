@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { FiX, FiArrowLeft, FiEdit2, FiMapPin, FiDollarSign, FiCalendar, FiFileText, FiGlobe, FiCheck, FiAlertCircle, FiInfo, FiCheckCircle } from 'react-icons/fi';
+import { FiSave, FiX, FiArrowLeft, FiEdit2, FiMapPin, FiDollarSign, FiCalendar, FiFileText, FiGlobe, FiCheck, FiAlertCircle } from 'react-icons/fi';
 import { toast } from 'react-toastify';
-import '../../styles/project-edit.css';
+import '../styles/project-create.css';
+import '../styles/project-actions.css';
 
 interface Village {
   id: number;
@@ -51,20 +52,6 @@ const PrestataireProjectEdit: React.FC = () => {
   
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  // Fonction pour réinitialiser le formulaire avec les données du projet
-  const resetFormWithProjectData = useCallback((projectData: Projet) => {
-    const newFormData = {
-      titre: projectData.titre || '',
-      description: projectData.description || '',
-      montant_objectif: projectData.montant_objectif || 0,
-      duree_mois: projectData.duree_mois || 1,
-      village_id: projectData.village_id || projectData.village?.id || 0
-    };
-    
-    setFormData(newFormData);
-    console.log('Formulaire réinitialisé avec:', newFormData);
-  }, []);
-
   // Charger les données du projet
   const loadProject = useCallback(async () => {
     try {
@@ -83,15 +70,20 @@ const PrestataireProjectEdit: React.FC = () => {
       const data = await response.json();
       setProjet(data);
       
-      // Préremplir le formulaire avec les données du projet (avec valeurs par défaut sécurisées)
-      resetFormWithProjectData(data);
-      
+      // Préremplir le formulaire avec les données du projet
+      setFormData({
+        titre: data.titre,
+        description: data.description,
+        montant_objectif: data.montant_objectif,
+        duree_mois: data.duree_mois,
+        village_id: data.village_id
+      });
     } catch (error) {
       console.error('Erreur:', error);
       toast.error('Erreur lors du chargement du projet');
       navigate('/prestataire/projets');
     }
-  }, [id, navigate, resetFormWithProjectData]);
+  }, [id, navigate]);
 
   // Charger les villages de l'utilisateur
   const loadVillages = useCallback(async () => {
@@ -119,42 +111,27 @@ const PrestataireProjectEdit: React.FC = () => {
   useEffect(() => {
     const loadData = async () => {
       setLoading(true);
-      try {
-        // Charger d'abord les villages, puis le projet pour le préremplissage
-        await loadVillages();
-        await loadProject();
-      } catch (error) {
-        console.error('Erreur lors du chargement des données:', error);
-        toast.error('Erreur lors du chargement des données');
-      } finally {
-        setLoading(false);
-      }
+      await Promise.all([loadProject(), loadVillages()]);
+      setLoading(false);
     };
 
-    if (id) {
-      loadData();
-    } else {
-      navigate('/prestataire/projets');
-    }
-  }, [id, loadProject, loadVillages, navigate]);
+    loadData();
+  }, [loadProject, loadVillages]);
 
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
 
-    const titre = formData.titre || '';
-    const description = formData.description || '';
-
-    if (!titre.trim()) {
+    if (!formData.titre.trim()) {
       newErrors.titre = 'Le titre est requis';
-    } else if (titre.length < 3) {
+    } else if (formData.titre.length < 3) {
       newErrors.titre = 'Le titre doit contenir au moins 3 caractères';
-    } else if (titre.length > 255) {
+    } else if (formData.titre.length > 255) {
       newErrors.titre = 'Le titre ne peut pas dépasser 255 caractères';
     }
 
-    if (!description.trim()) {
+    if (!formData.description.trim()) {
       newErrors.description = 'La description est requise';
-    } else if (description.length < 10) {
+    } else if (formData.description.length < 10) {
       newErrors.description = 'La description doit contenir au moins 10 caractères';
     }
 
@@ -239,7 +216,6 @@ const PrestataireProjectEdit: React.FC = () => {
   };
 
   const getSelectedVillage = () => {
-    if (!villages || villages.length === 0) return null;
     return villages.find(v => v.id === formData.village_id);
   };
 
@@ -249,7 +225,7 @@ const PrestataireProjectEdit: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="project-edit-container">
+      <div className="project-create-container">
         <div className="loading-wrapper">
           <div className="loading-spinner"></div>
           <p>Chargement du projet...</p>
@@ -260,13 +236,13 @@ const PrestataireProjectEdit: React.FC = () => {
 
   if (!projet) {
     return (
-      <div className="project-edit-container">
+      <div className="project-create-container">
         <div className="error-wrapper">
           <FiAlertCircle size={48} />
           <h2>Projet non trouvé</h2>
           <p>Le projet demandé n'existe pas ou vous n'avez pas l'autorisation de le modifier.</p>
           <button 
-            className="action-button cancel"
+            className="action-button back"
             onClick={() => navigate('/prestataire/projets')}
           >
             <FiArrowLeft />
@@ -278,10 +254,10 @@ const PrestataireProjectEdit: React.FC = () => {
   }
 
   return (
-    <div className="project-edit-container">
-      <div className="project-edit-wrapper">
+    <div className="project-create-container">
+      <div className="project-create-wrapper">
         {/* Header */}
-        <div className="project-edit-header">
+        <div className="project-create-header">
           <button 
             className="back-button"
             onClick={() => navigate(`/prestataire/projets/${id}`)}
@@ -294,61 +270,47 @@ const PrestataireProjectEdit: React.FC = () => {
             <div className="header-icon">
               <FiEdit2 size={32} />
             </div>
-            <div className="header-text">
+            <div>
               <h1>Modifier le projet</h1>
               <p>Modifiez les informations de votre projet</p>
             </div>
           </div>
         </div>
 
-        {/* Current Project Info */}
+        {/* Informations du projet actuel */}
         <div className="current-project-info">
-          <div className="current-project-card">
-            <div className="current-project-header">
-              <FiInfo size={20} />
-              <h3>Informations actuelles</h3>
+          <h3>
+            <FiFileText />
+            Projet actuel : {projet.titre}
+          </h3>
+          <div className="current-info-grid">
+            <div className="current-info-item">
+              <span className="label">Village :</span>
+              <span className="value">{projet.village.nom}</span>
             </div>
-            <div className="current-project-details">
-              <div className="current-detail-row">
-                <span className="detail-label">Titre :</span>
-                <span className="detail-value">{projet.titre}</span>
-              </div>
-              <div className="current-detail-row">
-                <span className="detail-label">Village :</span>
-                <span className="detail-value">{projet.village?.nom || 'N/A'}</span>
-              </div>
-              <div className="current-detail-row">
-                <span className="detail-label">Statut :</span>
-                <span className={`detail-value status-badge status-${projet.statut}`}>
-                  {projet.statut === 'pending' && 'En attente'}
-                  {projet.statut === 'validated' && 'Validé'}
-                  {projet.statut === 'funded' && 'Financé'}
-                  {projet.statut === 'completed' && 'Terminé'}
-                </span>
-              </div>
-              <div className="current-detail-row">
-                <span className="detail-label">Montant objectif :</span>
-                <span className="detail-value">{formatCurrency(projet.montant_objectif)} FCFA</span>
-              </div>
-              <div className="current-detail-row">
-                <span className="detail-label">Durée :</span>
-                <span className="detail-value">{projet.duree_mois} mois</span>
-              </div>
+            <div className="current-info-item">
+              <span className="label">Statut :</span>
+              <span className={`status-badge status-${projet.statut}`}>
+                {projet.statut === 'pending' && 'En attente'}
+                {projet.statut === 'validated' && 'Validé'}
+                {projet.statut === 'funded' && 'Financé'}
+                {projet.statut === 'completed' && 'Terminé'}
+              </span>
+            </div>
+            <div className="current-info-item">
+              <span className="label">Montant objectif :</span>
+              <span className="value">{formatCurrency(projet.montant_objectif)} FCFA</span>
+            </div>
+            <div className="current-info-item">
+              <span className="label">Durée :</span>
+              <span className="value">{projet.duree_mois} mois</span>
             </div>
           </div>
         </div>
 
-        {/* Edit Form */}
-        <div className="project-edit-content">
-          {/* Indicateur de préremplissage */}
-          {projet && (
-            <div className="prefill-indicator">
-              <FiCheckCircle size={16} />
-              <span>Formulaire prérempli avec les données actuelles du projet</span>
-            </div>
-          )}
-          
-          <form onSubmit={handleSubmit} className="project-edit-form">
+        {/* Formulaire de modification */}
+        <div className="project-create-content">
+          <form onSubmit={handleSubmit} className="project-form">
             {/* Titre */}
             <div className="form-group">
               <label htmlFor="titre">
@@ -367,7 +329,7 @@ const PrestataireProjectEdit: React.FC = () => {
               />
               {errors.titre && <span className="error-message">{errors.titre}</span>}
               <div className="char-count">
-                {(formData.titre || '').length}/255 caractères
+                {formData.titre.length}/255 caractères
               </div>
             </div>
 
@@ -385,7 +347,7 @@ const PrestataireProjectEdit: React.FC = () => {
                 className={errors.village_id ? 'error' : ''}
               >
                 <option value="">Sélectionnez un village</option>
-                {villages && villages.length > 0 && villages.map(village => (
+                {villages.map(village => (
                   <option key={village.id} value={village.id}>
                     {village.nom} ({village.population} habitants)
                   </option>
@@ -393,21 +355,18 @@ const PrestataireProjectEdit: React.FC = () => {
               </select>
               {errors.village_id && <span className="error-message">{errors.village_id}</span>}
               
-              {(() => {
-                const selectedVillage = getSelectedVillage();
-                return selectedVillage && (
-                  <div className="village-preview">
-                    <div className="village-info">
-                      <FiGlobe />
-                      <div>
-                        <strong>{selectedVillage.nom}</strong>
-                        <p>Population: {selectedVillage.population} habitants</p>
-                        <p>Chef: {selectedVillage.chef_village}</p>
-                      </div>
+              {getSelectedVillage() && (
+                <div className="village-preview">
+                  <div className="village-info">
+                    <FiGlobe />
+                    <div>
+                      <strong>{getSelectedVillage()!.nom}</strong>
+                      <p>Population: {getSelectedVillage()!.population} habitants</p>
+                      <p>Chef: {getSelectedVillage()!.chef_village}</p>
                     </div>
                   </div>
-                );
-              })()}
+                </div>
+              )}
             </div>
 
             {/* Montant et Durée */}
@@ -479,7 +438,7 @@ const PrestataireProjectEdit: React.FC = () => {
               />
               {errors.description && <span className="error-message">{errors.description}</span>}
               <div className="char-count">
-                {(formData.description || '').length}/2000 caractères
+                {formData.description.length}/2000 caractères
               </div>
             </div>
 
@@ -493,17 +452,6 @@ const PrestataireProjectEdit: React.FC = () => {
               >
                 <FiX />
                 Annuler
-              </button>
-              
-              <button
-                type="button"
-                className="action-button reset"
-                onClick={() => projet && resetFormWithProjectData(projet)}
-                disabled={updating || !projet}
-                title="Remettre les valeurs d'origine"
-              >
-                <FiArrowLeft />
-                Réinitialiser
               </button>
               
               <button
