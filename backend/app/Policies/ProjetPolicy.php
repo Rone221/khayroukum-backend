@@ -16,17 +16,17 @@ class ProjetPolicy
         if ($user->role === 'administrateur') {
             return true;
         }
-        
+
         // Les prestataires peuvent voir leurs propres projets
         if ($user->role === 'prestataire') {
             return $projet->created_by === $user->id;
         }
-        
+
         // Les donateurs peuvent voir les projets validés
         if ($user->role === 'donateur') {
             return $projet->statut === 'validated' || $projet->statut === 'funded';
         }
-        
+
         return false;
     }
 
@@ -47,13 +47,13 @@ class ProjetPolicy
         if ($user->role === 'administrateur') {
             return true;
         }
-        
+
         // Les prestataires peuvent modifier leurs propres projets non financés
         if ($user->role === 'prestataire') {
-            return $projet->created_by === $user->id && 
-                   in_array($projet->statut, ['pending', 'validated']);
+            return $projet->created_by === $user->id &&
+                in_array($projet->statut, ['pending', 'validated']);
         }
-        
+
         return false;
     }
 
@@ -66,13 +66,13 @@ class ProjetPolicy
         if ($user->role === 'administrateur') {
             return true;
         }
-        
+
         // Les prestataires peuvent supprimer leurs propres projets non financés
         if ($user->role === 'prestataire') {
-            return $projet->created_by === $user->id && 
-                   in_array($projet->statut, ['pending']);
+            return $projet->created_by === $user->id &&
+                in_array($projet->statut, ['pending']);
         }
-        
+
         return false;
     }
 

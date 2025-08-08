@@ -19,9 +19,9 @@ class ProjetDocumentController extends Controller
     {
         // Vérifier que l'utilisateur peut voir ce projet
         $this->authorize('view', $projet);
-        
+
         $documents = $projet->documents()->orderBy('created_at', 'desc')->get();
-        
+
         return response()->json($documents);
     }
 
@@ -64,9 +64,9 @@ class ProjetDocumentController extends Controller
             $originalName = $fichier->getClientOriginalName();
             $extension = $fichier->getClientOriginalExtension();
             $fileName = time() . '_' . str_replace(' ', '_', $validated['nom']) . '.' . $extension;
-            
+
             Log::info('Préparation stockage fichier: ' . $fileName);
-            
+
             $cheminFichier = $fichier->storeAs('documents/projets/' . $projet->id, $fileName, 'public');
 
             Log::info('Fichier stocké: ' . $cheminFichier);
@@ -88,7 +88,6 @@ class ProjetDocumentController extends Controller
                 'message' => 'Document ajouté avec succès',
                 'document' => $document
             ], 201);
-
         } catch (\Exception $e) {
             Log::error('Erreur lors de l\'ajout du document: ' . $e->getMessage());
             return response()->json([
@@ -134,7 +133,6 @@ class ProjetDocumentController extends Controller
             $document->delete();
 
             return response()->json(['message' => 'Document supprimé avec succès']);
-
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Erreur lors de la suppression',
