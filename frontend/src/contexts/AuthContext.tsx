@@ -33,31 +33,38 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   useEffect(() => {
     const token = localStorage.getItem('token');
     const savedUser = localStorage.getItem('currentUser');
-    
+
+    console.log('🔍 Vérification token au démarrage:', token ? 'présent' : 'absent');
+
     if (token && savedUser) {
       try {
         const userData = JSON.parse(savedUser);
         setUser(userData);
         setIsLoading(false);
-        
+
         // Verify token is still valid
         api
           .get('/me')
           .then(res => {
+            console.log('✅ Token valide, utilisateur connecté');
             setUser(res.data);
             localStorage.setItem('currentUser', JSON.stringify(res.data));
           })
-          .catch(() => {
+          .catch((error) => {
+            console.log('❌ Token invalide ou expiré, déconnexion');
+            console.log('Erreur détaillée:', error.response?.status);
             localStorage.removeItem('token');
             localStorage.removeItem('currentUser');
             setUser(null);
           });
       } catch (error) {
+        console.log('❌ Erreur de parsing, nettoyage du localStorage');
         localStorage.removeItem('token');
         localStorage.removeItem('currentUser');
         setIsLoading(false);
       }
     } else {
+      console.log('🔓 Aucun token/utilisateur sauvegardé');
       setIsLoading(false);
     }
   }, []);
@@ -69,7 +76,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const { data } = await api.post('/login', { email, password });
       console.log('Login successful, token received');
       localStorage.setItem('token', data.token);
-      
+
       const me = await api.get('/me');
       console.log('User data received:', me.data);
       console.log('User role:', me.data.role);

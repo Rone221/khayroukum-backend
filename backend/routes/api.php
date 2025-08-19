@@ -34,8 +34,13 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('projets/{projet}/documents', [ProjetDocumentController::class, 'store']);
     Route::get('projets/{projet}/documents', [ProjetDocumentController::class, 'index']);
-    Route::get('documents/{document}/download', [ProjetDocumentController::class, 'download']);
+    Route::get('documents/{document}/download', [ProjetDocumentController::class, 'download'])->name('api.documents.download');
     Route::delete('documents/{document}', [ProjetDocumentController::class, 'destroy']);
+    
+    // Documents du prestataire
+    Route::get('prestataire/documents', [ProjetDocumentController::class, 'prestataireDocuments'])->middleware('role:prestataire');
+    Route::delete('prestataire/documents/{id}', [ProjetDocumentController::class, 'prestataireDestroy'])->middleware('role:prestataire');
+    Route::post('prestataire/documents/bulk-delete', [ProjetDocumentController::class, 'prestataireBulkDestroy'])->middleware('role:prestataire');
 
     Route::post('projets/{projet}/offres', [OffreFinancementController::class, 'store'])->middleware('role:donateur');
     Route::get('projets/{projet}/offres', [OffreFinancementController::class, 'index']);

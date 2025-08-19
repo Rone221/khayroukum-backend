@@ -24,7 +24,7 @@ class ProjetPolicy
 
         // Les donateurs peuvent voir les projets validés
         if ($user->role === 'donateur') {
-            return $projet->statut === 'validated' || $projet->statut === 'funded';
+            return $projet->statut === 'valide' || $projet->statut === 'en_cours' || $projet->statut === 'termine';
         }
 
         return false;
@@ -51,7 +51,7 @@ class ProjetPolicy
         // Les prestataires peuvent modifier leurs propres projets non financés
         if ($user->role === 'prestataire') {
             return $projet->created_by === $user->id &&
-                in_array($projet->statut, ['pending', 'validated']);
+                in_array($projet->statut, ['en_attente', 'valide']);
         }
 
         return false;
@@ -70,7 +70,7 @@ class ProjetPolicy
         // Les prestataires peuvent supprimer leurs propres projets non financés
         if ($user->role === 'prestataire') {
             return $projet->created_by === $user->id &&
-                in_array($projet->statut, ['pending']);
+                in_array($projet->statut, ['en_attente']);
         }
 
         return false;

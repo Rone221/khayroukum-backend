@@ -16,6 +16,14 @@ class DocumentTechnique extends Model
         'chemin_fichier',
         'taille_fichier',
         'uploaded_by',
+        'status',
+        'rejection_reason',
+        'reviewed_by',
+        'reviewed_at',
+    ];
+
+    protected $casts = [
+        'reviewed_at' => 'datetime',
     ];
 
     public function projet(): BelongsTo
@@ -26,5 +34,10 @@ class DocumentTechnique extends Model
     public function uploader(): BelongsTo
     {
         return $this->belongsTo(User::class, 'uploaded_by');
+    }
+
+    public function reviewer(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'reviewed_by');
     }
 }

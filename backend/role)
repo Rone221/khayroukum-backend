@@ -1,0 +1,1 @@
+'$user = \App\Models\User::find(2); $projet = \App\Models\Projet::first(); dump("Projet ID: " . $projet-; dump("Projet created_by: " . $projet-; dump("User ID: " . $user-; dump("User role: " . $user-; exit;'

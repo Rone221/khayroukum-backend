@@ -93,5 +93,5 @@ export default {
 			}
 		}
 	},
-        plugins: [animatePlugin],
+	plugins: [animatePlugin],
 } satisfies Config;

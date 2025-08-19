@@ -15,8 +15,10 @@ class DocumentTechniqueFactory extends Factory
     {
         return [
             'projet_id' => Projet::factory(),
-            'type' => $this->faker->randomElement(['devis','contrat','plan','rapport']),
-            'fichier_path' => 'documents/'.$this->faker->uuid.'.pdf',
+            'nom' => $this->faker->sentence(3),
+            'type_document' => $this->faker->randomElement(['devis','facture','rapport','photo','autre']),
+            'chemin_fichier' => 'documents/'.$this->faker->uuid.'.pdf',
+            'taille_fichier' => $this->faker->numberBetween(1024, 10485760), // 1KB à 10MB
             'uploaded_by' => User::factory(),
         ];
     }

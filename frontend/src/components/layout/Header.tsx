@@ -1,15 +1,16 @@
 
 import React from 'react';
-import { Menu, Bell, User } from 'lucide-react';
+import { Bell, User } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNotifications } from '../../hooks/useNotifications';
 import { useNavigate } from 'react-router-dom';
 
 interface HeaderProps {
-  onMenuToggle: () => void;
+  // Prop gardée pour compatibilité mais non utilisée
+  onMenuToggle?: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ onMenuToggle }) => {
+const Header: React.FC<HeaderProps> = () => {
   const { user } = useAuth();
   const { unreadCount } = useNotifications();
   const navigate = useNavigate();
@@ -19,16 +20,9 @@ const Header: React.FC<HeaderProps> = ({ onMenuToggle }) => {
   };
 
   return (
-    <header className="bg-white shadow-sm border-b border-gray-200 h-16 flex items-center justify-between px-2 lg:px-4"> {/* Réduit le padding horizontal du header */}
+    <header className="bg-white shadow-sm border-b border-gray-200 h-16 flex items-center justify-between px-6">
       <div className="flex items-center space-x-4">
-        <button
-          onClick={onMenuToggle}
-          className="p-2 rounded-lg hover:bg-gray-100 lg:hidden"
-        >
-          <Menu className="w-6 h-6 text-gray-600" />
-        </button>
-        
-        <div className="hidden lg:block">
+        <div>
           <h2 className="text-xl font-semibold text-gray-800">
             Bienvenue, {user ? `${user.prenom} ${user.nom}` : ''}
           </h2>
@@ -36,13 +30,12 @@ const Header: React.FC<HeaderProps> = ({ onMenuToggle }) => {
       </div>
 
       <div className="flex items-center space-x-4">
-        <button 
+        <button
           onClick={handleNotificationClick}
-          className={`relative p-2 rounded-lg transition-colors ${
-            unreadCount > 0 
-              ? 'hover:bg-blue-50 text-blue-600' 
+          className={`relative p-2 rounded-lg transition-colors ${unreadCount > 0
+              ? 'hover:bg-blue-50 text-blue-600'
               : 'hover:bg-gray-100 text-gray-600'
-          }`}
+            }`}
           title={`${unreadCount > 0 ? `${unreadCount} nouvelle${unreadCount > 1 ? 's' : ''} notification${unreadCount > 1 ? 's' : ''}` : 'Aucune nouvelle notification'}`}
         >
           <Bell className={`w-6 h-6 ${unreadCount > 0 ? 'animate-pulse' : ''}`} />

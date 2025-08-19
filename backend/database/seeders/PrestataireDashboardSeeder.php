@@ -99,13 +99,17 @@ class PrestataireDashboardSeeder extends Seeder
                 // Créer des documents techniques avec des dates variées
                 $documents = [
                     [
-                        'type' => 'plan',
-                        'fichier_path' => '/documents/plan_' . $projet->id . '.pdf',
+                        'nom' => 'Plan technique du projet',
+                        'type_document' => 'plan',
+                        'chemin_fichier' => 'documents/plan_' . $projet->id . '.pdf',
+                        'taille_fichier' => 2048576, // 2MB
                         'created_at' => $projet->created_at->copy()->addDays(1),
                     ],
                     [
-                        'type' => 'rapport',
-                        'fichier_path' => '/documents/rapport_' . $projet->id . '.pdf',
+                        'nom' => 'Rapport d\'avancement',
+                        'type_document' => 'rapport',
+                        'chemin_fichier' => 'documents/rapport_' . $projet->id . '.pdf',
+                        'taille_fichier' => 1024000, // 1MB
                         'created_at' => $projet->created_at->copy()->addDays(3),
                     ]
                 ];
@@ -113,7 +117,7 @@ class PrestataireDashboardSeeder extends Seeder
                 foreach ($documents as $docData) {
                     DocumentTechnique::firstOrCreate(
                         [
-                            'fichier_path' => $docData['fichier_path'],
+                            'chemin_fichier' => $docData['chemin_fichier'],
                             'projet_id' => $projet->id
                         ],
                         array_merge($docData, [

@@ -14,8 +14,10 @@ return new class extends Migration
         Schema::create('document_techniques', function (Blueprint $table) {
             $table->id();
             $table->foreignId('projet_id')->constrained('projets');
-            $table->enum('type', ['devis', 'contrat', 'plan', 'rapport']);
-            $table->string('fichier_path');
+            $table->string('nom');
+            $table->enum('type_document', ['devis', 'facture', 'rapport', 'photo', 'autre']);
+            $table->string('chemin_fichier');
+            $table->bigInteger('taille_fichier')->nullable();
             $table->foreignId('uploaded_by')->constrained('users');
             $table->timestamps();
         });

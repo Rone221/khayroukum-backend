@@ -1,8 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
-import { 
-  FolderCheck, 
+import {
+  FolderCheck,
   Clock,
   CheckCircle,
   Euro,
@@ -12,20 +12,31 @@ import {
   Plus,
   Eye,
   Edit,
-  Upload
+  Upload,
+  X,
+  FileText,
+  Download,
+  Trash2,
+  AlertCircle
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
-import { Project } from '../../types';
+import { Project, Document } from '../../types';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import { Link } from 'react-router-dom';
 import api from '../../lib/api';
-
-const PrestataireProjects: React.FC = () => {
+import ProjectDocumentsModal from '../../components/ProjectDocumentsModalNew'; const PrestataireProjects: React.FC = () => {
   const { user } = useAuth();
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState<'all' | 'pending' | 'validated' | 'funded' | 'completed'>('all');
+
+  // États pour la modal de documents
+  const [showDocumentModal, setShowDocumentModal] = useState(false);
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [projectDocuments, setProjectDocuments] = useState<Document[]>([]);
+  const [loadingDocuments, setLoadingDocuments] = useState(false);
+  const [uploadingDocument, setUploadingDocument] = useState(false);
 
   useEffect(() => {
     if (!user) return;
@@ -42,6 +53,93 @@ const PrestataireProjects: React.FC = () => {
     if (filter === 'all') return true;
     return project.status === filter;
   });
+
+  // Fonctions pour la gestion des documents
+  const openDocumentModal = async (project: Project) => {
+    setSelectedProject(project);
+    setShowDocumentModal(true);
+    await fetchProjectDocuments(project.id);
+  };
+
+  const closeDocumentModal = () => {
+    setShowDocumentModal(false);
+    setSelectedProject(null);
+    setProjectDocuments([]);
+  };
+
+  const fetchProjectDocuments = async (projectId: string) => {
+    setLoadingDocuments(true);
+    try {
+      const response = await api.get(`/projets/${projectId}/documents`);
+      setProjectDocuments(response.data.data || []);
+    } catch (error) {
+      console.error('Erreur lors du chargement des documents:', error);
+    } finally {
+      setLoadingDocuments(false);
+    }
+  };
+
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (!files || !selectedProject) return;
+
+    setUploadingDocument(true);
+
+    try {
+      for (const file of Array.from(files)) {
+        const formData = new FormData();
+        formData.append('fichier', file);
+        formData.append('nom', file.name);
+        formData.append('type_document', 'autre');
+
+        await api.post(`/projets/${selectedProject.id}/documents`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+      }
+
+      // Recharger les documents après upload
+      await fetchProjectDocuments(selectedProject.id);
+
+    } catch (error) {
+      console.error('Erreur lors de l\'upload:', error);
+    } finally {
+      setUploadingDocument(false);
+      // Reset le input file
+      event.target.value = '';
+    }
+  };
+
+  const downloadDocument = async (document: Document) => {
+    try {
+      const response = await api.get(`/documents/${document.id}/download`, {
+        responseType: 'blob'
+      });
+
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = window.document.createElement('a');
+      link.href = url;
+      link.download = document.name;
+      window.document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Erreur lors du téléchargement:', error);
+    }
+  };
+
+  const deleteDocument = async (documentId: string) => {
+    // Cette fonction sera maintenant appelée depuis la modal ProjectDocumentsModal
+    // qui a sa propre gestion de confirmation
+    try {
+      await api.delete(`/documents/${documentId}`);
+      setProjectDocuments(prev => prev.filter(doc => doc.id !== documentId));
+    } catch (error) {
+      console.error('Erreur lors de la suppression:', error);
+    }
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -101,11 +199,10 @@ const PrestataireProjects: React.FC = () => {
           <button
             key={filterOption.key}
             onClick={() => setFilter(filterOption.key as 'all' | 'pending' | 'validated' | 'funded' | 'completed')}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-              filter === filterOption.key
-                ? 'bg-blue-600 text-white'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-            }`}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${filter === filterOption.key
+              ? 'bg-blue-600 text-white'
+              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
           >
             {filterOption.label}
           </button>
@@ -140,12 +237,12 @@ const PrestataireProjects: React.FC = () => {
                   </span>
                 </div>
               </CardHeader>
-              
+
               <CardContent>
                 <div className="mb-4">
                   <p className="text-gray-700">{project.description}</p>
                 </div>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                   <div className="p-4 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-lg">
                     <div className="flex items-center space-x-2 mb-2">
@@ -154,7 +251,7 @@ const PrestataireProjects: React.FC = () => {
                     </div>
                     <p className="text-xl font-bold text-blue-900">{project.targetAmount.toLocaleString()}€</p>
                   </div>
-                  
+
                   <div className="p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg">
                     <div className="flex items-center space-x-2 mb-2">
                       <Euro className="w-4 h-4 text-green-600" />
@@ -162,7 +259,7 @@ const PrestataireProjects: React.FC = () => {
                     </div>
                     <p className="text-xl font-bold text-green-900">{project.currentAmount.toLocaleString()}€</p>
                   </div>
-                  
+
                   <div className="p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg">
                     <div className="flex items-center space-x-2 mb-2">
                       <Clock className="w-4 h-4 text-purple-600" />
@@ -181,7 +278,7 @@ const PrestataireProjects: React.FC = () => {
                     </span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div 
+                    <div
                       className="bg-gradient-to-r from-blue-500 to-cyan-500 h-2 rounded-full transition-all duration-300"
                       style={{ width: `${Math.min((project.currentAmount / project.targetAmount) * 100, 100)}%` }}
                     ></div>
@@ -207,29 +304,29 @@ const PrestataireProjects: React.FC = () => {
             {/* Actions - En dehors du Link pour éviter les liens imbriqués */}
             <CardContent className="pt-0">
               <div className="flex space-x-3" onClick={(e) => e.stopPropagation()}>
-                <Link 
-                  to={`/prestataire/projets/${project.id}`} 
+                <Link
+                  to={`/prestataire/projets/${project.id}`}
                   className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                 >
                   <Eye className="w-4 h-4" />
                   <span>Voir détails</span>
                 </Link>
-                
-                <Link 
-                  to={`/prestataire/projets/${project.id}/edit`} 
+
+                <Link
+                  to={`/prestataire/projets/${project.id}/edit`}
                   className="flex items-center space-x-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
                 >
                   <Edit className="w-4 h-4" />
                   <span>Modifier</span>
                 </Link>
-                
-                <Link 
-                  to={`/prestataire/projets/${project.id}/documents`} 
+
+                <button
+                  onClick={() => openDocumentModal(project)}
                   className="flex items-center space-x-2 px-4 py-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors"
                 >
                   <Upload className="w-4 h-4" />
                   <span>Documents</span>
-                </Link>
+                </button>
               </div>
             </CardContent>
           </Card>
@@ -248,6 +345,25 @@ const PrestataireProjects: React.FC = () => {
           </Link>
         </div>
       )}
+
+      {/* Modal de gestion des documents - Version Améliorée */}
+      <ProjectDocumentsModal
+        isOpen={showDocumentModal}
+        onClose={closeDocumentModal}
+        project={selectedProject}
+        onDocumentAdded={() => {
+          // Optionnel: recharger les projets pour mettre à jour les compteurs
+          if (selectedProject) {
+            fetchProjectDocuments(selectedProject.id);
+          }
+        }}
+        onDocumentDeleted={() => {
+          // Optionnel: recharger les projets pour mettre à jour les compteurs
+          if (selectedProject) {
+            fetchProjectDocuments(selectedProject.id);
+          }
+        }}
+      />
     </div>
   );
 };
