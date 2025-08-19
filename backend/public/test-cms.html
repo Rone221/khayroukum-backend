@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test des API CMS - Khayroukum</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        .section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .result {
+            background: #f5f5f5;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 3px;
+            overflow-x: auto;
+        }
+
+        .error {
+            background: #fee;
+            color: #c00;
+        }
+
+        .success {
+            background: #efe;
+            color: #060;
+        }
+
+        button {
+            padding: 10px 15px;
+            margin: 5px;
+            cursor: pointer;
+        }
+
+        pre {
+            font-size: 12px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Test des API CMS - Khayroukum</h1>
+
+    <div class="section">
+        <h2>APIs Publiques</h2>
+
+        <button onclick="testAPI('/api/public/stats', 'stats')">Test Stats</button>
+        <div id="stats-result" class="result" style="display: none;"></div>
+
+        <button onclick="testAPI('/api/public/about', 'about')">Test About</button>
+        <div id="about-result" class="result" style="display: none;"></div>
+
+        <button onclick="testAPI('/api/public/content/hero', 'hero-content')">Test Contenu Hero</button>
+        <div id="hero-content-result" class="result" style="display: none;"></div>
+
+        <button onclick="testAPI('/api/public/settings', 'settings')">Test Paramètres</button>
+        <div id="settings-result" class="result" style="display: none;"></div>
+
+        <button onclick="testAPI('/api/public/homepage', 'homepage')">Test Homepage</button>
+        <div id="homepage-result" class="result" style="display: none;"></div>
+    </div>
+
+    <div class="section">
+        <h2>Test de Soumission de Contact</h2>
+        <button onclick="testContactForm()">Test Formulaire Contact</button>
+        <div id="contact-result" class="result" style="display: none;"></div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8000';
+
+        async function testAPI(endpoint, resultId) {
+            const resultDiv = document.getElementById(resultId + '-result');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = 'Chargement...';
+
+            try {
+                const response = await fetch(API_BASE + endpoint, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML = `
+                        <h4>✅ Succès (${response.status})</h4>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML = `
+                        <h4>❌ Erreur (${response.status})</h4>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `
+                    <h4>❌ Erreur de connexion</h4>
+                    <pre>${error.message}</pre>
+                `;
+            }
+        }
+
+        async function testContactForm() {
+            const resultDiv = document.getElementById('contact-result');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = 'Envoi du formulaire de test...';
+
+            try {
+                const response = await fetch(API_BASE + '/api/public/contact', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        nom: 'Test User',
+                        email: 'test@example.com',
+                        sujet: 'technique', // Valeur valide : nouveau-projet, partenariat, don, technique, autre
+                        message: 'Ceci est un message de test pour vérifier l\'API de contact.'
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML = `
+                        <h4>✅ Succès (${response.status})</h4>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML = `
+                        <h4>❌ Erreur (${response.status})</h4>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `
+                    <h4>❌ Erreur de connexion</h4>
+                    <pre>${error.message}</pre>
+                `;
+            }
+        }
+
+        // Test automatique au chargement
+        window.addEventListener('load', function () {
+            console.log('Page chargée, prêt pour les tests');
+        });
+    </script>
+</body>
+
+</html>

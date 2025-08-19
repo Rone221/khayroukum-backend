@@ -12,7 +12,8 @@ import {
   User,
   Bell,
   LogOut,
-  Droplets
+  Droplets,
+  Globe
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { UserRole } from '../../types';
@@ -34,6 +35,7 @@ const Sidebar: React.FC<SidebarProps> = () => {
           { icon: LayoutDashboard, label: 'Dashboard', path: '/admin/dashboard' },
           { icon: FolderCheck, label: 'Projets à valider', path: '/admin/projects' },
           { icon: Users, label: 'Utilisateurs', path: '/admin/users' },
+          { icon: Globe, label: 'Site Vitrine', path: '/admin/cms' },
           { icon: Bell, label: 'Notifications', path: '/notifications' },
         ];
       case 'prestataire':

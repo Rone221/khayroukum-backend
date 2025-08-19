@@ -11,6 +11,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             TestSeeder::class,
             NotificationSeeder::class,
+            SiteContentSeeder::class,
+            SiteSettingsSeeder::class,
         ]);
     }
 }

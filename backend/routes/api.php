@@ -6,12 +6,30 @@ use App\Http\Controllers\VillageController;
 use App\Http\Controllers\ProjetController;
 use App\Http\Controllers\DocumentTechniqueController;
 use App\Http\Controllers\Api\ProjetDocumentController;
+use App\Http\Controllers\Api\PublicController;
 use App\Http\Controllers\OffreFinancementController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\PrestataireDashboardController;
+use App\Http\Controllers\Admin\ContentController;
+use App\Http\Controllers\Admin\SettingsController;
+use App\Http\Controllers\Admin\MediaController;
+
+// Routes publiques (sans authentification)
+Route::prefix('public')->group(function () {
+    Route::get('/stats', [PublicController::class, 'stats']);
+    Route::get('/projects', [PublicController::class, 'projects']);
+    Route::get('/villages', [PublicController::class, 'villages']);
+    Route::get('/about', [PublicController::class, 'about']);
+    Route::post('/contact', [PublicController::class, 'submitContact']);
+    
+    // Nouvelles routes pour le CMS
+    Route::get('/content/{section}', [PublicController::class, 'getContent']);
+    Route::get('/settings', [PublicController::class, 'getSettings']);
+    Route::get('/homepage', [PublicController::class, 'getHomepage']);
+});
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -69,4 +87,34 @@ Route::middleware('auth:sanctum')->group(function () {
     // Routes du dashboard prestataire
     Route::get('prestataire/stats', [PrestataireDashboardController::class, 'stats'])->middleware('role:prestataire');
     Route::get('prestataire/activity', [PrestataireDashboardController::class, 'activity'])->middleware('role:prestataire');
+
+    // Routes admin pour le CMS
+    Route::prefix('admin')->middleware('role:administrateur')->group(function () {
+        // Gestion du contenu
+        Route::get('content', [ContentController::class, 'index']);
+        Route::get('content/section/{section}', [ContentController::class, 'getBySection']);
+        Route::get('content/{id}', [ContentController::class, 'show']);
+        Route::post('content', [ContentController::class, 'store']);
+        Route::put('content/{id}', [ContentController::class, 'update']);
+        Route::delete('content/{id}', [ContentController::class, 'destroy']);
+        Route::patch('content/{id}/toggle-publish', [ContentController::class, 'togglePublish']);
+
+        // Gestion des paramètres
+        Route::get('settings', [SettingsController::class, 'index']);
+        Route::get('settings/group/{group}', [SettingsController::class, 'getByGroup']);
+        Route::get('settings/{id}', [SettingsController::class, 'show']);
+        Route::post('settings', [SettingsController::class, 'store']);
+        Route::put('settings/{id}', [SettingsController::class, 'update']);
+        Route::delete('settings/{id}', [SettingsController::class, 'destroy']);
+        Route::post('settings/bulk-update', [SettingsController::class, 'bulkUpdate']);
+
+        // Gestion des médias
+        Route::get('media', [MediaController::class, 'index']);
+        Route::get('media/stats', [MediaController::class, 'stats']);
+        Route::get('media/{id}', [MediaController::class, 'show']);
+        Route::post('media', [MediaController::class, 'store']);
+        Route::post('media/bulk', [MediaController::class, 'bulkStore']);
+        Route::put('media/{id}', [MediaController::class, 'update']);
+        Route::delete('media/{id}', [MediaController::class, 'destroy']);
+    });
 });

@@ -8,7 +8,8 @@ import {
     FileText,
     Upload,
     Heart,
-    Bell
+    Bell,
+    Globe
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { UserRole } from '../../types';
@@ -24,6 +25,7 @@ const MobileSidebar: React.FC = () => {
                     { icon: LayoutDashboard, label: 'Dashboard', path: '/admin/dashboard' },
                     { icon: FolderCheck, label: 'Projets', path: '/admin/projects' },
                     { icon: Users, label: 'Utilisateurs', path: '/admin/users' },
+                    { icon: Globe, label: 'Site Vitrine', path: '/admin/cms' },
                     { icon: Bell, label: 'Notifications', path: '/notifications' },
                 ];
             case 'prestataire':

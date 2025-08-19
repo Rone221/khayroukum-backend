@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Droplets, Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
@@ -10,19 +10,38 @@ const LoginPage: React.FC = () => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
-  const { login, isLoading } = useAuth();
+  const { user, login, isLoading } = useAuth();
   const navigate = useNavigate();
+
+  // Rediriger si l'utilisateur est déjà connecté
+  useEffect(() => {
+    if (user) {
+      console.log('User is logged in, redirecting based on role:', user.role);
+      switch (user.role) {
+        case 'administrateur':
+          navigate('/admin/dashboard');
+          break;
+        case 'prestataire':
+          navigate('/prestataire/dashboard');
+          break;
+        case 'donateur':
+          navigate('/donateur/dashboard');
+          break;
+        default:
+          navigate('/');
+      }
+    }
+  }, [user, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
     const success = await login(email, password);
-    if (success) {
-      navigate('/');
-    } else {
+    if (!success) {
       setError('Email ou mot de passe incorrect');
     }
+    // La redirection sera gérée par useEffect quand user sera mis à jour
   };
 
   return (

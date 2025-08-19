@@ -19,4 +19,36 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    // Optimisations de build
+    target: 'esnext',
+    minify: 'terser',
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // Séparer les vendors en chunks
+          vendor: ['react', 'react-dom'],
+          router: ['react-router-dom'],
+          icons: ['lucide-react'],
+        }
+      }
+    },
+    // Compression
+    reportCompressedSize: true,
+    // Source maps pour le debug en production
+    sourcemap: mode === 'development'
+  },
+  // Optimisations CSS
+  css: {
+    devSourcemap: mode === 'development'
+  },
+  // Pre-bundling des dépendances
+  optimizeDeps: {
+    include: [
+      'react',
+      'react-dom',
+      'react-router-dom',
+      'lucide-react'
+    ]
+  }
 }));
