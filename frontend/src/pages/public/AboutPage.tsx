@@ -81,7 +81,7 @@ const AboutPage: React.FC = () => {
                                     Nos Réalisations
                                 </h2>
                                 <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                                    Depuis {aboutData?.founded_year || 2020}, nous avons accompagné de nombreuses communautés rurales dans leur développement.
+                                    Depuis {aboutData?.founded_year || 2024}, nous avons accompagné de nombreuses communautés rurales dans leur développement.
                                 </p>
                             </div>
 

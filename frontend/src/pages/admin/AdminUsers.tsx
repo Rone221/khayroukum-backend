@@ -395,16 +395,18 @@ const AdminUsers: React.FC = () => {
 
                   {/* Actions */}
                   <div className="flex items-center space-x-2">
-                    <button
-                      onClick={() => handleToggleVerification(user.id, user.is_verified || false)}
-                      className={`px-3 py-1 text-xs font-medium rounded-full transition-colors ${
-                        user.is_verified 
-                          ? 'bg-orange-100 text-orange-700 hover:bg-orange-200' 
-                          : 'bg-green-100 text-green-700 hover:bg-green-200'
-                      }`}
-                    >
-                      {user.is_verified ? 'Dé-vérifier' : 'Vérifier'}
-                    </button>
+                    {user.role !== 'administrateur' && (
+                      <button
+                        onClick={() => handleToggleVerification(user.id, user.is_verified || false)}
+                        className={`px-3 py-1 text-xs font-medium rounded-full transition-colors ${
+                          user.is_verified 
+                            ? 'bg-orange-100 text-orange-700 hover:bg-orange-200' 
+                            : 'bg-green-100 text-green-700 hover:bg-green-200'
+                        }`}
+                      >
+                        {user.is_verified ? 'Dé-vérifier' : 'Vérifier'}
+                      </button>
+                    )}
 
                     <button
                       onClick={() => handleViewUser(user.id)}
