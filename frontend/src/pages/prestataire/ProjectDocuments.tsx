@@ -53,7 +53,7 @@ const ProjectDocuments: React.FC = () => {
     const [uploadData, setUploadData] = useState({
         nom: '',
         type_document: 'devis',
-        fichier: null as File | null
+        fichiers: [] as File[]
     });
 
     // Charger les données du projet et ses documents
@@ -107,8 +107,8 @@ const ProjectDocuments: React.FC = () => {
     const handleUpload = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (!uploadData.fichier) {
-            toast.error('Veuillez sélectionner un fichier');
+        if (uploadData.fichiers.length === 0) {
+            toast.error('Veuillez sélectionner au moins un fichier');
             return;
         }
 
@@ -125,46 +125,54 @@ const ProjectDocuments: React.FC = () => {
             console.log('Project ID:', id);
             console.log('Upload data:', uploadData);
 
-            const formData = new FormData();
+            // Upload multiple files
+            for (const fichier of uploadData.fichiers) {
+                const formData = new FormData();
+                
+                // Use unique names for each file
+                const fileName = uploadData.fichiers.length > 1 
+                    ? `${uploadData.nom} - ${fichier.name}`
+                    : uploadData.nom;
 
-            formData.append('nom', uploadData.nom);
-            formData.append('type_document', uploadData.type_document);
-            formData.append('fichier', uploadData.fichier);
+                formData.append('nom', fileName);
+                formData.append('type_document', uploadData.type_document);
+                formData.append('fichier', fichier);
 
-            console.log('FormData préparée, envoi en cours...');
+                console.log(`Upload en cours: ${fichier.name}...`);
 
-            const response = await fetch(`http://localhost:8000/api/projets/${id}/documents`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                },
-                body: formData,
-            });
+                const response = await fetch(`http://localhost:8000/api/projets/${id}/documents`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                    body: formData,
+                });
 
-            console.log('Réponse reçue:', response.status, response.statusText);
+                console.log('Réponse reçue:', response.status, response.statusText);
 
-            if (!response.ok) {
-                const errorText = await response.text();
-                console.error('Erreur détaillée:', errorText);
-                throw new Error('Erreur lors de l\'upload');
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('Erreur détaillée:', errorText);
+                    throw new Error('Erreur lors de l\'upload');
+                }
+
+                const newDocument = await response.json();
+                setDocuments(prev => [...prev, newDocument]);
             }
-
-            const newDocument = await response.json();
-            setDocuments(prev => [...prev, newDocument]);
 
             // Réinitialiser le formulaire
             setUploadData({
                 nom: '',
                 type_document: 'devis',
-                fichier: null
+                fichiers: []
             });
             setShowUploadForm(false);
 
-            toast.success('Document ajouté avec succès');
+            toast.success(`${uploadData.fichiers.length} document(s) ajouté(s) avec succès`);
 
         } catch (error) {
             console.error('Erreur:', error);
-            toast.error('Erreur lors de l\'ajout du document');
+            toast.error('Erreur lors de l\'ajout des documents');
         } finally {
             setUploading(false);
         }
@@ -367,6 +375,7 @@ const ProjectDocuments: React.FC = () => {
                                         <option value="facture">Facture</option>
                                         <option value="rapport">Rapport</option>
                                         <option value="photo">Photo</option>
+                                        <option value="video">Vidéo</option>
                                         <option value="autre">Autre</option>
                                     </select>
                                 </div>
@@ -380,19 +389,29 @@ const ProjectDocuments: React.FC = () => {
                                             type="file"
                                             id="fichier"
                                             onChange={(e) => {
-                                                const file = e.target.files?.[0] || null;
-                                                setUploadData(prev => ({ ...prev, fichier: file }));
+                                                const files = Array.from(e.target.files || []);
+                                                setUploadData(prev => ({ ...prev, fichiers: files }));
                                             }}
-                                            accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif"
+                                            accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,.mp4,.mov,.avi,.mkv,.webm"
+                                            multiple
                                             required
                                         />
-                                        {uploadData.fichier && (
+                                        {uploadData.fichiers.length > 0 && (
                                             <div className="file-info">
                                                 <FiFile />
-                                                <span>{uploadData.fichier.name}</span>
-                                                <span className="file-size">
-                                                    ({formatFileSize(uploadData.fichier.size)})
+                                                <span>
+                                                    {uploadData.fichiers.length} fichier(s) sélectionné(s)
                                                 </span>
+                                                <div className="file-list">
+                                                    {uploadData.fichiers.map((file, index) => (
+                                                        <div key={index} className="file-item">
+                                                            <span>{file.name}</span>
+                                                            <span className="file-size">
+                                                                ({formatFileSize(file.size)})
+                                                            </span>
+                                                        </div>
+                                                    ))}
+                                                </div>
                                             </div>
                                         )}
                                     </div>
