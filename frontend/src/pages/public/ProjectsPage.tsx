@@ -169,23 +169,23 @@ const ProjectsPage: React.FC = () => {
             <div className="bg-blue-600 text-white py-16">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                     <h2 className="text-3xl font-bold mb-4">
-                        Vous avez un projet à proposer ?
+                        Une question sur nos projets ?
                     </h2>
                     <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-                        Rejoignez notre réseau de prestataires et contribuez au développement rural durable.
+                        Contactez-nous pour en savoir plus sur nos initiatives de développement rural durable.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
                         <a
-                            href="/register"
+                            href="/contact"
                             className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-blue-50 transition-colors"
                         >
-                            Devenir prestataire
+                            Nous contacter
                         </a>
                         <a
-                            href="/contact"
+                            href="/login"
                             className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors"
                         >
-                            Nous contacter
+                            Contribuer aux projets
                         </a>
                     </div>
                 </div>

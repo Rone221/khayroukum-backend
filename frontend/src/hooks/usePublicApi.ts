@@ -234,7 +234,7 @@ export const useAboutData = () => {
                 setAboutData({
                     mission: "Accompagner le développement rural durable à travers des projets participatifs et l'accès au financement.",
                     vision: "Un développement rural inclusif et durable pour tous.",
-                    founded_year: 2020,
+                    founded_year: 2024,
                     achievements: {
                         villages_served: 8,
                         projects_completed: 18,

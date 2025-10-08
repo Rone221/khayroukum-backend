@@ -89,7 +89,7 @@ class MediaController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'file' => 'required|file|mimes:jpeg,jpg,png,gif,webp,pdf,doc,docx,xls,xlsx,ppt,pptx|max:10240',
+            'file' => 'required|file|mimes:jpeg,jpg,png,gif,webp,pdf,doc,docx,xls,xlsx,ppt,pptx,mp4,mov,avi,mkv,webm|max:51200',
             'section' => 'required|string|max:255',
             'description' => 'nullable|string|max:500'
         ]);
@@ -227,7 +227,7 @@ class MediaController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'files' => 'required|array|max:10',
-            'files.*' => 'file|mimes:jpeg,jpg,png,gif,webp,pdf,doc,docx,xls,xlsx,ppt,pptx|max:10240',
+            'files.*' => 'file|mimes:jpeg,jpg,png,gif,webp,pdf,doc,docx,xls,xlsx,ppt,pptx,mp4,mov,avi,mkv,webm|max:51200',
             'section' => 'required|string|max:255',
             'description' => 'nullable|string|max:500'
         ]);

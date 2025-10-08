@@ -153,7 +153,7 @@ class PublicController extends Controller
                 $baseData = [
                     'mission' => $aboutContent['mission']['text'] ?? "Accompagner le développement rural durable à travers des projets participatifs et l'accès au financement.",
                     'vision' => $aboutContent['vision']['text'] ?? "Un développement rural inclusif et durable pour tous.",
-                    'founded_year' => $aboutContent['founded_year']['year'] ?? 2020,
+                    'founded_year' => $aboutContent['founded_year']['year'] ?? 2024,
                     'values' => $aboutContent['values']['list'] ?? [
                         'Transparence totale dans la gestion des fonds',
                         'Participation active des communautés',
@@ -190,7 +190,7 @@ class PublicController extends Controller
             $fallbackData = [
                 'mission' => "Accompagner le développement rural durable à travers des projets participatifs et l'accès au financement.",
                 'vision' => "Un développement rural inclusif et durable pour tous.",
-                'founded_year' => 2020,
+                'founded_year' => 2024,
                 'achievements' => [
                     'villages_served' => Village::count(),
                     'projects_completed' => Projet::where('statut', 'terminé')->count(),

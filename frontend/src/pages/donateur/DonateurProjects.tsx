@@ -233,7 +233,7 @@ const DonateurProjects: React.FC = () => {
                   </Link>
                   
                   <Link
-                    to={`/donateur/projects/${project.id}/contribute`}
+                    to={`/donateur/projects/${project.id}`}
                     className="flex-1 flex items-center justify-center space-x-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-lg hover:from-blue-600 hover:to-cyan-600 transition-colors"
                   >
                     <Heart className="w-4 h-4" />
