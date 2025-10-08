@@ -39,7 +39,7 @@ const MobileSidebar: React.FC = () => {
                 return [
                     { icon: LayoutDashboard, label: 'Dashboard', path: '/donateur/dashboard' },
                     { icon: FileText, label: 'Projets', path: '/donateur/projects' },
-                    { icon: Heart, label: 'Contributions', path: '/donateur/contributions' },
+                    { icon: Heart, label: 'Suivi de projet financé', path: '/donateur/contributions' },
                     { icon: Bell, label: 'Notifications', path: '/notifications' },
                 ];
             default:

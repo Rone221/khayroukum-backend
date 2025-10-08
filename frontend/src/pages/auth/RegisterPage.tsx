@@ -106,10 +106,13 @@ const RegisterPage: React.FC = () => {
                 value={role}
                 onChange={(e) => setRole(e.target.value as UserRole)}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                disabled
               >
                 <option value="donateur">Donateur - Je souhaite financer des projets</option>
-                <option value="prestataire">Prestataire - Je propose mes services</option>
               </select>
+              <p className="text-sm text-gray-500 mt-1">
+                Seuls les donateurs peuvent créer un compte. Les prestataires sont gérés par l'administration.
+              </p>
             </div>
 
             <div>

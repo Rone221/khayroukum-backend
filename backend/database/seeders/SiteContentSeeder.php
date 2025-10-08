@@ -19,8 +19,8 @@ class SiteContentSeeder extends Seeder
                 'section' => 'hero',
                 'key' => 'title',
                 'value' => [
-                    'fr' => 'Développement Rural Durable au Mali',
-                    'text' => 'Développement Rural Durable au Mali'
+                    'fr' => 'Développement Rural Durable au Sénégal',
+                    'text' => 'Développement Rural Durable au Sénégal'
                 ],
                 'status' => 'published',
                 'published_at' => now()
@@ -29,8 +29,8 @@ class SiteContentSeeder extends Seeder
                 'section' => 'hero',
                 'key' => 'subtitle',
                 'value' => [
-                    'fr' => 'Une plateforme participative pour financer et suivre les projets de développement rural dans les communautés maliennes',
-                    'text' => 'Une plateforme participative pour financer et suivre les projets de développement rural dans les communautés maliennes'
+                    'fr' => 'Une plateforme participative pour financer et suivre les projets de développement rural dans les communautés sénégalaises',
+                    'text' => 'Une plateforme participative pour financer et suivre les projets de développement rural dans les communautés sénégalaises'
                 ],
                 'status' => 'published',
                 'published_at' => now()
@@ -73,8 +73,8 @@ class SiteContentSeeder extends Seeder
                 'section' => 'about',
                 'key' => 'vision',
                 'value' => [
-                    'fr' => 'Être la plateforme de référence pour le développement rural participatif au Mali, où chaque village a accès aux ressources nécessaires pour réaliser ses projets de développement durable.',
-                    'text' => 'Être la plateforme de référence pour le développement rural participatif au Mali, où chaque village a accès aux ressources nécessaires pour réaliser ses projets de développement durable.'
+                    'fr' => 'Être la plateforme de référence pour le développement rural participatif au Sénégal, où chaque village a accès aux ressources nécessaires pour réaliser ses projets de développement durable.',
+                    'text' => 'Être la plateforme de référence pour le développement rural participatif au Sénégal, où chaque village a accès aux ressources nécessaires pour réaliser ses projets de développement durable.'
                 ],
                 'status' => 'published',
                 'published_at' => now()
@@ -98,8 +98,8 @@ class SiteContentSeeder extends Seeder
                 'section' => 'about',
                 'key' => 'founded_year',
                 'value' => [
-                    'year' => 2020,
-                    'text' => '2020'
+                    'year' => 2024,
+                    'text' => '2024'
                 ],
                 'status' => 'published',
                 'published_at' => now()
@@ -110,8 +110,8 @@ class SiteContentSeeder extends Seeder
                 'section' => 'contact',
                 'key' => 'phone',
                 'value' => [
-                    'number' => '+223 70 00 00 00',
-                    'text' => '+223 70 00 00 00',
+                    'number' => '+221 70 00 00 00',
+                    'text' => '+221 70 00 00 00',
                     'hours' => 'Lun - Ven : 8h - 17h'
                 ],
                 'status' => 'published',
@@ -121,8 +121,8 @@ class SiteContentSeeder extends Seeder
                 'section' => 'contact',
                 'key' => 'email',
                 'value' => [
-                    'address' => 'contact@khayroukum.ml',
-                    'text' => 'contact@khayroukum.ml',
+                    'address' => 'contact@khayroukum.sn',
+                    'text' => 'contact@khayroukum.sn',
                     'response_time' => 'Réponse sous 24h'
                 ],
                 'status' => 'published',
@@ -132,10 +132,10 @@ class SiteContentSeeder extends Seeder
                 'section' => 'contact',
                 'key' => 'address',
                 'value' => [
-                    'street' => 'Hamdallaye ACI 2000',
-                    'city' => 'Bamako',
-                    'country' => 'Mali',
-                    'full' => 'Hamdallaye ACI 2000, Bamako, Mali'
+                    'street' => 'Plateau, Rue 6',
+                    'city' => 'Dakar',
+                    'country' => 'Sénégal',
+                    'full' => 'Plateau, Rue 6, Dakar, Sénégal'
                 ],
                 'status' => 'published',
                 'published_at' => now()

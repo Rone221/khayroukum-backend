@@ -23,7 +23,7 @@ const AboutPage: React.FC = () => {
                             À propos de Khayroukum
                         </h1>
                         <p className="text-xl md:text-2xl text-blue-100 max-w-3xl mx-auto">
-                            Une plateforme dédiée au développement rural durable et participatif au Mali
+                            Une plateforme dédiée au développement rural durable et participatif au Sénégal
                         </p>
                     </div>
                 </div>
@@ -246,7 +246,7 @@ const AboutPage: React.FC = () => {
                                 Rejoignez notre Mission
                             </h2>
                             <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-                                Ensemble, construisons un avenir meilleur pour les communautés rurales du Mali.
+                                Ensemble, construisons un avenir meilleur pour les communautés rurales du Sénégal.
                             </p>
                             <div className="flex flex-col sm:flex-row gap-4 justify-center">
                                 <a

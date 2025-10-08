@@ -50,7 +50,7 @@ const Sidebar: React.FC<SidebarProps> = () => {
         return [
           { icon: LayoutDashboard, label: 'Dashboard', path: '/donateur/dashboard' },
           { icon: Droplets, label: 'Projets disponibles', path: '/donateur/projects' },
-          { icon: Heart, label: 'Mes contributions', path: '/donateur/contributions' },
+          { icon: Heart, label: 'Suivi de projet financé', path: '/donateur/contributions' },
           { icon: Bell, label: 'Notifications', path: '/notifications' },
         ];
       default:
