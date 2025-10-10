@@ -11,19 +11,13 @@ use Illuminate\Support\Facades\Validator;
 
 class ContentController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth:sanctum');
-        $this->middleware('role:admin');
-    }
-
     /**
      * Récupérer tout le contenu organisé par section
      */
     public function index()
     {
         try {
-            $content = SiteContent::with('createdBy', 'updatedBy')
+            $content = SiteContent::with('creator', 'updater')
                 ->orderBy('section')
                 ->orderBy('key')
                 ->get()
@@ -51,7 +45,7 @@ class ContentController extends Controller
     {
         try {
             $content = SiteContent::where('section', $section)
-                ->with('createdBy', 'updatedBy')
+                ->with('creator', 'updater')
                 ->orderBy('key')
                 ->get();
 
@@ -76,7 +70,7 @@ class ContentController extends Controller
     public function show($id)
     {
         try {
-            $content = SiteContent::with('createdBy', 'updatedBy')->findOrFail($id);
+            $content = SiteContent::with('creator', 'updater')->findOrFail($id);
 
             return response()->json([
                 'success' => true,
@@ -143,7 +137,7 @@ class ContentController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Contenu créé avec succès',
-                'data' => $content->load('createdBy', 'updatedBy')
+                'data' => $content->load('creator', 'updater')
             ], 201);
 
         } catch (\Exception $e) {
@@ -213,7 +207,7 @@ class ContentController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Contenu mis à jour avec succès',
-                'data' => $content->load('createdBy', 'updatedBy')
+                'data' => $content->load('creator', 'updater')
             ]);
 
         } catch (\Exception $e) {
@@ -274,7 +268,7 @@ class ContentController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => $content->is_published ? 'Contenu publié' : 'Contenu dépublié',
-                'data' => $content->load('createdBy', 'updatedBy')
+                'data' => $content->load('creator', 'updater')
             ]);
 
         } catch (\Exception $e) {
