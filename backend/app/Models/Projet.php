@@ -14,6 +14,7 @@ class Projet extends Model
         'village_id',
         'titre',
         'description',
+        'image',
         'statut',
         'date_debut',
         'date_fin',

@@ -21,7 +21,7 @@ class ProjetDocumentController extends Controller
         error_log("=== CONTRÔLEUR INDEX APPELÉ ===");
         error_log("Projet ID: " . $projet->id);
         error_log("User ID: " . auth()->id());
-        
+
         try {
             // Vérifier que l'utilisateur peut voir ce projet
             $this->authorize('view', $projet);
@@ -29,9 +29,9 @@ class ProjetDocumentController extends Controller
 
             $documents = $projet->documents()->orderBy('created_at', 'desc')->get();
             error_log("Documents récupérés: " . $documents->count());
-            
+
             // Formater les documents pour le frontend (comme dans prestataireDocuments)
-            $formattedDocuments = $documents->map(function($doc) use ($projet) {
+            $formattedDocuments = $documents->map(function ($doc) use ($projet) {
                 return [
                     'id' => $doc->id,
                     'name' => $doc->nom,  // Pour compatibilité frontend
@@ -54,10 +54,10 @@ class ProjetDocumentController extends Controller
                     'created_at' => $doc->created_at->toISOString(),
                 ];
             });
-            
+
             error_log("Documents formatés pour le frontend: " . $formattedDocuments->count());
             error_log("=== FIN INDEX DOCUMENTS ===");
-            
+
             return response()->json([
                 'data' => $formattedDocuments,
                 'total' => $formattedDocuments->count()
@@ -87,8 +87,8 @@ class ProjetDocumentController extends Controller
 
             $validated = $request->validate([
                 'nom' => 'required|string|max:255',
-                'type_document' => 'required|in:devis,facture,rapport,photo,autre',
-                'fichier' => 'required|file|max:10240', // 10MB max
+                'type_document' => 'required|in:devis,facture,rapport,photo,video,autre',
+                'fichier' => 'required|file|mimes:pdf,doc,docx,jpg,jpeg,png,gif,mp4,mov,avi,mkv,webm|max:50240', // 50MB max pour vidéos
             ]);
 
             error_log("Validation RÉUSSIE");
@@ -141,7 +141,7 @@ class ProjetDocumentController extends Controller
         error_log("Document ID: " . $document->id);
         error_log("Document nom: " . $document->nom);
         error_log("Chemin fichier: " . $document->chemin_fichier);
-        
+
         // Vérifier les autorisations
         $this->authorize('view', $document->projet);
 
@@ -151,20 +151,20 @@ class ProjetDocumentController extends Controller
         }
 
         $path = Storage::disk('public')->path($document->chemin_fichier);
-        
+
         // Récupérer l'extension du fichier original stocké
         $extension = pathinfo($document->chemin_fichier, PATHINFO_EXTENSION);
         error_log("Extension détectée: " . $extension);
-        
+
         // Utiliser le nom original avec la bonne extension
         $downloadName = $document->nom . '.' . $extension;
         error_log("Nom de téléchargement: " . $downloadName);
-        
+
         // Définir le bon Content-Type en fonction de l'extension
         $mimeTypes = [
             // Documents PDF
             'pdf' => 'application/pdf',
-            
+
             // Documents Microsoft Office
             'doc' => 'application/msword',
             'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
@@ -172,7 +172,7 @@ class ProjetDocumentController extends Controller
             'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
             'ppt' => 'application/vnd.ms-powerpoint',
             'pptx' => 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-            
+
             // Images
             'jpg' => 'image/jpeg',
             'jpeg' => 'image/jpeg',
@@ -182,7 +182,7 @@ class ProjetDocumentController extends Controller
             'webp' => 'image/webp',
             'svg' => 'image/svg+xml',
             'ico' => 'image/x-icon',
-            
+
             // Texte et documents
             'txt' => 'text/plain',
             'csv' => 'text/csv',
@@ -192,12 +192,12 @@ class ProjetDocumentController extends Controller
             'md' => 'text/markdown',
             'log' => 'text/plain',
             'rtf' => 'application/rtf',
-            
+
             // Archives (optionnel)
             'zip' => 'application/zip',
             'rar' => 'application/x-rar-compressed',
         ];
-        
+
         $mimeType = $mimeTypes[strtolower($extension)] ?? 'application/octet-stream';
         error_log("MIME type: " . $mimeType);
 
@@ -221,7 +221,7 @@ class ProjetDocumentController extends Controller
         try {
             // Vérifier les autorisations
             $this->authorize('delete', $document->projet);
-            
+
             error_log("Autorisation OK, suppression en cours...");
 
             // Supprimer le fichier du stockage
@@ -234,7 +234,7 @@ class ProjetDocumentController extends Controller
 
             // Supprimer l'enregistrement
             $document->delete();
-            
+
             error_log("Document supprimé avec succès");
 
             return response()->json(['message' => 'Document supprimé avec succès']);
@@ -254,29 +254,29 @@ class ProjetDocumentController extends Controller
     public function prestataireDocuments()
     {
         error_log("=== PRESTATAIRE DOCUMENTS APPELÉ ===");
-        
+
         try {
             $user = auth()->user();
             error_log("User ID: " . $user->id . ", Role: " . $user->role);
-            
+
             if ($user->role !== 'prestataire') {
                 error_log("Accès refusé - pas prestataire");
                 return response()->json(['message' => 'Accès non autorisé'], 403);
             }
 
             error_log("Récupération des documents...");
-            
+
             // Récupérer les documents de tous les projets du prestataire
-            $documents = DocumentTechnique::whereHas('projet', function($query) use ($user) {
+            $documents = DocumentTechnique::whereHas('projet', function ($query) use ($user) {
                 $query->where('created_by', $user->id);
             })->with(['projet:id,titre'])
-            ->orderBy('created_at', 'desc')
-            ->get();
+                ->orderBy('created_at', 'desc')
+                ->get();
 
             error_log("Documents trouvés: " . $documents->count());
 
             // Transformer les données pour l'affichage
-            $formattedDocuments = $documents->map(function($doc) {
+            $formattedDocuments = $documents->map(function ($doc) {
                 return [
                     'id' => $doc->id,
                     'name' => $doc->nom,  // Adapté pour le frontend
@@ -310,7 +310,6 @@ class ProjetDocumentController extends Controller
                 'en_attente' => $documents->where('type_document', 'autre')->count(),
                 'espace_utilise' => $documents->sum('taille_fichier')
             ]);
-
         } catch (\Exception $e) {
             error_log("Erreur prestataireDocuments: " . $e->getMessage());
             error_log("Stack trace: " . $e->getTraceAsString());
@@ -348,7 +347,7 @@ class ProjetDocumentController extends Controller
 
         try {
             $document = DocumentTechnique::findOrFail($id);
-            
+
             error_log("Document trouvé: " . $document->nom);
             error_log("Projet ID: " . $document->projet_id);
             error_log("Uploaded by: " . $document->uploaded_by);
@@ -356,7 +355,7 @@ class ProjetDocumentController extends Controller
             // Vérifier que le document appartient au prestataire connecté
             // OU que le prestataire est propriétaire du projet
             $user = auth()->user();
-            
+
             if ($document->uploaded_by !== $user->id && $document->projet->user_id !== $user->id) {
                 error_log("Accès refusé - Document ne appartient pas au prestataire");
                 return response()->json([
@@ -376,11 +375,10 @@ class ProjetDocumentController extends Controller
 
             // Supprimer l'enregistrement
             $document->delete();
-            
+
             error_log("Document supprimé avec succès");
 
             return response()->json(['message' => 'Document supprimé avec succès']);
-
         } catch (\Exception $e) {
             error_log("Erreur suppression prestataire: " . $e->getMessage());
             error_log("Stack trace: " . $e->getTraceAsString());
@@ -397,7 +395,7 @@ class ProjetDocumentController extends Controller
     public function prestataireBulkDestroy(Request $request)
     {
         error_log("=== SUPPRESSION MULTIPLE PRESTATAIRE ===");
-        
+
         $request->validate([
             'document_ids' => 'required|array|min:1',
             'document_ids.*' => 'integer|exists:document_techniques,id'
@@ -409,7 +407,7 @@ class ProjetDocumentController extends Controller
 
             $documents = DocumentTechnique::whereIn('id', $documentIds)->get();
             $user = auth()->user();
-            
+
             $deletedCount = 0;
             $errors = [];
 
@@ -429,14 +427,13 @@ class ProjetDocumentController extends Controller
                     // Supprimer l'enregistrement
                     $document->delete();
                     $deletedCount++;
-                    
                 } catch (\Exception $e) {
                     $errors[] = "Document '{$document->nom}' : " . $e->getMessage();
                 }
             }
 
             error_log("Documents supprimés: {$deletedCount}");
-            
+
             if ($deletedCount === 0) {
                 return response()->json([
                     'message' => 'Aucun document n\'a pu être supprimé',
@@ -456,7 +453,6 @@ class ProjetDocumentController extends Controller
                 'message' => "{$deletedCount} document(s) supprimé(s) avec succès",
                 'deleted_count' => $deletedCount
             ]);
-
         } catch (\Exception $e) {
             error_log("Erreur suppression multiple: " . $e->getMessage());
             return response()->json([

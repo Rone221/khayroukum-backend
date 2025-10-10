@@ -1,10 +1,14 @@
-
-import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
-import { 
-  MapPin, 
-  Users, 
+import React, { useState, useEffect } from "react";
+import { useParams, Link } from "react-router-dom";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../../components/ui/card";
+import {
+  MapPin,
+  Users,
   Calendar,
   Euro,
   Clock,
@@ -13,32 +17,46 @@ import {
   Heart,
   Share2,
   AlertCircle,
-  CheckCircle
-} from 'lucide-react';
-import { Project, Contribution } from '../../types';
-import LoadingSpinner from '../../components/ui/LoadingSpinner';
-import api from '../../lib/api';
-import toast from 'react-hot-toast';
+  CheckCircle,
+} from "lucide-react";
+import { Project, Contribution } from "../../types";
+import LoadingSpinner from "../../components/ui/LoadingSpinner";
+import api from "../../lib/api";
+import toast from "react-hot-toast";
 
 const ProjectDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [project, setProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(true);
-  const [donationAmount, setDonationAmount] = useState('');
-  const [nameOnBoard, setNameOnBoard] = useState('');
-  const [message, setMessage] = useState('');
+  const [donationAmount, setDonationAmount] = useState("");
+  const [nameOnBoard, setNameOnBoard] = useState("");
+  const [message, setMessage] = useState("");
   const [showDonationForm, setShowDonationForm] = useState(false);
   const [offers, setOffers] = useState<Contribution[]>([]);
 
   useEffect(() => {
     if (!id) return;
-    Promise.all([
-      api.get(`/projets/${id}`),
-      api.get(`/projets/${id}/offres`)
-    ])
+    Promise.all([api.get(`/projets/${id}`), api.get(`/projets/${id}/offres`)])
       .then(([projRes, offersRes]) => {
         setProject(projRes.data);
-        setOffers(offersRes.data);
+        console.log("📊 Données des offres reçues:", offersRes.data);
+
+        // Filtrer les offres invalides et ajouter une protection
+        const validOffers = (offersRes.data || []).filter(
+          (offer: Contribution) => {
+            if (
+              !offer ||
+              typeof offer.amount === "undefined" ||
+              offer.amount === null
+            ) {
+              console.warn("🚨 Offre invalide détectée:", offer);
+              return false;
+            }
+            return true;
+          }
+        );
+
+        setOffers(validOffers);
       })
       .finally(() => setLoading(false));
   }, [id]);
@@ -51,15 +69,15 @@ const ProjectDetail: React.FC = () => {
         nom_sur_tableau: nameOnBoard,
         message,
       })
-      .then(res => {
-        setOffers(o => [...o, res.data]);
-        toast.success('Offre enregistrée');
+      .then((res) => {
+        setOffers((o) => [...o, res.data]);
+        toast.success("Offre enregistrée");
         setShowDonationForm(false);
-        setDonationAmount('');
-        setNameOnBoard('');
-        setMessage('');
+        setDonationAmount("");
+        setNameOnBoard("");
+        setMessage("");
       })
-      .catch(() => toast.error('Erreur lors de l\'envoi'));
+      .catch(() => toast.error("Erreur lors de l'envoi"));
   };
 
   if (loading) {
@@ -74,21 +92,33 @@ const ProjectDetail: React.FC = () => {
     return (
       <div className="text-center py-12">
         <AlertCircle className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-        <h2 className="text-xl font-semibold text-gray-900 mb-2">Projet non trouvé</h2>
-        <p className="text-gray-600 mb-4">Le projet que vous recherchez n'existe pas.</p>
-        <Link to="/donateur/projects" className="text-blue-600 hover:text-blue-800">
+        <h2 className="text-xl font-semibold text-gray-900 mb-2">
+          Projet non trouvé
+        </h2>
+        <p className="text-gray-600 mb-4">
+          Le projet que vous recherchez n'existe pas.
+        </p>
+        <Link
+          to="/donateur/projects"
+          className="text-blue-600 hover:text-blue-800"
+        >
           Retour aux projets
         </Link>
       </div>
     );
   }
 
-  const progressPercentage = Math.round((project.currentAmount / project.targetAmount) * 100);
+  const progressPercentage = Math.round(
+    (project.currentAmount / project.targetAmount) * 100
+  );
 
   return (
     <div className="space-y-6">
       {/* Back Button */}
-      <Link to="/donateur/projects" className="inline-flex items-center space-x-2 text-blue-600 hover:text-blue-800">
+      <Link
+        to="/donateur/projects"
+        className="inline-flex items-center space-x-2 text-blue-600 hover:text-blue-800"
+      >
         <ArrowLeft className="w-4 h-4" />
         <span>Retour aux projets</span>
       </Link>
@@ -102,11 +132,15 @@ const ProjectDetail: React.FC = () => {
             <div className="flex items-center space-x-6 text-blue-100">
               <div className="flex items-center space-x-2">
                 <MapPin className="w-5 h-5" />
-                <span>{project.village.name}, {project.village.region}</span>
+                <span>
+                  {project.village.name}, {project.village.region}
+                </span>
               </div>
               <div className="flex items-center space-x-2">
                 <Users className="w-5 h-5" />
-                <span>{project.village.population.toLocaleString()} habitants</span>
+                <span>
+                  {project.village.population.toLocaleString()} habitants
+                </span>
               </div>
               <div className="flex items-center space-x-2">
                 <Calendar className="w-5 h-5" />
@@ -126,11 +160,15 @@ const ProjectDetail: React.FC = () => {
               <CardTitle>Description du projet</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-700 leading-relaxed mb-4">{project.description}</p>
+              <p className="text-gray-700 leading-relaxed mb-4">
+                {project.description}
+              </p>
               <p className="text-gray-700 leading-relaxed">
-                Ce projet vise à améliorer l'accès à l'eau potable pour les habitants de {project.village.name}. 
-                Grâce à votre soutien, nous pourrons installer des infrastructures modernes et durables 
-                qui bénéficieront à toute la communauté pendant de nombreuses années.
+                Ce projet vise à améliorer l'accès à l'eau potable pour les
+                habitants de {project.village.name}. Grâce à votre soutien, nous
+                pourrons installer des infrastructures modernes et durables qui
+                bénéficieront à toute la communauté pendant de nombreuses
+                années.
               </p>
             </CardContent>
           </Card>
@@ -145,33 +183,49 @@ const ProjectDetail: React.FC = () => {
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <span className="text-gray-600">Durée estimée</span>
-                    <span className="font-semibold">{project.estimatedDuration} mois</span>
+                    <span className="font-semibold">
+                      {project.estimatedDuration} mois
+                    </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-600">Population bénéficiaire</span>
-                    <span className="font-semibold">{project.village.population.toLocaleString()}</span>
+                    <span className="text-gray-600">
+                      Population bénéficiaire
+                    </span>
+                    <span className="font-semibold">
+                      {project.village.population.toLocaleString()}
+                    </span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-gray-600">Prestataire</span>
-                    <span className="font-semibold">{project.prestataireName}</span>
+                    <span className="font-semibold">
+                      {project.prestataireName}
+                    </span>
                   </div>
                 </div>
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <span className="text-gray-600">Coordonnées</span>
                     <span className="font-semibold">
-                      {project.village.coordinates.lat.toFixed(2)}, {project.village.coordinates.lng.toFixed(2)}
+                      {project.village.coordinates.lat.toFixed(2)},{" "}
+                      {project.village.coordinates.lng.toFixed(2)}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-gray-600">Statut</span>
-                    <span className={`px-2 py-1 text-xs font-medium rounded-full ${
-                      project.status === 'validated' ? 'bg-green-100 text-green-800' :
-                      project.status === 'funded' ? 'bg-blue-100 text-blue-800' :
-                      'bg-gray-100 text-gray-800'
-                    }`}>
-                      {project.status === 'validated' ? 'Validé' :
-                       project.status === 'funded' ? 'Financé' : project.status}
+                    <span
+                      className={`px-2 py-1 text-xs font-medium rounded-full ${
+                        project.status === "validated"
+                          ? "bg-green-100 text-green-800"
+                          : project.status === "funded"
+                          ? "bg-blue-100 text-blue-800"
+                          : "bg-gray-100 text-gray-800"
+                      }`}
+                    >
+                      {project.status === "validated"
+                        ? "Validé"
+                        : project.status === "funded"
+                        ? "Financé"
+                        : project.status}
                     </span>
                   </div>
                 </div>
@@ -188,10 +242,15 @@ const ProjectDetail: React.FC = () => {
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {project.documents.map((doc) => (
-                    <div key={doc.id} className="flex items-center space-x-3 p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
+                    <div
+                      key={doc.id}
+                      className="flex items-center space-x-3 p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow"
+                    >
                       <FileText className="w-8 h-8 text-blue-600" />
                       <div className="flex-1">
-                        <h4 className="font-medium text-gray-900">{doc.name}</h4>
+                        <h4 className="font-medium text-gray-900">
+                          {doc.name}
+                        </h4>
                         <p className="text-sm text-gray-600">PDF - 2.4 MB</p>
                       </div>
                       <button className="text-blue-600 hover:text-blue-800">
@@ -225,11 +284,15 @@ const ProjectDetail: React.FC = () => {
               {/* Progress Bar */}
               <div className="mb-6">
                 <div className="flex justify-between items-center mb-2">
-                  <span className="text-sm font-medium text-gray-700">Progression</span>
-                  <span className="text-sm text-gray-600">{progressPercentage}%</span>
+                  <span className="text-sm font-medium text-gray-700">
+                    Progression
+                  </span>
+                  <span className="text-sm text-gray-600">
+                    {progressPercentage}%
+                  </span>
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-3">
-                  <div 
+                  <div
                     className="bg-gradient-to-r from-blue-500 to-cyan-500 h-3 rounded-full transition-all duration-300"
                     style={{ width: `${Math.min(progressPercentage, 100)}%` }}
                   ></div>
@@ -244,10 +307,11 @@ const ProjectDetail: React.FC = () => {
                 </div>
                 <div className="text-center p-3 bg-green-50 rounded-lg">
                   <div className="text-lg font-bold text-green-600">
-                    {project.targetAmount - project.currentAmount > 0 
-                      ? `${(project.targetAmount - project.currentAmount).toLocaleString()}€`
-                      : '0€'
-                    }
+                    {project.targetAmount - project.currentAmount > 0
+                      ? `${(
+                          project.targetAmount - project.currentAmount
+                        ).toLocaleString()}€`
+                      : "0€"}
                   </div>
                   <div className="text-xs text-green-600">Restant</div>
                 </div>
@@ -256,7 +320,7 @@ const ProjectDetail: React.FC = () => {
               {/* Donation Button */}
               {!showDonationForm ? (
                 <div className="space-y-3">
-                  <button 
+                  <button
                     onClick={() => setShowDonationForm(true)}
                     className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 text-white py-3 rounded-lg hover:from-blue-700 hover:to-cyan-700 transition-all duration-200 font-semibold flex items-center justify-center space-x-2"
                   >
@@ -282,23 +346,29 @@ const ProjectDetail: React.FC = () => {
                         placeholder="100"
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-8"
                       />
-                      <span className="absolute right-3 top-3 text-gray-500">€</span>
+                      <span className="absolute right-3 top-3 text-gray-500">
+                        €
+                      </span>
                     </div>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Nom affiché</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Nom affiché
+                    </label>
                     <input
                       type="text"
                       value={nameOnBoard}
-                      onChange={e => setNameOnBoard(e.target.value)}
+                      onChange={(e) => setNameOnBoard(e.target.value)}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Message (optionnel)</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Message (optionnel)
+                    </label>
                     <textarea
                       value={message}
-                      onChange={e => setMessage(e.target.value)}
+                      onChange={(e) => setMessage(e.target.value)}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                   </div>
@@ -306,12 +376,14 @@ const ProjectDetail: React.FC = () => {
                   <div className="flex space-x-2">
                     <button
                       onClick={handleDonation}
-                      disabled={!donationAmount || parseFloat(donationAmount) <= 0}
+                      disabled={
+                        !donationAmount || parseFloat(donationAmount) <= 0
+                      }
                       className="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
                     >
                       Confirmer
                     </button>
-                    <button 
+                    <button
                       onClick={() => setShowDonationForm(false)}
                       className="flex-1 bg-gray-100 text-gray-700 py-2 rounded-lg hover:bg-gray-200 transition-colors"
                     >
@@ -352,14 +424,28 @@ const ProjectDetail: React.FC = () => {
                 <CardTitle>Offres de financement</CardTitle>
               </CardHeader>
               <CardContent>
-                <ul className="space-y-2">
-                  {offers.map(o => (
-                    <li key={o.id} className="flex justify-between border p-2 rounded">
-                      <span>{o.donatorName || nameOnBoard || 'Anonyme'}</span>
-                      <span className="font-medium">{o.amount.toLocaleString()}€</span>
-                    </li>
-                  ))}
-                </ul>
+                {offers.length > 0 ? (
+                  <ul className="space-y-2">
+                    {offers.map((o) => (
+                      <li
+                        key={o.id}
+                        className="flex justify-between border p-2 rounded"
+                      >
+                        <span>{o.donatorName || nameOnBoard || "Anonyme"}</span>
+                        <span className="font-medium">
+                          {o.amount && typeof o.amount === "number"
+                            ? o.amount.toLocaleString()
+                            : "0"}
+                          €
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-gray-500 text-center py-4">
+                    Aucune offre de financement pour le moment
+                  </p>
+                )}
               </CardContent>
             </Card>
           )}

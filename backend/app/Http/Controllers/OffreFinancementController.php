@@ -16,7 +16,21 @@ class OffreFinancementController extends Controller
      */
     public function index(Projet $projet)
     {
-        return $projet->offres;
+        $offres = $projet->offres()->with('donateur')->get();
+
+        return $offres->map(function ($offre) {
+            return [
+                'id' => $offre->id,
+                'donatorId' => $offre->donateur_id,
+                'donatorName' => $offre->donateur->prenom . ' ' . $offre->donateur->nom,
+                'projectId' => $offre->projet_id,
+                'amount' => $offre->montant,
+                'createdAt' => $offre->created_at,
+                'status' => 'confirmed', // Par défaut
+                'nameOnBoard' => $offre->nom_sur_tableau,
+                'message' => $offre->message
+            ];
+        });
     }
 
     /**

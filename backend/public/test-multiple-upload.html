@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Upload Multiple</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .upload-area {
+            border: 2px dashed #ccc;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .file-list {
+            margin: 20px 0;
+        }
+
+        .file-item {
+            background: #f5f5f5;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+        }
+
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Test API Upload Multiple Documents</h1>
+
+    <div>
+        <label for="projectId">ID du Projet:</label>
+        <input type="text" id="projectId" value="1" placeholder="Entrez l'ID du projet">
+    </div>
+
+    <div class="upload-area" id="uploadArea">
+        <p>Glissez-déposez les fichiers ici ou cliquez pour sélectionner</p>
+        <input type="file" id="fileInput" multiple style="display: none;">
+    </div>
+
+    <div class="file-list" id="fileList"></div>
+
+    <button id="uploadBtn" disabled>Télécharger les documents</button>
+
+    <div id="result"></div>
+
+    <script>
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const fileList = document.getElementById('fileList');
+        const uploadBtn = document.getElementById('uploadBtn');
+        const result = document.getElementById('result');
+        const projectIdInput = document.getElementById('projectId');
+
+        let selectedFiles = [];
+
+        // Configuration
+        const API_BASE = 'http://127.0.0.1:8000/api';
+        let authToken = ''; // À obtenir via login
+
+        // Gestion du click sur la zone d'upload
+        uploadArea.addEventListener('click', () => fileInput.click());
+
+        // Gestion du drag & drop
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = '#007bff';
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.style.borderColor = '#ccc';
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = '#ccc';
+            handleFiles(e.dataTransfer.files);
+        });
+
+        // Gestion de la sélection de fichiers
+        fileInput.addEventListener('change', (e) => {
+            handleFiles(e.target.files);
+        });
+
+        function handleFiles(files) {
+            selectedFiles = Array.from(files);
+            displayFiles();
+            uploadBtn.disabled = selectedFiles.length === 0;
+        }
+
+        function displayFiles() {
+            fileList.innerHTML = '';
+            selectedFiles.forEach((file, index) => {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                fileItem.innerHTML = `
+                    <div><strong>${file.name}</strong> (${(file.size / 1024 / 1024).toFixed(2)} MB)</div>
+                    <select id="type_${index}">
+                        <option value="devis">Devis</option>
+                        <option value="facture">Facture</option>
+                        <option value="rapport">Rapport</option>
+                        <option value="photo">Photo</option>
+                        <option value="video">Vidéo</option>
+                        <option value="autre">Autre</option>
+                    </select>
+                    <input type="text" id="desc_${index}" placeholder="Description (optionnelle)">
+                `;
+                fileList.appendChild(fileItem);
+            });
+        }
+
+        // Test de login pour obtenir le token
+        async function login() {
+            try {
+                const response = await fetch(`${API_BASE}/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: 'prestataire@khayroukum.sn',
+                        password: 'password'
+                    })
+                });
+
+                const data = await response.json();
+                if (data.token) {
+                    authToken = data.token;
+                    showResult('Login réussi!', 'success');
+                } else {
+                    showResult('Erreur de login: ' + (data.message || 'Token non reçu'), 'error');
+                }
+            } catch (error) {
+                showResult('Erreur de login: ' + error.message, 'error');
+            }
+        }
+
+        // Upload des fichiers
+        uploadBtn.addEventListener('click', async () => {
+            if (!authToken) {
+                await login();
+                if (!authToken) return;
+            }
+
+            const projectId = projectIdInput.value;
+            if (!projectId) {
+                showResult('Veuillez entrer un ID de projet', 'error');
+                return;
+            }
+
+            const formData = new FormData();
+
+            selectedFiles.forEach((file, index) => {
+                const type = document.getElementById(`type_${index}`).value;
+                const description = document.getElementById(`desc_${index}`).value;
+
+                formData.append(`files[${index}]`, file);
+                formData.append(`types[${index}]`, type);
+                formData.append(`descriptions[${index}]`, description);
+            });
+
+            uploadBtn.disabled = true;
+            uploadBtn.textContent = 'Upload en cours...';
+
+            try {
+                const response = await fetch(`${API_BASE}/projects/${projectId}/documents/multiple`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                    },
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showResult(`Succès! ${data.uploaded_count || selectedFiles.length} document(s) téléchargé(s)`, 'success');
+                    selectedFiles = [];
+                    displayFiles();
+                } else {
+                    showResult('Erreur: ' + (data.message || 'Erreur inconnue'), 'error');
+                }
+            } catch (error) {
+                showResult('Erreur réseau: ' + error.message, 'error');
+            } finally {
+                uploadBtn.disabled = selectedFiles.length === 0;
+                uploadBtn.textContent = 'Télécharger les documents';
+            }
+        });
+
+        function showResult(message, type) {
+            result.className = `result ${type}`;
+            result.textContent = message;
+        }
+
+        // Auto-login au chargement
+        window.addEventListener('load', login);
+    </script>
+</body>
+
+</html>

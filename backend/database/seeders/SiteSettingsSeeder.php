@@ -37,7 +37,7 @@ class SiteSettingsSeeder extends Seeder
             ],
             [
                 'key' => 'site_description',
-                'value' => ['text' => 'Khayroukum est une plateforme participative dédiée au financement et au suivi des projets de développement rural au Mali. Nous connectons les communautés rurales, les prestataires locaux et les financeurs pour créer un impact durable.'],
+                'value' => ['text' => 'Khayroukum est une plateforme participative dédiée au financement et au suivi des projets de développement rural au Sénégal. Nous connectons les communautés rurales, les prestataires locaux et les financeurs pour créer un impact durable.'],
                 'type' => 'textarea',
                 'group' => 'general',
                 'label' => 'Description du site',
@@ -101,7 +101,7 @@ class SiteSettingsSeeder extends Seeder
             // Paramètres de contact
             [
                 'key' => 'contact_email',
-                'value' => ['email' => 'contact@khayroukum.ml'],
+                'value' => ['email' => 'contact@khayroukum.sn'],
                 'type' => 'email',
                 'group' => 'contact',
                 'label' => 'Email de contact',
@@ -111,7 +111,7 @@ class SiteSettingsSeeder extends Seeder
             ],
             [
                 'key' => 'contact_phone',
-                'value' => ['phone' => '+223 70 00 00 00'],
+                'value' => ['phone' => '+221 70 00 00 00'],
                 'type' => 'text',
                 'group' => 'contact',
                 'label' => 'Téléphone de contact',
@@ -121,7 +121,7 @@ class SiteSettingsSeeder extends Seeder
             ],
             [
                 'key' => 'contact_address',
-                'value' => ['text' => 'Hamdallaye ACI 2000, Bamako, Mali'],
+                'value' => ['text' => 'Plateau, Rue 6, Dakar, Sénégal'],
                 'type' => 'text',
                 'group' => 'contact',
                 'label' => 'Adresse physique',
@@ -153,7 +153,7 @@ class SiteSettingsSeeder extends Seeder
             // Paramètres SEO
             [
                 'key' => 'meta_keywords',
-                'value' => ['text' => 'développement rural, Mali, financement participatif, projets communautaires, transparence, eau potable, agriculture durable'],
+                'value' => ['text' => 'développement rural, Sénégal, financement participatif, projets communautaires, transparence, eau potable, agriculture durable'],
                 'type' => 'text',
                 'group' => 'seo',
                 'label' => 'Mots-clés SEO',

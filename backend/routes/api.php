@@ -7,6 +7,8 @@ use App\Http\Controllers\ProjetController;
 use App\Http\Controllers\DocumentTechniqueController;
 use App\Http\Controllers\Api\ProjetDocumentController;
 use App\Http\Controllers\Api\PublicController;
+use App\Http\Controllers\Api\ImageUploadController;
+use App\Http\Controllers\Api\MultipleDocumentUploadController;
 use App\Http\Controllers\OffreFinancementController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\DashboardController;
@@ -24,7 +26,7 @@ Route::prefix('public')->group(function () {
     Route::get('/villages', [PublicController::class, 'villages']);
     Route::get('/about', [PublicController::class, 'about']);
     Route::post('/contact', [PublicController::class, 'submitContact']);
-    
+
     // Nouvelles routes pour le CMS
     Route::get('/content/{section}', [PublicController::class, 'getContent']);
     Route::get('/settings', [PublicController::class, 'getSettings']);
@@ -33,6 +35,18 @@ Route::prefix('public')->group(function () {
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+
+// Routes pour l'upload d'images et documents (avec authentification)
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/upload/image', [ImageUploadController::class, 'uploadImage']);
+    Route::delete('/upload/image', [ImageUploadController::class, 'deleteImage']);
+
+    // Routes pour l'upload multiple de documents
+    Route::post('/projects/{project}/documents/multiple', [MultipleDocumentUploadController::class, 'uploadMultiple']);
+    Route::get('/projects/{project}/documents', [MultipleDocumentUploadController::class, 'getProjectDocuments']);
+    Route::delete('/documents/{document}', [MultipleDocumentUploadController::class, 'deleteDocument']);
+});
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
 
@@ -54,7 +68,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('projets/{projet}/documents', [ProjetDocumentController::class, 'index']);
     Route::get('documents/{document}/download', [ProjetDocumentController::class, 'download'])->name('api.documents.download');
     Route::delete('documents/{document}', [ProjetDocumentController::class, 'destroy']);
-    
+
     // Documents du prestataire
     Route::get('prestataire/documents', [ProjetDocumentController::class, 'prestataireDocuments'])->middleware('role:prestataire');
     Route::delete('prestataire/documents/{id}', [ProjetDocumentController::class, 'prestataireDestroy'])->middleware('role:prestataire');
