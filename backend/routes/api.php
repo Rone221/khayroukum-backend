@@ -16,6 +16,7 @@ use App\Http\Controllers\PrestataireDashboardController;
 use App\Http\Controllers\Admin\ContentController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\MediaController;
+use App\Http\Controllers\ContributionController;
 
 // Routes publiques (sans authentification)
 Route::prefix('public')->group(function () {
@@ -83,6 +84,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('profile', [ProfileController::class, 'update']);
     Route::put('profile/password', [ProfileController::class, 'updatePassword']);
     Route::get('profile/activity', [ProfileController::class, 'activity']);
+
+    // Routes des contributions
+    Route::get('contributions', [ContributionController::class, 'index'])->middleware('role:donateur');
+    Route::get('me/contributions', [ContributionController::class, 'myContributions'])->middleware('role:donateur');
+    Route::get('me/stats', [ContributionController::class, 'myStats'])->middleware('role:donateur');
 
     // Routes du dashboard prestataire
     Route::get('prestataire/stats', [PrestataireDashboardController::class, 'stats'])->middleware('role:prestataire');

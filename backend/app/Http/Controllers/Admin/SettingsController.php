@@ -11,19 +11,13 @@ use Illuminate\Support\Facades\Validator;
 
 class SettingsController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth:sanctum');
-        $this->middleware('role:admin');
-    }
-
     /**
      * Récupérer tous les paramètres organisés par groupe
      */
     public function index()
     {
         try {
-            $settings = SiteSettings::with('updatedBy')
+            $settings = SiteSettings::with('updater')
                 ->orderBy('group')
                 ->orderBy('order')
                 ->orderBy('key')
@@ -52,7 +46,7 @@ class SettingsController extends Controller
     {
         try {
             $settings = SiteSettings::where('group', $group)
-                ->with('updatedBy')
+                ->with('updater')
                 ->orderBy('order')
                 ->orderBy('key')
                 ->get();
@@ -78,7 +72,7 @@ class SettingsController extends Controller
     public function show($id)
     {
         try {
-            $setting = SiteSettings::with('updatedBy')->findOrFail($id);
+            $setting = SiteSettings::with('updater')->findOrFail($id);
 
             return response()->json([
                 'success' => true,
@@ -138,7 +132,7 @@ class SettingsController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Paramètre créé avec succès',
-                'data' => $setting->load('updatedBy')
+                'data' => $setting->load('updater')
             ], 201);
 
         } catch (\Exception $e) {
@@ -196,7 +190,7 @@ class SettingsController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Paramètre mis à jour avec succès',
-                'data' => $setting->load('updatedBy')
+                'data' => $setting->load('updater')
             ]);
 
         } catch (\Exception $e) {
@@ -268,7 +262,7 @@ class SettingsController extends Controller
                         'updated_by' => Auth::id()
                     ]);
                     
-                    $updatedSettings[] = $setting->load('updatedBy');
+                    $updatedSettings[] = $setting->load('updater');
                 }
             }
 
