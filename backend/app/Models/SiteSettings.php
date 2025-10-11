@@ -71,7 +71,14 @@ class SiteSettings extends Model
 
     public static function getPublicSettings()
     {
-        return self::public()->get()->pluck('value', 'key')->toArray();
+        $settings = self::public()->get();
+        $result = [];
+        
+        foreach ($settings as $setting) {
+            $result[$setting->key] = $setting->value;
+        }
+        
+        return $result;
     }
 
     public static function getGroupedSettings()

@@ -268,7 +268,7 @@ export const useHomepageContent = () => {
         try {
             setLoading(true);
             setError(null);
-            const response = await fetch('/api/public/homepage');
+            const response = await fetch('http://127.0.0.1:8000/api/public/homepage');
 
             if (!response.ok) {
                 throw new Error('Erreur lors du chargement du contenu');
@@ -344,7 +344,7 @@ export const useSiteSettings = () => {
         try {
             setLoading(true);
             setError(null);
-            const response = await fetch('/api/public/settings');
+            const response = await fetch('http://127.0.0.1:8000/api/public/settings');
 
             if (!response.ok) {
                 throw new Error('Erreur lors du chargement des paramètres');

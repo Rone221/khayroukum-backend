@@ -111,7 +111,7 @@ class SiteSettingsSeeder extends Seeder
             ],
             [
                 'key' => 'contact_phone',
-                'value' => ['phone' => '+223 70 00 00 00'],
+                'value' => ['phone' => '+221 70 00 00 00'],
                 'type' => 'text',
                 'group' => 'contact',
                 'label' => 'Téléphone de contact',
@@ -121,7 +121,7 @@ class SiteSettingsSeeder extends Seeder
             ],
             [
                 'key' => 'contact_address',
-                'value' => ['text' => 'Hamdallaye ACI 2000, Bamako, Mali'],
+                'value' => ['text' => 'HLM, Dakar, Senegal'],
                 'type' => 'text',
                 'group' => 'contact',
                 'label' => 'Adresse physique',
