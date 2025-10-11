@@ -73,11 +73,11 @@ class SiteSettings extends Model
     {
         $settings = self::public()->get();
         $result = [];
-        
+
         foreach ($settings as $setting) {
             $result[$setting->key] = $setting->value;
         }
-        
+
         return $result;
     }
 
