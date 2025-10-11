@@ -13,6 +13,7 @@ class DatabaseSeeder extends Seeder
             NotificationSeeder::class,
             SiteContentSeeder::class,
             SiteSettingsSeeder::class,
+            PrestataireDashboardSeeder::class,
         ]);
     }
 }
