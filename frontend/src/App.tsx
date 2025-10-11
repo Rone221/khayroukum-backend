@@ -25,7 +25,7 @@ import AdminProjects from './pages/admin/AdminProjects';
 import AdminProjectDetail from './pages/admin/AdminProjectDetail';
 import AdminUsers from './pages/admin/AdminUsers';
 import AdminNotifications from './pages/admin/AdminNotifications';
-import AdminCMS from './pages/admin/AdminCMS';
+import AdminCMS from "./pages/admin/AdminCMS";
 
 // Prestataire Pages
 import PrestataireDashboard from './pages/prestataire/PrestataireDashboard';

@@ -1,9 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
-import { 
-  Users, 
-  User, 
-  Mail, 
+import React, { useState, useEffect } from "react";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../../components/ui/card";
+import {
+  Users,
+  User,
+  Mail,
   Calendar,
   CheckCircle,
   XCircle,
@@ -16,12 +21,12 @@ import {
   UserCheck,
   Search,
   Filter,
-  MoreVertical
-} from 'lucide-react';
-import { User as UserType } from '../../types';
-import LoadingSpinner from '../../components/ui/LoadingSpinner';
-import UserDetailModal from '../../components/UserDetailModal';
-import api from '../../lib/api';
+  MoreVertical,
+} from "lucide-react";
+import { User as UserType } from "../../types";
+import LoadingSpinner from "../../components/ui/LoadingSpinner";
+import UserDetailModal from "../../components/UserDetailModal";
+import api from "../../lib/api";
 
 interface AdminUser extends UserType {
   village_count?: number;
@@ -33,131 +38,152 @@ interface AdminUser extends UserType {
 const AdminUsers: React.FC = () => {
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [roleFilter, setRoleFilter] = useState<'all' | 'administrateur' | 'prestataire' | 'donateur'>('all');
-  const [statusFilter, setStatusFilter] = useState<'all' | 'verified' | 'pending'>('all');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [roleFilter, setRoleFilter] = useState<
+    "all" | "administrateur" | "prestataire" | "donateur"
+  >("all");
+  const [statusFilter, setStatusFilter] = useState<
+    "all" | "verified" | "pending"
+  >("all");
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    console.log('AdminUsers: Loading users...');
+    console.log("AdminUsers: Loading users...");
     api
-      .get('/admin/users')
-      .then(res => {
-        console.log('AdminUsers: API Response:', res.data);
+      .get("/admin/users")
+      .then((res) => {
+        console.log("AdminUsers: API Response:", res.data);
         setUsers(res.data);
       })
-      .catch(error => {
-        console.error('AdminUsers: API Error:', error);
+      .catch((error) => {
+        console.error("AdminUsers: API Error:", error);
         // Fallback avec données de base si l'endpoint n'existe pas encore
-        api.get('/me')
-          .then(meRes => {
-            setUsers([
-              {
-                id: '1',
-                prenom: 'Admin',
-                nom: 'User',
-                email: 'admin@example.com',
-                role: 'administrateur',
-                is_verified: true,
-                created_at: '2025-08-04T14:58:56.000000Z',
-                project_count: 0,
-                village_count: 0,
-                contribution_count: 0
-              },
-              {
-                id: '2',
-                prenom: 'Presta',
-                nom: 'User',
-                email: 'prestataire@example.com',
-                role: 'prestataire',
-                is_verified: true,
-                created_at: '2025-08-04T14:58:56.000000Z',
-                project_count: 4,
-                village_count: 2,
-                contribution_count: 0
-              },
-              {
-                id: '3',
-                prenom: 'Dona',
-                nom: 'User',
-                email: 'donateur@example.com',
-                role: 'donateur',
-                is_verified: true,
-                created_at: '2025-08-04T14:58:56.000000Z',
-                project_count: 0,
-                village_count: 0,
-                contribution_count: 8,
-                total_contributions: 228854
-              }
-            ]);
-          });
+        api.get("/me").then((meRes) => {
+          setUsers([
+            {
+              id: "1",
+              prenom: "Admin",
+              nom: "User",
+              email: "admin@khayroukum.sn",
+              role: "administrateur",
+              is_verified: true,
+              created_at: "2025-08-04T14:58:56.000000Z",
+              project_count: 0,
+              village_count: 0,
+              contribution_count: 0,
+            },
+            {
+              id: "2",
+              prenom: "Presta",
+              nom: "User",
+              email: "prestataire@example.com",
+              role: "prestataire",
+              is_verified: true,
+              created_at: "2025-08-04T14:58:56.000000Z",
+              project_count: 4,
+              village_count: 2,
+              contribution_count: 0,
+            },
+            {
+              id: "3",
+              prenom: "Dona",
+              nom: "User",
+              email: "donateur@khayroukum.sn",
+              role: "donateur",
+              is_verified: true,
+              created_at: "2025-08-04T14:58:56.000000Z",
+              project_count: 0,
+              village_count: 0,
+              contribution_count: 8,
+              total_contributions: 228854,
+            },
+          ]);
+        });
       })
       .finally(() => setLoading(false));
   }, []);
 
-  const filteredUsers = users.filter(user => {
-    const matchesSearch = 
+  const filteredUsers = users.filter((user) => {
+    const matchesSearch =
       user.prenom.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.nom.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.email.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesRole = roleFilter === 'all' || user.role === roleFilter;
-    const matchesStatus = statusFilter === 'all' || 
-      (statusFilter === 'verified' && user.is_verified) ||
-      (statusFilter === 'pending' && !user.is_verified);
-    
+
+    const matchesRole = roleFilter === "all" || user.role === roleFilter;
+    const matchesStatus =
+      statusFilter === "all" ||
+      (statusFilter === "verified" && user.is_verified) ||
+      (statusFilter === "pending" && !user.is_verified);
+
     return matchesSearch && matchesRole && matchesStatus;
   });
 
   const getRoleIcon = (role: string) => {
     switch (role) {
-      case 'administrateur': return Crown;
-      case 'prestataire': return Wrench;
-      case 'donateur': return Heart;
-      default: return User;
+      case "administrateur":
+        return Crown;
+      case "prestataire":
+        return Wrench;
+      case "donateur":
+        return Heart;
+      default:
+        return User;
     }
   };
 
   const getRoleColor = (role: string) => {
     switch (role) {
-      case 'administrateur': return 'text-purple-600 bg-purple-100';
-      case 'prestataire': return 'text-blue-600 bg-blue-100';
-      case 'donateur': return 'text-green-600 bg-green-100';
-      default: return 'text-gray-600 bg-gray-100';
+      case "administrateur":
+        return "text-purple-600 bg-purple-100";
+      case "prestataire":
+        return "text-blue-600 bg-blue-100";
+      case "donateur":
+        return "text-green-600 bg-green-100";
+      default:
+        return "text-gray-600 bg-gray-100";
     }
   };
 
   const getRoleLabel = (role: string) => {
     switch (role) {
-      case 'administrateur': return 'Administrateur';
-      case 'prestataire': return 'Prestataire';
-      case 'donateur': return 'Donateur';
-      default: return role;
+      case "administrateur":
+        return "Administrateur";
+      case "prestataire":
+        return "Prestataire";
+      case "donateur":
+        return "Donateur";
+      default:
+        return role;
     }
   };
 
-  const handleToggleVerification = async (userId: string, currentStatus: boolean) => {
+  const handleToggleVerification = async (
+    userId: string,
+    currentStatus: boolean
+  ) => {
     try {
       await api.patch(`/admin/users/${userId}/toggle-verification`);
-      setUsers(users.map(user => 
-        user.id === userId ? { ...user, is_verified: !currentStatus } : user
-      ));
+      setUsers(
+        users.map((user) =>
+          user.id === userId ? { ...user, is_verified: !currentStatus } : user
+        )
+      );
     } catch (error) {
-      console.error('Error toggling verification:', error);
-      alert('Erreur lors de la modification du statut de vérification');
+      console.error("Error toggling verification:", error);
+      alert("Erreur lors de la modification du statut de vérification");
     }
   };
 
   const handleBanUser = async (userId: string) => {
-    if (!confirm('Êtes-vous sûr de vouloir bannir cet utilisateur ?')) return;
-    
+    if (!confirm("Êtes-vous sûr de vouloir bannir cet utilisateur ?")) return;
+
     try {
       await api.patch(`/admin/users/${userId}/ban`);
-      setUsers(users.filter(user => user.id !== userId));
+      setUsers(users.filter((user) => user.id !== userId));
     } catch (error) {
-      console.error('Error banning user:', error);
-      alert('Erreur lors du bannissement de l\'utilisateur');
+      console.error("Error banning user:", error);
+      alert("Erreur lors du bannissement de l'utilisateur");
     }
   };
 
@@ -181,11 +207,11 @@ const AdminUsers: React.FC = () => {
 
   const stats = {
     total: users.length,
-    admins: users.filter(u => u.role === 'administrateur').length,
-    prestataires: users.filter(u => u.role === 'prestataire').length,
-    donateurs: users.filter(u => u.role === 'donateur').length,
-    verified: users.filter(u => u.is_verified).length,
-    pending: users.filter(u => !u.is_verified).length
+    admins: users.filter((u) => u.role === "administrateur").length,
+    prestataires: users.filter((u) => u.role === "prestataire").length,
+    donateurs: users.filter((u) => u.role === "donateur").length,
+    verified: users.filter((u) => u.is_verified).length,
+    pending: users.filter((u) => !u.is_verified).length,
   };
 
   return (
@@ -193,8 +219,12 @@ const AdminUsers: React.FC = () => {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Gestion des Utilisateurs</h1>
-          <p className="text-gray-600 mt-1">Gérez les comptes utilisateurs et leurs permissions</p>
+          <h1 className="text-2xl font-bold text-gray-900">
+            Gestion des Utilisateurs
+          </h1>
+          <p className="text-gray-600 mt-1">
+            Gérez les comptes utilisateurs et leurs permissions
+          </p>
         </div>
       </div>
 
@@ -205,7 +235,9 @@ const AdminUsers: React.FC = () => {
             <div className="flex items-center space-x-2">
               <Users className="w-8 h-8 text-blue-600" />
               <div>
-                <p className="text-2xl font-bold text-gray-900">{stats.total}</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {stats.total}
+                </p>
                 <p className="text-sm text-gray-600">Total</p>
               </div>
             </div>
@@ -217,7 +249,9 @@ const AdminUsers: React.FC = () => {
             <div className="flex items-center space-x-2">
               <Crown className="w-8 h-8 text-purple-600" />
               <div>
-                <p className="text-2xl font-bold text-gray-900">{stats.admins}</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {stats.admins}
+                </p>
                 <p className="text-sm text-gray-600">Admins</p>
               </div>
             </div>
@@ -229,7 +263,9 @@ const AdminUsers: React.FC = () => {
             <div className="flex items-center space-x-2">
               <Wrench className="w-8 h-8 text-blue-600" />
               <div>
-                <p className="text-2xl font-bold text-gray-900">{stats.prestataires}</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {stats.prestataires}
+                </p>
                 <p className="text-sm text-gray-600">Prestataires</p>
               </div>
             </div>
@@ -241,7 +277,9 @@ const AdminUsers: React.FC = () => {
             <div className="flex items-center space-x-2">
               <Heart className="w-8 h-8 text-green-600" />
               <div>
-                <p className="text-2xl font-bold text-gray-900">{stats.donateurs}</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {stats.donateurs}
+                </p>
                 <p className="text-sm text-gray-600">Donateurs</p>
               </div>
             </div>
@@ -253,7 +291,9 @@ const AdminUsers: React.FC = () => {
             <div className="flex items-center space-x-2">
               <CheckCircle className="w-8 h-8 text-green-600" />
               <div>
-                <p className="text-2xl font-bold text-gray-900">{stats.verified}</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {stats.verified}
+                </p>
                 <p className="text-sm text-gray-600">Vérifiés</p>
               </div>
             </div>
@@ -265,7 +305,9 @@ const AdminUsers: React.FC = () => {
             <div className="flex items-center space-x-2">
               <XCircle className="w-8 h-8 text-orange-600" />
               <div>
-                <p className="text-2xl font-bold text-gray-900">{stats.pending}</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {stats.pending}
+                </p>
                 <p className="text-sm text-gray-600">En attente</p>
               </div>
             </div>
@@ -296,7 +338,15 @@ const AdminUsers: React.FC = () => {
               <Filter className="w-4 h-4 text-gray-500" />
               <select
                 value={roleFilter}
-                onChange={(e) => setRoleFilter(e.target.value as 'all' | 'administrateur' | 'prestataire' | 'donateur')}
+                onChange={(e) =>
+                  setRoleFilter(
+                    e.target.value as
+                      | "all"
+                      | "administrateur"
+                      | "prestataire"
+                      | "donateur"
+                  )
+                }
                 className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               >
                 <option value="all">Tous les rôles</option>
@@ -310,7 +360,11 @@ const AdminUsers: React.FC = () => {
             <div>
               <select
                 value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value as 'all' | 'verified' | 'pending')}
+                onChange={(e) =>
+                  setStatusFilter(
+                    e.target.value as "all" | "verified" | "pending"
+                  )
+                }
                 className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               >
                 <option value="all">Tous les statuts</option>
@@ -332,7 +386,10 @@ const AdminUsers: React.FC = () => {
             {filteredUsers.map((user) => {
               const RoleIcon = getRoleIcon(user.role);
               return (
-                <div key={user.id} className="flex items-center justify-between p-4 border border-gray-100 rounded-xl hover:bg-gray-50 transition-colors">
+                <div
+                  key={user.id}
+                  className="flex items-center justify-between p-4 border border-gray-100 rounded-xl hover:bg-gray-50 transition-colors"
+                >
                   <div className="flex items-center space-x-4 flex-1">
                     {/* Avatar */}
                     <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
@@ -345,7 +402,11 @@ const AdminUsers: React.FC = () => {
                         <h3 className="font-semibold text-gray-900">
                           {user.prenom} {user.nom}
                         </h3>
-                        <span className={`inline-flex items-center px-2 py-1 text-xs font-medium rounded-full ${getRoleColor(user.role)}`}>
+                        <span
+                          className={`inline-flex items-center px-2 py-1 text-xs font-medium rounded-full ${getRoleColor(
+                            user.role
+                          )}`}
+                        >
                           <RoleIcon className="w-3 h-3 mr-1" />
                           {getRoleLabel(user.role)}
                         </span>
@@ -368,24 +429,33 @@ const AdminUsers: React.FC = () => {
                         <div className="flex items-center space-x-1">
                           <Calendar className="w-3 h-3" />
                           <span>
-                            {user.created_at ? new Date(user.created_at).toLocaleDateString('fr-FR') : 'Date inconnue'}
+                            {user.created_at
+                              ? new Date(user.created_at).toLocaleDateString(
+                                  "fr-FR"
+                                )
+                              : "Date inconnue"}
                           </span>
                         </div>
                       </div>
 
                       {/* Stats */}
                       <div className="flex items-center space-x-4 text-xs text-gray-500 mt-2">
-                        {user.role === 'prestataire' && (
+                        {user.role === "prestataire" && (
                           <>
                             <span>{user.village_count || 0} villages</span>
                             <span>{user.project_count || 0} projets</span>
                           </>
                         )}
-                        {user.role === 'donateur' && (
+                        {user.role === "donateur" && (
                           <>
-                            <span>{user.contribution_count || 0} contributions</span>
+                            <span>
+                              {user.contribution_count || 0} contributions
+                            </span>
                             {user.total_contributions && (
-                              <span>{user.total_contributions.toLocaleString()}€ donnés</span>
+                              <span>
+                                {user.total_contributions.toLocaleString()}€
+                                donnés
+                              </span>
                             )}
                           </>
                         )}
@@ -395,31 +465,36 @@ const AdminUsers: React.FC = () => {
 
                   {/* Actions */}
                   <div className="flex items-center space-x-2">
-                    {user.role !== 'administrateur' && (
+                    {user.role !== "administrateur" && (
                       <button
-                        onClick={() => handleToggleVerification(user.id, user.is_verified || false)}
+                        onClick={() =>
+                          handleToggleVerification(
+                            user.id,
+                            user.is_verified || false
+                          )
+                        }
                         className={`px-3 py-1 text-xs font-medium rounded-full transition-colors ${
-                          user.is_verified 
-                            ? 'bg-orange-100 text-orange-700 hover:bg-orange-200' 
-                            : 'bg-green-100 text-green-700 hover:bg-green-200'
+                          user.is_verified
+                            ? "bg-orange-100 text-orange-700 hover:bg-orange-200"
+                            : "bg-green-100 text-green-700 hover:bg-green-200"
                         }`}
                       >
-                        {user.is_verified ? 'Dé-vérifier' : 'Vérifier'}
+                        {user.is_verified ? "Dé-vérifier" : "Vérifier"}
                       </button>
                     )}
 
                     <button
                       onClick={() => handleViewUser(user.id)}
-                      className="p-2 text-gray-400 hover:text-blue-600 transition-colors" 
+                      className="p-2 text-gray-400 hover:text-blue-600 transition-colors"
                       title="Voir détails"
                     >
                       <Eye className="w-4 h-4" />
                     </button>
 
-                    {user.role !== 'administrateur' && (
-                      <button 
+                    {user.role !== "administrateur" && (
+                      <button
                         onClick={() => handleBanUser(user.id)}
-                        className="p-2 text-gray-400 hover:text-red-600 transition-colors" 
+                        className="p-2 text-gray-400 hover:text-red-600 transition-colors"
                         title="Bannir utilisateur"
                       >
                         <Ban className="w-4 h-4" />
@@ -434,8 +509,12 @@ const AdminUsers: React.FC = () => {
           {filteredUsers.length === 0 && (
             <div className="text-center py-12">
               <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">Aucun utilisateur trouvé</h3>
-              <p className="text-gray-600">Aucun utilisateur ne correspond aux critères de recherche.</p>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                Aucun utilisateur trouvé
+              </h3>
+              <p className="text-gray-600">
+                Aucun utilisateur ne correspond aux critères de recherche.
+              </p>
             </div>
           )}
         </CardContent>
