@@ -14,6 +14,7 @@ Les vidéos finies sont dans `../videos-test/`.
 | `pub-7-reprendre-le-coran/` | « Reprendre la lecture du Coran à l'âge adulte », sans voix off, 58 s | ✅ `videos-test/alif-academie-reprendre-le-coran.mp4` |
 | `pub-8-trois-erreurs/` | « 3 erreurs des adultes qui apprennent à lire le Coran », sans voix off, 56 s | ✅ `videos-test/alif-academie-trois-erreurs.mp4` |
 | `pub-9-compte-a-rebours-ramadan/` | « Compte à rebours avant le Ramadan », sans voix off, 56 s — **valable fin novembre 2026** | ✅ `videos-test/alif-academie-compte-a-rebours-ramadan.mp4` |
+| `pub-10-film-3d-alif/` | Film d'animation 3D « Le voyage d'Alif », sans voix off, 54 s | ✅ `videos-test/alif-academie-film-3d.mp4` |
 
 ## Principe
 
@@ -163,3 +164,20 @@ selon l'observation de la lune). 2 cours/semaine × 11,4 semaines ≈ 22 cours. 
 
 Ciel étoilé en accéléré, croissant de lune, lanternes (fanous) suspendues, bokeh chaud ; compteur 120 → 80 jours,
 calendrier de 80 points, « écouter » barré → « lire », compteur de 22 cours, badge « Ramadan · J-80 » permanent.
+
+## Pub 10 — Film d'animation 3D « Le voyage d'Alif » (sans voix off)
+
+Rendu 3D temps réel avec [Three.js](https://threejs.org) 0.160 (WebGL, ombres douces, bloom, environnement PBR),
+capturé image par image. Personnage : la lettre ا en or, extrudée en 3D à partir de la police Scheherazade New
+(`glyphs.js`, contours exportés avec opentype.js depuis `sch1.woff`) ; lettres ب ت ث ج en vert laqué.
+Trois décors : le bureau la nuit (livre, lampe, pile de livres, fenêtre aux volets) → survol d'une ville de la nuit à
+l'aube (immeubles aux fenêtres allumées, mer, mosquée) → salon à l'aube (canapé vert velours, table basse, livre).
+
+```bash
+cd video-studio && npm install three@0.160.0          # une fois
+python3 -m http.server 8765                          # les modules ES exigent un serveur http
+node tools/gl.js preview http://127.0.0.1:8765/pub-10-film-3d-alif/index.html /tmp 3 20 40
+node tools/gl.js render  http://127.0.0.1:8765/pub-10-film-3d-alif/index.html video.mp4 audio.m4a 30
+ffmpeg -i video.mp4 -i pub-10-film-3d-alif/fond-sonore-54s.m4a -map 0:v -map 1:a -c copy -shortest final.mp4
+```
+Sans carte graphique, Chromium utilise SwiftShader (≈ 0,6 s par image en 1080×1920, ~17 min pour 54 s).
