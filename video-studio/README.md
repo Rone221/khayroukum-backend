@@ -9,6 +9,7 @@ Les vidéos finies sont dans `../videos-test/`.
 | `pub-2-tout-commence-par-un-point/` | Film « de la nuit à l'aube », voix homme, 72 s | ✅ `videos-test/alif-academie-voix-homme.mp4` |
 | `pub-3-personnages-reels/` | « Le savoir qui vient à vous », images du catalogue ALIF, voix homme, 51 s | ✅ `videos-test/alif-academie-personnages.mp4` |
 | `pub-4-mots-arabes/` | « Vous parlez arabe sans le savoir », sans voix off, fond sonore ALIF, 56 s | ✅ `videos-test/alif-academie-mots-arabes.mp4` |
+| `pub-5-mots-arabes-voix-off/` | Même sujet, voix off homme « professeur », fond sonore en retrait, 50 s | ✅ `videos-test/alif-academie-mots-arabes-voix-off.mp4` |
 
 ## Principe
 
@@ -112,3 +113,19 @@ rayons de lumière, motif géométrique, bokeh) sont générés en temps réel s
 ```bash
 node ../tools/render.js "$PWD" "$PWD/fond-sonore-56s.m4a" "$PWD/video.mp4" 30
 ```
+
+## Pub 5 — « Vous parlez arabe sans le savoir », voix off « professeur »
+
+Même animation que la pub 4, recalée sur une voix off (Piper Tom, `tts_voix_prof.py` : débit un peu plus lent,
+pauses de 0,45 s). Traitement de la voix (ffmpeg) : -4 % de hauteur sans changer le débit, chaleur dans les graves,
+présence vers 3 kHz, compression légère et petite réverbération de pièce :
+
+```
+aresample=48000,asetrate=48000*0.96,aresample=48000,atempo=1.0416667,lowshelf=f=140:g=3.5,
+equalizer=f=320:t=q:w=1.2:g=-2,equalizer=f=3200:t=q:w=1.5:g=2.5,highshelf=f=9000:g=-2,
+acompressor=threshold=-22dB:ratio=3:attack=8:release=150:makeup=2,aecho=0.85:0.6:38|67:0.12|0.07
+```
+
+Les mots arabes sont écrits phonétiquement pour la voix (`tts_script.json` : soukkar, kahwa, koutn, makhazine,
+Ouatsappe) et correctement à l'écran. Le fond sonore ALIF passe sous la voix (`mix.m4a`, compression déclenchée
+par la voix + volume 55 %).
