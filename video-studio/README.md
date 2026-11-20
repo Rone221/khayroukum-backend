@@ -12,6 +12,7 @@ Les vidéos finies sont dans `../videos-test/`.
 | `pub-5-mots-arabes-voix-off/` | Même sujet, voix off homme « professeur », fond sonore en retrait, 50 s | ✅ `videos-test/alif-academie-mots-arabes-voix-off.mp4` |
 | `pub-6-racines-arabes/` | « La magie des racines » (ك ت ب), sans voix off, fond sonore ALIF, 53 s | ✅ `videos-test/alif-academie-racines-arabes.mp4` |
 | `pub-7-reprendre-le-coran/` | « Reprendre la lecture du Coran à l'âge adulte », sans voix off, 58 s | ✅ `videos-test/alif-academie-reprendre-le-coran.mp4` |
+| `pub-8-trois-erreurs/` | « 3 erreurs des adultes qui apprennent à lire le Coran », sans voix off, 56 s | ✅ `videos-test/alif-academie-trois-erreurs.mp4` |
 
 ## Principe
 
@@ -145,3 +146,10 @@ Récit en lumière : l'alphabet arabe en tableau (enfance, lumière ambrée) →
 → nuit étoilée, livre ouvert au trait, les lettres s'envolent en étoiles (« tu ne sais plus lire ») → vagues calmes et
 petites lumières (« tu n'es pas seul ») → lever du soleil, les étoiles reviennent à leur place dans le tableau
 (« revient vite ») → cours, ALIF, WhatsApp. Aucun texte du Coran n'est affiché (seulement l'alphabet et un livre au trait).
+
+## Pub 8 — « 3 erreurs des adultes qui apprennent à lire le Coran » (sans voix off)
+
+Format liste en motion design : grands chiffres tracés à l'or, formes géométriques et chiffres flottants sur dégradé vert,
+traînées d'or à chaque section. Un schéma par erreur (seul face à un enseignant absent ; courbe de concentration qui
+chute après 1 h ; courbe d'oubli entre deux cours), puis la solution en 3 cartes cochées et, en miroir de l'erreur 3,
+la courbe qui reste haute avec un cours suivi chaque semaine. Les schémas illustrent le message, ce ne sont pas des données mesurées.

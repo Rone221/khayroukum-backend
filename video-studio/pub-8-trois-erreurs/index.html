@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Alif Académie — 3 erreurs des adultes</title>
+<style>
+@font-face{font-family:Lora;font-weight:700;src:url(../shared/f/lora-latin-700-normal.woff2)}
+@font-face{font-family:Lora;font-style:italic;font-weight:700;src:url(../shared/f/lora-latin-700-italic.woff2)}
+@font-face{font-family:Cairo;font-weight:600;src:url(../shared/f/cairo-latin-600-normal.woff2)}
+@font-face{font-family:Cairo;font-weight:700;src:url(../shared/f/cairo-latin-700-normal.woff2)}
+@font-face{font-family:Cairo;font-weight:800;src:url(../shared/f/cairo-latin-800-normal.woff2)}
+:root{--gold:#d4a93c;--gold2:#f0d27a;--cream:#f7f1e3;--red:#e8806a;--ok:#5fd38d}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#04150c}
+#stage{position:relative;width:1080px;height:1920px;overflow:hidden;font-family:Cairo,sans-serif;color:var(--cream)}
+canvas{position:absolute;inset:0}
+.o{position:absolute;left:0;right:0;text-align:center;opacity:0}
+.lora{font-family:Lora;font-weight:700}
+.it{font-family:Lora;font-style:italic;font-weight:700}
+.sh{text-shadow:0 4px 24px rgba(0,0,0,.55)}
+.glow{text-shadow:0 0 40px rgba(240,210,122,.45),0 3px 16px rgba(0,0,0,.5)}
+.kick{font-weight:800;letter-spacing:12px;font-size:36px}
+.card{position:absolute;left:90px;right:90px;height:200px;border-radius:34px;background:rgba(5,40,22,.72);border:3px solid rgba(95,211,141,.75);display:flex;align-items:center;gap:30px;padding:0 40px;opacity:0;box-shadow:0 18px 50px rgba(0,0,0,.3)}
+.card .ck{width:96px;height:96px;border-radius:50%;background:var(--ok);display:flex;align-items:center;justify-content:center;flex:none}
+.card .ck svg{width:60px;height:60px}
+.card .tx{font-size:48px;font-weight:800;line-height:1.15;text-align:left}
+.card .tx span{display:block;font-size:30px;font-weight:600;color:rgba(247,241,227,.7);margin-top:4px}
+.pill{display:inline-block;padding:16px 34px;margin:10px 8px;border-radius:999px;border:2px solid rgba(212,169,60,.85);background:rgba(4,25,12,.6);font-size:44px;font-weight:700;color:var(--cream)}
+.wa{display:inline-flex;align-items:center;gap:24px;padding:24px 48px;border-radius:999px;background:#25d366;color:#fff;font-size:66px;font-weight:800;box-shadow:0 18px 50px rgba(37,211,102,.35)}
+.wa svg{width:84px;height:84px}
+.lab{position:absolute;font-size:30px;font-weight:700;color:rgba(247,241,227,.75)}
+#bar{position:absolute;left:0;top:0;height:8px;background:linear-gradient(90deg,var(--gold),var(--gold2));z-index:9}
+</style>
+</head>
+<body>
+<div id="stage">
+  <canvas id="c" width="1080" height="1920"></canvas>
+
+  <div class="o lora glow" id="h1" style="top:780px;font-size:120px;line-height:1.05"><span style="color:var(--gold2)">erreurs</span></div>
+  <div class="o lora sh" id="h2" style="top:960px;font-size:70px;line-height:1.2">qui empêchent les adultes<br>de progresser</div>
+  <div class="o kick" id="h3" style="top:1230px;color:var(--gold2);font-size:30px">EN LISANT LE CORAN</div>
+
+  <div class="o kick" id="ek" style="top:200px;color:var(--red)"></div>
+  <div class="o lora sh" id="et" style="top:560px;font-size:84px;line-height:1.15"></div>
+  <div class="o it sh" id="es" style="top:1430px;font-size:58px;line-height:1.3;color:var(--gold2)"></div>
+  <div id="labs"></div>
+
+  <div class="o kick" id="sk" style="top:230px;color:var(--ok);font-size:40px">LA SOLUTION</div>
+  <div class="card" id="k1" style="top:420px"><div class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="#06301a" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div><div class="tx">Un enseignant pour vous seul<span>il corrige chaque prononciation</span></div></div>
+  <div class="card" id="k2" style="top:660px"><div class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="#06301a" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div><div class="tx">Des cours de 45 min à 1 h<span>assez long pour progresser, assez court pour rester concentré</span></div></div>
+  <div class="card" id="k3" style="top:900px"><div class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="#06301a" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div><div class="tx">Un suivi chaque semaine<span>révisions régulières pour ne rien oublier</span></div></div>
+
+  <img class="o" id="a1" src="../shared/a/logo_white.png" style="left:360px;width:360px;height:360px;top:260px">
+  <div class="o lora sh" id="a2" style="top:670px;font-size:64px;line-height:1.25">C'est ce que nous faisons<br>chez <span style="color:var(--gold2)">ALIF ACADEMIE</span></div>
+  <div class="o" id="a3" style="top:900px"><span class="pill">À domicile · Dakar</span><span class="pill">En ligne</span></div>
+
+  <div class="o lora glow" id="z1" style="top:300px;font-size:100px;line-height:1.15">Écrivez-nous<br>sur WhatsApp</div>
+  <div class="o" id="z2" style="top:600px"><div class="wa"><svg viewBox="0 0 64 64"><path d="M32 8C18.7 8 8 18.2 8 30.8c0 4.6 1.4 8.8 3.9 12.4L9 56l13.3-3.4c3 1.5 6.3 2.2 9.7 2.2 13.3 0 24-10.2 24-22.8S45.3 8 32 8z" fill="#fff"/><path d="M24 22c1-.6 2.2-.4 2.8.7l2.2 4.4c.4.9.2 1.9-.6 2.5l-1.4 1.1c1.6 3.2 4 5.6 7.2 7.2l1.1-1.4c.6-.8 1.6-1 2.5-.6l4.4 2.2c1.1.6 1.3 1.8.7 2.8-1.6 2.7-4.6 3.8-7.6 2.6-6.4-2.6-11.4-7.6-14-14-1.2-3 0-6 2.7-7.5z" fill="#25d366"/></svg><span id="num"></span></div></div>
+  <div class="o" id="z3" style="top:810px"><div style="display:inline-block;background:#fff;border-radius:34px;padding:28px;border:3px solid rgba(212,169,60,.7);box-shadow:0 20px 60px rgba(0,0,0,.45)"><img src="../shared/a/qr.png" style="width:340px;height:340px;display:block;image-rendering:pixelated"></div></div>
+  <div class="o" id="z4" style="top:1270px;font-size:42px;font-weight:700;line-height:1.6">ALIF ACADEMIE · @alif_academie<br><span style="color:var(--gold2)">Vague de connaissances sur votre canapé</span></div>
+
+  <div id="bar"></div>
+</div>
+<script>
+const $ = id => document.getElementById(id), ctx = $('c').getContext('2d'), W_ = 1080, H_ = 1920;
+const cl = x => Math.max(0, Math.min(1, x));
+const eo = x => 1 - Math.pow(1 - cl(x), 3);
+const eio = x => { x = cl(x); return x < .5 ? 4*x*x*x : 1 - Math.pow(-2*x + 2, 3) / 2; };
+const back = x => { x = cl(x); const c = 1.4, c3 = c + 1; return 1 + c3*Math.pow(x - 1, 3) + c*Math.pow(x - 1, 2); };
+const lerp = (a, b, p) => a + (b - a) * p;
+function K(t, kf) { if (t <= kf[0][0]) return kf[0][1];
+  for (let i = 1; i < kf.length; i++) if (t <= kf[i][0]) { const p = eio((t - kf[i-1][0]) / (kf[i][0] - kf[i-1][0])); return lerp(kf[i-1][1], kf[i][1], p); }
+  return kf[kf.length - 1][1]; }
+function vis(id, t, a, b, o = {}) {
+  const el = $(id), d = o.d ?? .6, dOut = o.out ?? .4, pin = (o.ease ?? eo)((t - a) / d), pout = b == null ? 1 : cl((b - t) / dOut);
+  const op = Math.min(cl((t - a) / d), pout); el.style.opacity = op; el.style.display = op <= .001 ? 'none' : (o.disp ?? 'block');
+  el.style.transform = `translate(${(o.x ?? 0) * (1 - pin)}px,${(o.y ?? 40) * (1 - pin) - (o.yOut ?? 20) * (1 - pout)}px) scale(${lerp(o.s ?? 1, 1, pin)})`;
+  el.style.filter = o.blur ? `blur(${(1 - Math.min(pin, pout)) * o.blur}px)` : ''; return pin; }
+function rng(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+  t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const rgb = (c, a = 1) => `rgba(${c[0] | 0},${c[1] | 0},${c[2] | 0},${a})`;
+function glowDot(x, y, r, a, col) { if (a <= 0.002 || r <= 0) return; const g = ctx.createRadialGradient(x, y, 0, x, y, r);
+  g.addColorStop(0, rgb(col, a)); g.addColorStop(.45, rgb(col, a * .4)); g.addColorStop(1, rgb(col, 0)); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, r, 0, 6.283); ctx.fill(); }
+function drawPoly(pts, p) { if (p <= 0 || pts.length < 2) return; let L = 0; for (let i = 1; i < pts.length; i++) L += Math.hypot(pts[i][0] - pts[i-1][0], pts[i][1] - pts[i-1][1]);
+  const target = L * cl(p); let acc = 0; ctx.beginPath(); ctx.moveTo(...pts[0]);
+  for (let i = 1; i < pts.length; i++) { const seg = Math.hypot(pts[i][0] - pts[i-1][0], pts[i][1] - pts[i-1][1]);
+    if (acc + seg >= target) { const f = seg ? (target - acc) / seg : 0; ctx.lineTo(lerp(pts[i-1][0], pts[i][0], f), lerp(pts[i-1][1], pts[i][1], f)); break; } ctx.lineTo(...pts[i]); acc += seg; }
+  ctx.stroke(); }
+
+// --- rythme : respirations mesurées de la piste ---
+const P = [2.3, 5.6, 9.6, 12.9, 16.9, 20.2, 24.2, 27.5, 31.5, 34.8, 38.8, 42.1, 46.1, 49.4, 53.4, 56.7];
+const TOTAL = 56.0;
+const T = { hook: 0, e1: 5.3, e2: 12.6, e3: 19.9, sol: 27.2, alif: 38.5, cta: 45.8 };
+const ERR = [
+  { k: 'ERREUR N°1', t: 'Apprendre seul', s: 'sans personne pour corriger<br>la prononciation.', a: T.e1, b: T.e2 },
+  { k: 'ERREUR N°2', t: 'Des cours trop longs', s: 'Au-delà d\'une heure,<br>la concentration baisse.', a: T.e2, b: T.e3 },
+  { k: 'ERREUR N°3', t: 'Ne pas réviser<br>entre les cours', s: 'Ce qu\'on a appris s\'efface.', a: T.e3, b: T.sol },
+];
+
+// --- fond : dégradé vert en mouvement, formes géométriques, chiffres abstraits, traînées d'or ---
+const R = rng(8);
+const SHAPES = Array.from({ length: 22 }, () => ({ x: R() * W_, y: R() * H_, s: 40 + R() * 140, k: Math.floor(R() * 3), rot: R() * 6.3, vr: (R() - .5) * .4, vy: 6 + R() * 18, a: .06 + R() * .12 }));
+const DIGITS = Array.from({ length: 14 }, () => ({ x: R() * W_, y: R() * H_, d: '0123456789'[Math.floor(R() * 10)], s: 120 + R() * 260, vy: 8 + R() * 20, a: .03 + R() * .05 }));
+function background(t) {
+  const sh = Math.sin(t * .12) * 300;
+  const g = ctx.createLinearGradient(sh, 0, W_ - sh, H_); g.addColorStop(0, '#062b17'); g.addColorStop(.5, '#0b4a28'); g.addColorStop(1, '#031a0d');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W_, H_);
+  glowDot(540 + Math.sin(t * .3) * 200, 700 + Math.cos(t * .23) * 200, 900, .18, [60, 170, 100]);
+  ctx.save(); ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  DIGITS.forEach(d => { const y = ((d.y - t * d.vy) % (H_ + 400) + H_ + 400) % (H_ + 400) - 200; ctx.font = `700 ${d.s}px Lora`; ctx.fillStyle = `rgba(240,210,122,${d.a})`; ctx.fillText(d.d, d.x, y); });
+  ctx.lineWidth = 2;
+  SHAPES.forEach(s => { const y = ((s.y - t * s.vy) % (H_ + 300) + H_ + 300) % (H_ + 300) - 150, r = s.rot + t * s.vr;
+    ctx.strokeStyle = `rgba(240,210,122,${s.a})`; ctx.save(); ctx.translate(s.x, y); ctx.rotate(r); ctx.beginPath();
+    if (s.k === 0) ctx.arc(0, 0, s.s / 2, 0, 6.283); else if (s.k === 1) ctx.rect(-s.s / 2, -s.s / 2, s.s, s.s); else { for (let i = 0; i < 3; i++) { const a = i * 2.094 - 1.571; i ? ctx.lineTo(Math.cos(a) * s.s / 2, Math.sin(a) * s.s / 2) : ctx.moveTo(Math.cos(a) * s.s / 2, Math.sin(a) * s.s / 2); } ctx.closePath(); }
+    ctx.stroke(); ctx.restore(); });
+  ctx.restore();
+}
+// traînées d'or au passage d'une section
+function streaks(t) { [T.e1, T.e2, T.e3, T.sol, T.alif, T.cta].forEach((t0, k) => { const lt = t - t0 + .25; if (lt < 0 || lt > .9) return;
+  ctx.save(); ctx.globalCompositeOperation = 'lighter';
+  for (let i = 0; i < 5; i++) { const p = eo(lt / .8 - i * .05), y = 300 + i * 330 + k * 40, x = lerp(-600, 1700, p);
+    const g = ctx.createLinearGradient(x - 600, y, x, y - 160); g.addColorStop(0, 'rgba(240,210,122,0)'); g.addColorStop(1, `rgba(255,225,150,${.5 * (1 - lt / .9)})`);
+    ctx.strokeStyle = g; ctx.lineWidth = 6 - i * .6; ctx.beginPath(); ctx.moveTo(x - 600, y + 160 * 0); ctx.lineTo(x, y - 160); ctx.stroke(); }
+  ctx.restore(); }); }
+// grand chiffre tracé à l'or
+function bigNumber(n, t, t0, t1, cx, cy, size) { const p = eio((t - t0) / 1.0), out = cl((t1 + .3 - t) / .4); if (p <= 0 || out <= 0) return;
+  ctx.save(); ctx.globalAlpha = out; ctx.font = `700 ${size}px Lora`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.lineWidth = 6; ctx.strokeStyle = '#f0d27a'; ctx.shadowColor = 'rgba(240,210,122,.8)'; ctx.shadowBlur = 30;
+  ctx.setLineDash([3000]); ctx.lineDashOffset = 3000 * (1 - p); ctx.strokeText(n, cx, cy); ctx.setLineDash([]);
+  ctx.globalAlpha = out * eo((t - t0 - .7) / .6); ctx.fillStyle = 'rgba(240,210,122,.9)'; ctx.fillText(n, cx, cy); ctx.restore(); }
+
+// --- schémas des erreurs ---
+const labs = $('labs');
+function label(id, txt, x, y, col) { let el = $(id); if (!el) { el = document.createElement('div'); el.id = id; el.className = 'lab'; labs.appendChild(el); }
+  el.innerHTML = txt; el.style.left = x + 'px'; el.style.top = y + 'px'; if (col) el.style.color = col; return el; }
+function e1(t, a, on) { if (on <= 0) { ['l1a', 'l1b'].forEach(i => $(i) && ($(i).style.opacity = 0)); return; }
+  ctx.save(); ctx.globalAlpha = on; const y = 1080, me = [330, y], th = [760, y];
+  const p1 = eo((t - a - .5) / .6); ctx.fillStyle = '#f7f1e3'; ctx.beginPath(); ctx.arc(me[0], me[1], 70 * p1, 0, 6.283); ctx.fill();
+  // l'enseignant absent : cercle en pointillés
+  const p2 = eo((t - a - 1.1) / .6); ctx.setLineDash([14, 14]); ctx.lineDashOffset = -t * 20; ctx.strokeStyle = `rgba(232,128,106,${p2})`; ctx.lineWidth = 5;
+  ctx.beginPath(); ctx.arc(th[0], th[1], 70, 0, 6.283); ctx.stroke(); ctx.setLineDash([]);
+  ctx.fillStyle = `rgba(232,128,106,${p2})`; ctx.font = '800 80px Cairo'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('?', th[0], th[1] + 4);
+  // onde de la voix qui se perd
+  const p3 = cl((t - a - 1.6) / 1.2); ctx.strokeStyle = 'rgba(240,210,122,.9)'; ctx.lineWidth = 5; ctx.lineCap = 'round';
+  const pts = []; for (let x = 420; x <= 670; x += 4) { const f = (x - 420) / 250, noise = Math.sin(x * .35 + t * 9) * 22 * f * f + Math.sin(x * .9 - t * 13) * 10 * f;
+    pts.push([x, y + Math.sin(x * .08 - t * 6) * 26 * (1 - f * .4) + noise]); }
+  ctx.globalAlpha = on * (1 - .5 * cl((t - a - 3) / 2)); drawPoly(pts, p3); ctx.restore();
+  label('l1a', 'vous', me[0] - 40, y + 95).style.opacity = on * p1; label('l1b', 'personne<br>pour corriger', th[0] - 95, y + 95, '#e8806a').style.opacity = on * p2;
+  $('l1b').style.textAlign = 'center'; $('l1b').style.width = '190px'; }
+function e2(t, a, on) { if (on <= 0) { ['l2a', 'l2b', 'l2c', 'l2d', 'l2e'].forEach(i => $(i) && ($(i).style.opacity = 0)); return; }
+  ctx.save(); ctx.globalAlpha = on; const x0 = 150, x1 = 930, y0 = 1330, y1 = 860, X = m => lerp(x0, x1, m / 90);
+  // axes
+  ctx.strokeStyle = 'rgba(247,241,227,.5)'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(x0, y1 - 20); ctx.lineTo(x0, y0); ctx.lineTo(x1 + 20, y0); ctx.stroke();
+  // zone au-delà d'une heure
+  const pz = eo((t - (a + 4.0)) / .6); ctx.fillStyle = `rgba(232,128,106,${.16 * pz})`; ctx.fillRect(X(60), y1 - 20, X(90) - X(60), y0 - y1 + 20);
+  ctx.setLineDash([10, 10]); ctx.strokeStyle = `rgba(232,128,106,${.8 * pz})`; ctx.beginPath(); ctx.moveTo(X(60), y1 - 20); ctx.lineTo(X(60), y0); ctx.stroke(); ctx.setLineDash([]);
+  // courbe de concentration
+  const curve = []; for (let m = 0; m <= 90; m += 1) { const c = m < 45 ? .92 - m * .001 : m < 60 ? .88 - (m - 45) * .008 : .76 - (m - 60) * .02; curve.push([X(m), lerp(y0, y1, c)]); }
+  const pc = cl((t - a - .8) / 3.2), split = 61; ctx.lineWidth = 7; ctx.lineCap = 'round'; ctx.shadowBlur = 16;
+  ctx.strokeStyle = '#5fd38d'; ctx.shadowColor = 'rgba(95,211,141,.7)'; drawPoly(curve.slice(0, split), cl(pc / (60 / 90)));
+  ctx.strokeStyle = '#e8806a'; ctx.shadowColor = 'rgba(232,128,106,.7)'; drawPoly(curve.slice(split - 1), cl((pc - 60 / 90) / (30 / 90)));
+  ctx.restore();
+  [['l2a', '0', X(0) - 10], ['l2b', '30 min', X(30) - 45], ['l2c', '1 h', X(60) - 22], ['l2d', '1 h 30', X(90) - 45]].forEach(([id, s, x]) => label(id, s, x, y0 + 14).style.opacity = on);
+  label('l2e', 'concentration', x0 + 10, y1 - 80, '#5fd38d').style.opacity = on * cl((t - a - .8) / .5); }
+function e3(t, a, on) { if (on <= 0) { ['l3a', 'l3b', 'l3c'].forEach(i => $(i) && ($(i).style.opacity = 0)); return; }
+  ctx.save(); ctx.globalAlpha = on; const x0 = 170, x1 = 910, y0 = 1330, y1 = 860;
+  ctx.strokeStyle = 'rgba(247,241,227,.5)'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(x0, y1 - 20); ctx.lineTo(x0, y0); ctx.lineTo(x1 + 20, y0); ctx.stroke();
+  // deux cours, une semaine d'écart, sans révision : courbe d'oubli
+  [x0 + 10, x1 - 10].forEach((x, i) => { const p = back((t - a - .4 - i * 2.4) / .5); ctx.fillStyle = '#f0d27a'; ctx.beginPath(); ctx.arc(x, y0, 18 * cl(p), 0, 6.283); ctx.fill(); });
+  const curve = []; for (let i = 0; i <= 100; i++) { const f = i / 100; curve.push([lerp(x0 + 10, x1 - 10, f), lerp(y0, y1, .95 * Math.exp(-f * 2.4) + .05)]); }
+  ctx.lineWidth = 7; ctx.lineCap = 'round'; ctx.strokeStyle = '#e8806a'; ctx.shadowColor = 'rgba(232,128,106,.7)'; ctx.shadowBlur = 16; drawPoly(curve, cl((t - a - .8) / 2.6));
+  ctx.restore();
+  label('l3a', 'cours', x0 - 20, y0 + 26).style.opacity = on; label('l3b', 'cours suivant', x1 - 120, y0 + 26).style.opacity = on * cl((t - a - 2.8) / .4);
+  label('l3c', 'ce que vous retenez', x0 + 20, y1 - 80, '#e8806a').style.opacity = on * cl((t - a - .8) / .5); }
+
+// la solution, en miroir de l'erreur n°3 : avec un suivi chaque semaine, la mémoire reste haute
+function solCurve(t, a, on) { if (on <= 0) { ['l4a', 'l4b'].forEach(i => $(i) && ($(i).style.opacity = 0)); return; }
+  ctx.save(); ctx.globalAlpha = on; const x0 = 170, x1 = 910, y0 = 1560, y1 = 1200;
+  ctx.strokeStyle = 'rgba(247,241,227,.5)'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(x0, y1 - 20); ctx.lineTo(x0, y0); ctx.lineTo(x1 + 20, y0); ctx.stroke();
+  const curve = [], N = 4; let lvl = .55;
+  for (let w = 0; w < N; w++) { const xs = lerp(x0 + 10, x1 - 10, w / N), xe = lerp(x0 + 10, x1 - 10, (w + 1) / N), top = Math.min(.95, .6 + w * .12);
+    for (let i = 0; i <= 25; i++) { const f = i / 25; curve.push([lerp(xs, xe, f), lerp(y0, y1, top - (top - (top - .18 + w * .03)) * (1 - Math.exp(-f * 2.2)))]); } }
+  ctx.lineWidth = 7; ctx.lineCap = 'round'; ctx.strokeStyle = '#5fd38d'; ctx.shadowColor = 'rgba(95,211,141,.7)'; ctx.shadowBlur = 16; drawPoly(curve, cl((t - a) / 2.4));
+  ctx.shadowBlur = 0; for (let w = 0; w <= N; w++) { const x = lerp(x0 + 10, x1 - 10, w / N), p = back((t - a - w * .5) / .4); ctx.fillStyle = '#f0d27a'; ctx.beginPath(); ctx.arc(x, y0, 16 * cl(p), 0, 6.283); ctx.fill(); }
+  ctx.restore();
+  label('l4a', 'ce que vous retenez, avec un cours suivi chaque semaine', x0 + 10, y1 - 85, '#5fd38d').style.opacity = on * cl((t - a) / .5);
+  label('l4b', 'semaine 1 → semaine 4', x1 - 300, y0 + 26).style.opacity = on * cl((t - a - 1) / .5); }
+
+let lastE = -1;
+function render(t) {
+  background(t); streaks(t);
+  // accroche
+  bigNumber('3', t, .2, T.e1, 540, 560, 460);
+  vis('h1', t, .9, T.e1, { y: 30 }); vis('h2', t, P[0] - .3, T.e1, { y: 30, blur: 8 }); vis('h3', t, P[0] + .5, T.e1, { y: 0 });
+  // erreurs
+  const ei = ERR.findIndex(e => t >= e.a && t < e.b + .45), cur = ERR[ei];
+  if (ei !== lastE && cur) { $('ek').textContent = cur.k; $('et').innerHTML = cur.t; $('es').innerHTML = cur.s; lastE = ei; }
+  ERR.forEach((e, i) => bigNumber(String(i + 1), t, e.a + .1, e.b, 540, 400, 300));
+  if (cur) { vis('ek', t, cur.a + .1, cur.b, { y: 20 }); vis('et', t, P[[1, 3, 5][ei]] - .3, cur.b, { y: 30, d: .6 }); vis('es', t, P[[2, 4, 6][ei]] - .3, cur.b, { y: 20, blur: 8 }); }
+  else ['ek', 'et', 'es'].forEach(id => { $(id).style.opacity = 0; $(id).style.display = 'none'; });
+  const on = i => ERR[i] ? Math.min(cl((t - ERR[i].a - .3) / .5), cl((ERR[i].b + .3 - t) / .4)) : 0;
+  e1(t, T.e1, on(0)); e2(t, T.e2, on(1)); e3(t, T.e3, on(2));
+  // la solution
+  vis('sk', t, T.sol + .2, T.alif, { y: 20 });
+  [['k1', P[7] + .3], ['k2', P[8] - .3], ['k3', P[9] - .3]].forEach(([id, a]) => { vis(id, t, a, T.alif, { x: -160, y: 0, d: .55, disp: 'flex' });
+    const ck = $(id).querySelector('.ck'); ck.style.transform = `scale(${lerp(.2, 1, back((t - a - .25) / .5))})`; });
+  solCurve(t, P[9] + .2, Math.min(cl((t - P[9] - .2) / .5), cl((T.alif + .3 - t) / .4)));
+  // ALIF
+  vis('a1', t, T.alif + .1, T.cta, { y: 0, s: .5, ease: back, d: .9 }); vis('a2', t, T.alif + .5, T.cta, { y: 30 }); vis('a3', t, P[11] - .3, T.cta, { y: 0, s: .5, ease: back });
+  // WhatsApp
+  vis('z1', t, T.cta + .1, null, { y: 40 }); vis('z2', t, T.cta + .6, null, { y: 0, s: .6, ease: back });
+  const num = '+221 78 145 09 09', n = Math.floor(cl((t - T.cta - .8) / 1.3) * num.length); $('num').textContent = num.slice(0, Math.max(n, 1));
+  vis('z3', t, P[13] - .3, null, { y: 80, d: .8 }); vis('z4', t, P[13] + .4, null, { y: 20 });
+  // ouverture
+  const fade = K(t, [[0, 1], [.6, 0]]); if (fade > 0) { ctx.fillStyle = `rgba(2,10,5,${fade})`; ctx.fillRect(0, 0, W_, H_); }
+  $('bar').style.width = cl(t / TOTAL) * 1080 + 'px';
+}
+window.TL = { total: TOTAL };
+window.render = render;
+window.ready = Promise.all(['700 80px Lora', 'italic 700 80px Lora', '800 40px Cairo', '700 40px Cairo'].map(f => document.fonts.load(f, 'Aa3é'))).then(() => render(0));
+</script>
+</body>
+</html>
