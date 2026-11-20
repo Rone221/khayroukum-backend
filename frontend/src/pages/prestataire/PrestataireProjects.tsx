@@ -17,7 +17,8 @@ import {
   FileText,
   Download,
   Trash2,
-  AlertCircle
+  AlertCircle,
+  Video
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { Project, Document } from '../../types';
@@ -327,6 +328,14 @@ import ProjectDocumentsModal from '../../components/ProjectDocumentsModalNew'; c
                   <Upload className="w-4 h-4" />
                   <span>Documents</span>
                 </button>
+
+                <Link
+                  to={`/videos?projet=${project.id}`}
+                  className="flex items-center space-x-2 px-4 py-2 bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200 transition-colors"
+                >
+                  <Video className="w-4 h-4" />
+                  <span>Vidéo</span>
+                </Link>
               </div>
             </CardContent>
           </Card>

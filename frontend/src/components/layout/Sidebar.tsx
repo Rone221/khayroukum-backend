@@ -13,7 +13,8 @@ import {
   Bell,
   LogOut,
   Droplets,
-  Globe
+  Globe,
+  Video
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { UserRole } from '../../types';
@@ -36,6 +37,7 @@ const Sidebar: React.FC<SidebarProps> = () => {
           { icon: FolderCheck, label: 'Projets à valider', path: '/admin/projects' },
           { icon: Users, label: 'Utilisateurs', path: '/admin/users' },
           { icon: Globe, label: 'Site Vitrine', path: '/admin/cms' },
+          { icon: Video, label: 'Vidéos', path: '/videos' },
           { icon: Bell, label: 'Notifications', path: '/notifications' },
         ];
       case 'prestataire':
@@ -44,6 +46,7 @@ const Sidebar: React.FC<SidebarProps> = () => {
           { icon: MapPin, label: 'Mes villages', path: '/prestataire/villages' },
           { icon: FileText, label: 'Mes projets', path: '/prestataire/projets' },
           { icon: Upload, label: 'Documents', path: '/prestataire/documents' },
+          { icon: Video, label: 'Vidéos', path: '/videos' },
           { icon: Bell, label: 'Notifications', path: '/notifications' },
         ];
       case 'donateur':

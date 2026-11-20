@@ -47,6 +47,7 @@ import ProjectDetail from './pages/donateur/ProjectDetail';
 import NotificationsPage from './pages/notifications/NotificationsPage';
 import ProjectDocuments from './pages/prestataire/ProjectDocuments';
 import ProfilePage from './pages/ProfilePage';
+import VideosPage from './pages/VideosPage';
 
 import './App.css';
 import './styles/public-optimizations.css';
@@ -237,6 +238,14 @@ function App() {
               <ProtectedRoute>
                 <Layout>
                   <NotificationsPage />
+                </Layout>
+              </ProtectedRoute>
+            } />
+
+            <Route path="/videos" element={
+              <ProtectedRoute allowedRoles={['administrateur', 'prestataire']}>
+                <Layout>
+                  <VideosPage />
                 </Layout>
               </ProtectedRoute>
             } />

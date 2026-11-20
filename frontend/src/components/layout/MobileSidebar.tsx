@@ -9,7 +9,8 @@ import {
     Upload,
     Heart,
     Bell,
-    Globe
+    Globe,
+    Video
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { UserRole } from '../../types';
@@ -34,6 +35,7 @@ const MobileSidebar: React.FC = () => {
                     { icon: MapPin, label: 'Villages', path: '/prestataire/villages' },
                     { icon: FileText, label: 'Projets', path: '/prestataire/projets' },
                     { icon: Upload, label: 'Documents', path: '/prestataire/documents' },
+                    { icon: Video, label: 'Vidéos', path: '/videos' },
                 ];
             case 'donateur':
                 return [
@@ -51,7 +53,7 @@ const MobileSidebar: React.FC = () => {
 
     return (
         <div className="flex justify-around items-center h-16 px-2">
-            {menuItems.slice(0, 4).map((item) => {
+            {menuItems.slice(0, 5).map((item) => {
                 const Icon = item.icon;
                 const isActive = location.pathname === item.path;
 
