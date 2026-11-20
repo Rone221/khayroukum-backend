@@ -8,6 +8,7 @@ Les vidéos finies sont dans `../videos-test/`.
 | `pub-1-presentation/` | Présentation vert et or, voix femme, 57 s | ✅ `videos-test/alif-academie-presentation.mp4` |
 | `pub-2-tout-commence-par-un-point/` | Film « de la nuit à l'aube », voix homme, 72 s | ✅ `videos-test/alif-academie-voix-homme.mp4` |
 | `pub-3-personnages-reels/` | « Le savoir qui vient à vous », images du catalogue ALIF, voix homme, 51 s | ✅ `videos-test/alif-academie-personnages.mp4` |
+| `pub-4-mots-arabes/` | « Vous parlez arabe sans le savoir », sans voix off, fond sonore ALIF, 56 s | ✅ `videos-test/alif-academie-mots-arabes.mp4` |
 
 ## Principe
 
@@ -100,3 +101,14 @@ tenues et cadres sobres, crédits Pexels respectés.
 - `search.py` — recherche Pexels + planche d'aperçus numérotés.
 - `piper_tts_server.py` — petit serveur compatible OpenAI `/v1/audio/speech` pour brancher Piper sur
   MoneyPrinterTurbo (fournisseur « kokoro », `base_url = http://127.0.0.1:8880/v1`).
+
+## Pub 4 — « Vous parlez arabe sans le savoir » (sans voix off)
+
+Texte à l'écran seulement, sur le fond sonore fourni par ALIF (`fond-sonore-56s.m4a` : boucle de 60 s coupée à 56 s,
+fondus d'entrée/sortie). Les changements de texte sont calés sur les respirations de la piste (pics mesurés toutes les
+3,3 s / 4 s : 2.3, 5.6, 9.6, 12.9 … s, constante `P` dans `index.html`). Les fonds (particules dorées, vapeur de café,
+rayons de lumière, motif géométrique, bokeh) sont générés en temps réel sur canvas, sans images d'archive.
+
+```bash
+node ../tools/render.js "$PWD" "$PWD/fond-sonore-56s.m4a" "$PWD/video.mp4" 30
+```
