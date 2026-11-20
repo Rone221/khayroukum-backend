@@ -11,6 +11,7 @@ Les vidéos finies sont dans `../videos-test/`.
 | `pub-4-mots-arabes/` | « Vous parlez arabe sans le savoir », sans voix off, fond sonore ALIF, 56 s | ✅ `videos-test/alif-academie-mots-arabes.mp4` |
 | `pub-5-mots-arabes-voix-off/` | Même sujet, voix off homme « professeur », fond sonore en retrait, 50 s | ✅ `videos-test/alif-academie-mots-arabes-voix-off.mp4` |
 | `pub-6-racines-arabes/` | « La magie des racines » (ك ت ب), sans voix off, fond sonore ALIF, 53 s | ✅ `videos-test/alif-academie-racines-arabes.mp4` |
+| `pub-7-reprendre-le-coran/` | « Reprendre la lecture du Coran à l'âge adulte », sans voix off, 58 s | ✅ `videos-test/alif-academie-reprendre-le-coran.mp4` |
 
 ## Principe
 
@@ -137,3 +138,10 @@ Racine ك ت ب (K-T-B) et cinq mots : kataba, kitâb, kâtib, maktab, maktaba. 
 sont en or (`<b>` dans le texte arabe, la liaison des lettres est conservée par Chromium) et les lettres ajoutées en crème.
 Fonds générés sur canvas : gouttes d'encre qui éclosent dans l'eau (ralenti), fumée verte, particules dorées,
 texture papier (séquence « plus vite qu'on ne croit »). Rythme calé sur les respirations du fond sonore (constante `P`).
+
+## Pub 7 — « Reprendre la lecture du Coran à l'âge adulte » (sans voix off)
+
+Récit en lumière : l'alphabet arabe en tableau (enfance, lumière ambrée) → lumières de la ville qui défilent (la vie)
+→ nuit étoilée, livre ouvert au trait, les lettres s'envolent en étoiles (« tu ne sais plus lire ») → vagues calmes et
+petites lumières (« tu n'es pas seul ») → lever du soleil, les étoiles reviennent à leur place dans le tableau
+(« revient vite ») → cours, ALIF, WhatsApp. Aucun texte du Coran n'est affiché (seulement l'alphabet et un livre au trait).

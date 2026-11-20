@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Alif Académie — Reprendre la lecture du Coran</title>
+<style>
+@font-face{font-family:Lora;font-weight:700;src:url(../shared/f/lora-latin-700-normal.woff2)}
+@font-face{font-family:Lora;font-style:italic;font-weight:700;src:url(../shared/f/lora-latin-700-italic.woff2)}
+@font-face{font-family:Cairo;font-weight:600;src:url(../shared/f/cairo-latin-600-normal.woff2)}
+@font-face{font-family:Cairo;font-weight:700;src:url(../shared/f/cairo-latin-700-normal.woff2)}
+@font-face{font-family:Cairo;font-weight:800;src:url(../shared/f/cairo-latin-800-normal.woff2)}
+@font-face{font-family:Sch;font-weight:700;src:url(../shared/f/scheherazade-new-arabic-700-normal.woff2)}
+:root{--gold:#d4a93c;--gold2:#f0d27a;--cream:#f7f1e3}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#03080f}
+#stage{position:relative;width:1080px;height:1920px;overflow:hidden;font-family:Cairo,sans-serif;color:var(--cream)}
+canvas{position:absolute;inset:0}
+.o{position:absolute;left:0;right:0;text-align:center;opacity:0}
+.lora{font-family:Lora;font-weight:700}
+.it{font-family:Lora;font-style:italic;font-weight:700}
+.sh{text-shadow:0 4px 26px rgba(0,0,0,.7)}
+.glow{text-shadow:0 0 40px rgba(240,210,122,.5),0 3px 18px rgba(0,0,0,.5)}
+.pill{display:inline-block;padding:16px 34px;margin:10px 8px;border-radius:999px;border:2px solid rgba(240,210,122,.85);background:rgba(10,20,30,.45);font-size:44px;font-weight:700;color:var(--cream)}
+.wa{display:inline-flex;align-items:center;gap:24px;padding:24px 48px;border-radius:999px;background:#25d366;color:#fff;font-size:66px;font-weight:800;box-shadow:0 18px 50px rgba(37,211,102,.35)}
+.wa svg{width:84px;height:84px}
+.flash{font-family:Lora;font-weight:700;font-size:110px}
+#bar{position:absolute;left:0;top:0;height:8px;background:linear-gradient(90deg,var(--gold),var(--gold2));z-index:9}
+</style>
+</head>
+<body>
+<div id="stage">
+  <canvas id="c" width="1080" height="1920"></canvas>
+
+  <div class="o lora sh" id="t1" style="top:360px;font-size:96px">Petit,<br>tu allais au cours.</div>
+  <div class="o it glow" id="t2" style="top:640px;font-size:74px;color:var(--gold2)">Tu connaissais les lettres.</div>
+
+  <div class="o lora sh" id="t3" style="top:380px;font-size:96px">Et puis la vie…</div>
+  <div class="o flash sh" id="f1" style="top:700px">les études</div>
+  <div class="o flash sh" id="f2" style="top:700px">le travail</div>
+  <div class="o flash sh" id="f3" style="top:700px">le voyage…</div>
+
+  <div class="o lora sh" id="t4" style="top:330px;font-size:84px;line-height:1.2">Et un jour,<br>tu ouvres le Coran…</div>
+  <div class="o it sh" id="t5" style="top:600px;font-size:76px;color:#cfd8e6">et tu ne sais plus lire.</div>
+
+  <div class="o lora glow" id="t6" style="top:420px;font-size:110px">Tu n'es pas seul.</div>
+  <div class="o it sh" id="t7" style="top:620px;font-size:66px;line-height:1.3;color:#d9e6ea">Beaucoup d'adultes<br>vivent la même chose.</div>
+
+  <div class="o lora glow" id="t8" style="top:330px;font-size:92px;color:var(--gold2)">La bonne nouvelle :</div>
+  <div class="o lora sh" id="t9" style="top:500px;font-size:82px;line-height:1.2">ce que tu as appris petit<br><span style="color:var(--gold2)">revient vite.</span></div>
+
+  <div class="o lora glow" id="t10" style="top:380px;font-size:86px;line-height:1.2">Avec un enseignant<br><span style="color:var(--gold2)">rien que pour toi.</span></div>
+  <div class="o" id="t11" style="top:380px"><span class="pill" style="font-size:54px">À ton rythme</span></div>
+  <div class="o" id="t12" style="top:530px"><span class="pill">Chez toi</span><span class="pill">En ligne</span></div>
+  <div class="o it glow" id="t13" style="top:700px;font-size:64px;color:var(--gold2)">où que tu sois dans le monde.</div>
+
+  <div class="o lora glow" id="t14" style="top:420px;font-size:200px;line-height:1;color:var(--gold2)">1 à 3</div>
+  <div class="o lora sh" id="t15" style="top:640px;font-size:70px">cours par semaine,</div>
+  <div class="o it glow" id="t16" style="top:760px;font-size:64px;color:var(--gold2)">aux horaires de ton choix.</div>
+
+  <img class="o" id="z1" src="../shared/a/logo_white.png" style="left:330px;width:420px;height:420px;top:300px">
+  <div class="o lora glow" id="z2" style="top:770px;font-size:100px;letter-spacing:6px">ALIF ACADEMIE</div>
+  <div class="o lora glow" id="z3" style="top:320px;font-size:96px;line-height:1.15">Écris-nous<br>sur WhatsApp</div>
+  <div class="o" id="z4" style="top:620px"><div class="wa"><svg viewBox="0 0 64 64"><path d="M32 8C18.7 8 8 18.2 8 30.8c0 4.6 1.4 8.8 3.9 12.4L9 56l13.3-3.4c3 1.5 6.3 2.2 9.7 2.2 13.3 0 24-10.2 24-22.8S45.3 8 32 8z" fill="#fff"/><path d="M24 22c1-.6 2.2-.4 2.8.7l2.2 4.4c.4.9.2 1.9-.6 2.5l-1.4 1.1c1.6 3.2 4 5.6 7.2 7.2l1.1-1.4c.6-.8 1.6-1 2.5-.6l4.4 2.2c1.1.6 1.3 1.8.7 2.8-1.6 2.7-4.6 3.8-7.6 2.6-6.4-2.6-11.4-7.6-14-14-1.2-3 0-6 2.7-7.5z" fill="#25d366"/></svg><span id="num"></span></div></div>
+  <div class="o" id="z5" style="top:820px"><div style="display:inline-block;background:#fff;border-radius:34px;padding:28px;border:3px solid rgba(212,169,60,.7);box-shadow:0 20px 60px rgba(0,0,0,.45)"><img src="../shared/a/qr.png" style="width:340px;height:340px;display:block;image-rendering:pixelated"></div></div>
+  <div class="o" id="z6" style="top:1270px;font-size:42px;font-weight:700;line-height:1.6">ALIF ACADEMIE · @alif_academie<br><span style="color:var(--gold2)">Vague de connaissances sur votre canapé</span></div>
+
+  <div id="bar"></div>
+</div>
+<script>
+const $ = id => document.getElementById(id), ctx = $('c').getContext('2d'), W_ = 1080, H_ = 1920;
+const cl = x => Math.max(0, Math.min(1, x));
+const eo = x => 1 - Math.pow(1 - cl(x), 3);
+const eio = x => { x = cl(x); return x < .5 ? 4*x*x*x : 1 - Math.pow(-2*x + 2, 3) / 2; };
+const back = x => { x = cl(x); const c = 1.4, c3 = c + 1; return 1 + c3*Math.pow(x - 1, 3) + c*Math.pow(x - 1, 2); };
+const lerp = (a, b, p) => a + (b - a) * p;
+const mix = (a, b, p) => a.map((v, i) => lerp(v, b[i], p));
+function K(t, kf) { if (t <= kf[0][0]) return kf[0][1];
+  for (let i = 1; i < kf.length; i++) if (t <= kf[i][0]) { const p = eio((t - kf[i-1][0]) / (kf[i][0] - kf[i-1][0])); return lerp(kf[i-1][1], kf[i][1], p); }
+  return kf[kf.length - 1][1]; }
+function KC(t, kf) { if (t <= kf[0][0]) return kf[0][1]; // images clés de couleurs
+  for (let i = 1; i < kf.length; i++) if (t <= kf[i][0]) return mix(kf[i-1][1], kf[i][1], eio((t - kf[i-1][0]) / (kf[i][0] - kf[i-1][0])));
+  return kf[kf.length - 1][1]; }
+function vis(id, t, a, b, o = {}) {
+  const el = $(id), d = o.d ?? .6, dOut = o.out ?? .4, pin = (o.ease ?? eo)((t - a) / d), pout = b == null ? 1 : cl((b - t) / dOut);
+  const op = Math.min(cl((t - a) / d), pout); el.style.opacity = op; el.style.display = op <= .001 ? 'none' : 'block';
+  el.style.transform = `translate(${(o.x ?? 0) * (1 - pin)}px,${(o.y ?? 40) * (1 - pin) - (o.yOut ?? 20) * (1 - pout)}px) scale(${lerp(o.s ?? 1, 1, pin)})`;
+  el.style.filter = o.blur ? `blur(${(1 - Math.min(pin, pout)) * o.blur}px)` : ''; return pin; }
+function rng(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+  t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const rgb = (c, a = 1) => `rgba(${c[0] | 0},${c[1] | 0},${c[2] | 0},${a})`;
+function glowDot(x, y, r, a, col) { if (a <= 0.002 || r <= 0) return; const g = ctx.createRadialGradient(x, y, 0, x, y, r);
+  g.addColorStop(0, rgb(col, a)); g.addColorStop(.45, rgb(col, a * .4)); g.addColorStop(1, rgb(col, 0)); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, r, 0, 6.283); ctx.fill(); }
+function drawPoly(pts, p) { if (p <= 0) return; let L = 0; for (let i = 1; i < pts.length; i++) L += Math.hypot(pts[i][0] - pts[i-1][0], pts[i][1] - pts[i-1][1]);
+  const target = L * cl(p); let acc = 0; ctx.beginPath(); ctx.moveTo(...pts[0]);
+  for (let i = 1; i < pts.length; i++) { const seg = Math.hypot(pts[i][0] - pts[i-1][0], pts[i][1] - pts[i-1][1]);
+    if (acc + seg >= target) { const f = (target - acc) / seg; ctx.lineTo(lerp(pts[i-1][0], pts[i][0], f), lerp(pts[i-1][1], pts[i][1], f)); break; } ctx.lineTo(...pts[i]); acc += seg; }
+  ctx.stroke(); }
+
+// --- rythme : respirations mesurées de la piste ---
+const P = [2.3, 5.6, 9.6, 12.9, 16.9, 20.2, 24.2, 27.5, 31.5, 34.8, 38.8, 42.1, 46.1, 49.4, 53.4, 56.7];
+const TOTAL = 58.0;
+const T = { child: 0, life: 5.3, night: 9.3, alone: 16.6, dawn: 23.9, teach: 31.2, rhythm: 34.5, week: 41.8, alif: 45.8, cta: 49.1 };
+
+// --- les lettres : souvenir -> étoiles -> retour au lever du soleil ---
+const R = rng(33), AB = 'ابتثجحخدذرزسشصضطظعغفقكلمنهوي'.split('');
+const LET = AB.map((ch, i) => { const r = Math.floor(i / 7), c = i % 7;          // tableau de l'alphabet, lu de droite à gauche
+  const home = [540 + (3 - c) * 128, 1010 + r * 150];
+  return { ch, home, star: [80 + R() * 920, 780 + R() * 360], fin: home, ph: R() * 6.3, size: 92 }; });
+function letters(t) {
+  const scatter = eio((t - (T.night + 3.0)) / 2.2);             // « tu ne sais plus lire » : les lettres s'envolent
+  const back_ = eio((t - (T.dawn + 3.1)) / 2.4);                // « revient vite » : elles reviennent
+  const dim = K(t, [[T.life, 1], [T.life + 3, .35], [T.night + 1, .6], [T.night + 3, .8]]);
+  const gone = K(t, [[T.teach - .2, 1], [T.teach + .8, 0]]);
+  if (gone <= 0) return;
+  ctx.save(); ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  LET.forEach((l, i) => {
+    const bob = Math.sin(t * .8 + l.ph) * 10, delay = (i % 7) * .08;
+    const s1 = eio((t - (T.night + 3.0) - delay) / 2.2), s2 = eio((t - (T.dawn + 3.1) - delay) / 2.4);
+    let x = lerp(lerp(l.home[0], l.star[0], s1), l.fin[0], s2), y = lerp(lerp(l.home[1], l.star[1], s1), l.fin[1], s2) + bob * (1 - s1 + s2);
+    if (t < T.life + 4 && t > T.life) { x += Math.sin(t * 2 + i) * 30 * K(t, [[T.life, 0], [T.life + 2, 1], [T.night, 0]]); }
+    const starness = s1 * (1 - s2), size = l.size * (1 - starness * .92);
+    const a = gone * (s2 > .01 ? lerp(dim * .8, 1, s2) : dim) * cl(t / 1.2);
+    if (starness > .05) glowDot(x, y, 10 + 14 * starness, a * starness * .9, [255, 240, 200]);
+    if (size > 6) { ctx.font = `700 ${size}px Sch`; ctx.fillStyle = s2 > .5 ? rgb([240, 210, 122], a) : rgb([240, 214, 140], a * (1 - starness * .85));
+      ctx.shadowColor = 'rgba(240,210,122,.6)'; ctx.shadowBlur = 20; ctx.fillText(l.ch, x, y); }
+  });
+  ctx.restore();
+}
+// --- ciel étoilé en accéléré (rotation autour d'un pôle) ---
+const STARS = Array.from({ length: 420 }, () => ({ r: 200 + R() * 2400, a: R() * 6.283, s: .5 + R() * 1.8, ph: R() * 6.3 }));
+function sky(t, a) { if (a <= 0) return; const px = 540, py = -350, rot = (t - T.night) * .045;
+  STARS.forEach(s => { const ang = s.a + rot, x = px + Math.cos(ang) * s.r, y = py + Math.sin(ang) * s.r; if (y < -10 || y > 1500 || x < -10 || x > 1090) return;
+    // petite traînée de rotation
+    ctx.strokeStyle = `rgba(220,230,255,${a * .25})`; ctx.lineWidth = s.s * .8; ctx.beginPath(); ctx.arc(px, py, s.r, ang - .012, ang); ctx.stroke();
+    ctx.fillStyle = `rgba(235,240,255,${a * (.55 + .45 * Math.sin(t * 3 + s.ph))})`; ctx.beginPath(); ctx.arc(x, y, s.s, 0, 6.283); ctx.fill(); }); }
+// --- lumières de la ville (bokeh qui défile) ---
+const CITY = Array.from({ length: 60 }, () => ({ x: R() * 1400, y: 700 + R() * 1200, r: 30 + R() * 110, sp: .5 + R() * 1.5, c: [[255, 170, 80], [255, 220, 160], [255, 90, 70], [180, 200, 255]][Math.floor(R() * 4)], a: .1 + R() * .3 }));
+function city(t, a) { if (a <= 0) return; CITY.forEach(b => { const x = ((b.x - (t - T.life) * 180 * b.sp) % 1600 + 1600) % 1600 - 260;
+  glowDot(x, b.y, b.r, a * b.a, b.c); }); }
+// --- vagues calmes ---
+function waves(t, a, tint) { if (a <= 0) return; ctx.save(); ctx.lineCap = 'round';
+  for (let k = 0; k < 9; k++) { const y0 = 1260 + k * 62, amp = 16 + k * 5;
+    ctx.strokeStyle = rgb(tint, a * (.18 + k * .06)); ctx.lineWidth = 2 + k * .6; ctx.beginPath();
+    for (let x = -20; x <= 1100; x += 20) { const y = y0 + Math.sin(x * .006 + t * .7 + k * .9) * amp + Math.sin(x * .013 - t * .5 + k) * amp * .4; x < 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y); }
+    ctx.stroke(); }
+  ctx.restore(); }
+// --- rayons de lumière doux ---
+function rays(t, a, cx, cy, col) { if (a <= 0) return; ctx.save(); ctx.globalCompositeOperation = 'lighter';
+  for (let i = 0; i < 18; i++) { const ang = -Math.PI / 2 + (i - 8.5) * .14 + Math.sin(t * .2 + i) * .03, w = .025 + .015 * Math.sin(i * 2.3 + t * .5), L = 2200;
+    const g = ctx.createLinearGradient(cx, cy, cx + Math.cos(ang) * L, cy + Math.sin(ang) * L); g.addColorStop(0, rgb(col, .2 * a)); g.addColorStop(1, rgb(col, 0));
+    ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + Math.cos(ang - w) * L, cy + Math.sin(ang - w) * L); ctx.lineTo(cx + Math.cos(ang + w) * L, cy + Math.sin(ang + w) * L); ctx.fill(); }
+  ctx.restore(); }
+// --- livre ouvert au trait (pas de texte du Coran) ---
+function book(t, p, a) { if (p <= 0 || a <= 0) return; ctx.save(); ctx.globalAlpha = a; ctx.strokeStyle = '#f0d27a'; ctx.lineWidth = 6; ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+  ctx.shadowColor = 'rgba(240,210,122,.7)'; ctx.shadowBlur = 18; const cx = 540, cy = 1600, w = 330;
+  const left = [], right = []; for (let i = 0; i <= 20; i++) { const f = i / 20; left.push([cx - f * w, cy - 40 * Math.sin(f * Math.PI * .9) - f * 20]); right.push([cx + f * w, cy - 40 * Math.sin(f * Math.PI * .9) - f * 20]); }
+  drawPoly(left, p); drawPoly(right, p); drawPoly([[cx - w, cy - 20], [cx - w, cy + 70], [cx, cy + 110], [cx + w, cy + 70], [cx + w, cy - 20]], p * 1.2 - .2); drawPoly([[cx, cy], [cx, cy + 110]], p * 1.5 - .5);
+  ctx.restore(); glowDot(cx, cy - 20, 360, .25 * a * p, [255, 220, 150]); }
+// --- petites lumières « tu n'es pas seul » ---
+const PEOPLE = Array.from({ length: 34 }, (_, i) => ({ x: 70 + R() * 940, y: 1180 + R() * 120, t: R() * 2.2, ph: R() * 6.3 }));
+
+function render(t) {
+  // ciel : ambre (enfance) -> nuit urbaine -> nuit profonde -> bleu-vert -> aube -> vert ALIF
+  const top = KC(t, [[0, [46, 28, 12]], [T.life, [30, 18, 14]], [T.life + 1.5, [6, 10, 22]], [T.night + 1, [2, 5, 14]], [T.alone + 1, [4, 18, 26]], [T.dawn + 1, [16, 28, 52]], [T.dawn + 4, [40, 54, 84]], [T.teach + 1, [12, 46, 34]], [T.cta, [4, 30, 18]]]);
+  const bot = KC(t, [[0, [90, 52, 18]], [T.life, [60, 30, 22]], [T.life + 1.5, [16, 14, 30]], [T.night + 1, [6, 10, 24]], [T.alone + 1, [8, 44, 56]], [T.dawn + 1, [120, 70, 40]], [T.dawn + 4, [240, 150, 70]], [T.teach + 1, [40, 90, 50]], [T.cta, [8, 50, 28]]]);
+  const g = ctx.createLinearGradient(0, 0, 0, H_); g.addColorStop(0, rgb(top)); g.addColorStop(1, rgb(bot)); ctx.fillStyle = g; ctx.fillRect(0, 0, W_, H_);
+  // enfance : lumière chaude douce
+  rays(t, K(t, [[0, .9], [T.life, .9], [T.life + 1.2, 0]]), 540, -200, [255, 200, 120]);
+  glowDot(540, 1150, 700, K(t, [[0, .35], [T.life, .35], [T.life + 1.5, 0]]), [255, 190, 110]);
+  city(t, K(t, [[T.life - .3, 0], [T.life + .6, 1], [T.night - .2, 1], [T.night + 1, 0]]));
+  sky(t, K(t, [[T.night - .5, 0], [T.night + 1.2, 1], [T.dawn + 1, .8], [T.dawn + 4, 0]]));
+  rays(t, K(t, [[T.night + 1, 0], [T.night + 2, .35], [T.alone, .35], [T.alone + 1, 0]]), 540, -300, [180, 200, 255]);
+  waves(t, K(t, [[T.alone - .4, 0], [T.alone + .8, 1], [T.teach, 1], [T.teach + 1, 0]]), mix([120, 200, 210], [255, 210, 150], cl((t - T.dawn) / 4)));
+  // lever du soleil
+  const sun = K(t, [[T.dawn, 0], [T.dawn + 5, 1], [T.teach + 1, .6], [T.cta, .2]]);
+  if (sun > 0) { const sy = lerp(1500, 1160, sun); glowDot(540, sy, 900 * sun + 100, .55 * sun, [255, 190, 100]); glowDot(540, sy, 160, .9 * sun, [255, 236, 190]);
+    rays(t, sun * K(t, [[T.teach, 1], [T.alif, .5]]), 540, sy, [255, 210, 140]); }
+  // autres lumières : on n'est pas seul
+  PEOPLE.forEach(p => { const a = K(t, [[T.alone + .2 + p.t, 0], [T.alone + .9 + p.t, 1], [T.dawn + 2, 1], [T.dawn + 3.5, 0]]);
+    glowDot(p.x, p.y + Math.sin(t + p.ph) * 6, 26, a * .8, [255, 230, 170]); });
+  book(t, K(t, [[T.night + .9, 0], [T.night + 2.6, 1]]), K(t, [[T.night + .5, 0], [T.night + 1, 1], [T.alone - .5, 1], [T.alone + .5, 0]]));
+  letters(t);
+  // vignette + ouverture
+  const vg = ctx.createRadialGradient(540, 960, 450, 540, 960, 1250); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,.55)'); ctx.fillStyle = vg; ctx.fillRect(0, 0, W_, H_);
+  const fade = K(t, [[0, 1], [.7, 0]]); if (fade > 0) { ctx.fillStyle = `rgba(3,6,10,${fade})`; ctx.fillRect(0, 0, W_, H_); }
+
+  // textes
+  vis('t1', t, .5, T.life, { y: 40, blur: 8, d: .8 }); vis('t2', t, P[0] - .3, T.life, { y: 30, blur: 10 });
+  vis('t3', t, T.life + .1, T.night, { y: 30 });
+  vis('f1', t, 6.2, 7.0, { x: 220, y: 0, d: .25, out: .2 }); vis('f2', t, 7.0, 7.8, { x: 220, y: 0, d: .25, out: .2 }); vis('f3', t, 7.8, T.night, { x: 220, y: 0, d: .3 });
+  vis('t4', t, T.night + .1, T.alone, { y: 30, d: .7 }); vis('t5', t, P[3] - .3, T.alone, { y: 30, blur: 12, d: .9 });
+  vis('t6', t, T.alone + .1, T.dawn, { y: 0, s: .85, blur: 10, d: .8 }); vis('t7', t, P[5] - .3, T.dawn, { y: 30 });
+  vis('t8', t, T.dawn + .1, T.teach, { y: 30, blur: 8 }); vis('t9', t, P[7] - .3, T.teach, { y: 30, d: .8 });
+  vis('t10', t, T.teach + .1, T.rhythm, { y: 40, d: .7 });
+  vis('t11', t, T.rhythm + .1, T.week, { y: 0, s: .5, ease: back }); vis('t12', t, T.rhythm + 1.4, T.week, { y: 0, s: .5, ease: back }); vis('t13', t, P[10] - .3, T.week, { y: 30, blur: 8 });
+  vis('t14', t, T.week + .1, T.alif, { y: 0, s: .6, ease: back, d: .7 }); vis('t15', t, T.week + .6, T.alif, { y: 30 }); vis('t16', t, P[11] - .3, T.alif, { y: 30 });
+  vis('z1', t, T.alif + .1, T.cta, { y: 0, s: .5, ease: back, d: .9 }); const pn = vis('z2', t, T.alif + .5, T.cta, { y: 30 }); $('z2').style.letterSpacing = lerp(28, 6, pn) + 'px';
+  vis('z3', t, T.cta + .1, null, { y: 40 }); vis('z4', t, T.cta + .6, null, { y: 0, s: .6, ease: back });
+  const num = '+221 78 145 09 09', n = Math.floor(cl((t - T.cta - .8) / 1.3) * num.length); $('num').textContent = num.slice(0, Math.max(n, 1));
+  vis('z5', t, P[14] - .3, null, { y: 80, d: .8 }); vis('z6', t, P[14] + .4, null, { y: 20 });
+  $('bar').style.width = cl(t / TOTAL) * 1080 + 'px';
+}
+window.TL = { total: TOTAL };
+window.render = render;
+window.ready = Promise.all(['700 80px Sch', '700 80px Lora', 'italic 700 80px Lora', '800 40px Cairo', '700 40px Cairo'].map(f => document.fonts.load(f, 'بAaé'))).then(() => render(0));
+</script>
+</body>
+</html>
