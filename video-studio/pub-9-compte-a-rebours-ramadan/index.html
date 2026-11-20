@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Alif Académie — Compte à rebours Ramadan</title>
+<style>
+@font-face{font-family:Lora;font-weight:700;src:url(../shared/f/lora-latin-700-normal.woff2)}
+@font-face{font-family:Lora;font-style:italic;font-weight:700;src:url(../shared/f/lora-latin-700-italic.woff2)}
+@font-face{font-family:Cairo;font-weight:600;src:url(../shared/f/cairo-latin-600-normal.woff2)}
+@font-face{font-family:Cairo;font-weight:700;src:url(../shared/f/cairo-latin-700-normal.woff2)}
+@font-face{font-family:Cairo;font-weight:800;src:url(../shared/f/cairo-latin-800-normal.woff2)}
+@font-face{font-family:Sch;font-weight:700;src:url(../shared/f/scheherazade-new-arabic-700-normal.woff2)}
+:root{--gold:#d4a93c;--gold2:#f0d27a;--cream:#f7f1e3}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#030914}
+#stage{position:relative;width:1080px;height:1920px;overflow:hidden;font-family:Cairo,sans-serif;color:var(--cream)}
+canvas{position:absolute;inset:0}
+.o{position:absolute;left:0;right:0;text-align:center;opacity:0}
+.lora{font-family:Lora;font-weight:700}
+.it{font-family:Lora;font-style:italic;font-weight:700}
+.sh{text-shadow:0 4px 24px rgba(0,0,0,.65)}
+.glow{text-shadow:0 0 40px rgba(240,210,122,.5),0 3px 16px rgba(0,0,0,.5)}
+.kick{font-weight:800;letter-spacing:12px;font-size:34px;color:var(--gold2)}
+.pill{display:inline-block;padding:16px 34px;margin:10px 8px;border-radius:999px;border:2px solid rgba(240,210,122,.85);background:rgba(5,15,30,.55);font-size:46px;font-weight:700;color:var(--cream)}
+.wa{display:inline-flex;align-items:center;gap:24px;padding:24px 48px;border-radius:999px;background:#25d366;color:#fff;font-size:66px;font-weight:800;box-shadow:0 18px 50px rgba(37,211,102,.35)}
+.wa svg{width:84px;height:84px}
+#badge{position:absolute;right:40px;top:50px;padding:14px 26px 14px 20px;border-radius:999px;background:rgba(5,15,30,.6);border:2px solid rgba(240,210,122,.7);font-weight:800;font-size:34px;color:var(--gold2);display:flex;align-items:center;gap:14px;opacity:0}
+#badge svg{width:40px;height:40px}
+#bar{position:absolute;left:0;top:0;height:8px;background:linear-gradient(90deg,var(--gold),var(--gold2));z-index:9}
+</style>
+</head>
+<body>
+<div id="stage">
+  <canvas id="c" width="1080" height="1920"></canvas>
+
+  <div class="o lora sh" id="h1" style="top:620px;font-size:80px;line-height:1.15">Le Ramadan<br>commence dans</div>
+  <div class="o lora glow" id="cnt" style="top:820px;font-size:330px;line-height:1;color:var(--gold2)">120</div>
+  <div class="o lora sh" id="h2" style="top:1170px;font-size:80px">jours <span class="it" style="font-size:52px;color:rgba(247,241,227,.75)">(environ)</span></div>
+
+  <div class="o lora glow" id="b1" style="top:330px;font-size:120px;color:var(--gold2)">80 jours,</div>
+  <div class="o it sh" id="b2" style="top:1470px;font-size:68px;line-height:1.25">c'est assez pour changer<br>beaucoup de choses.</div>
+
+  <div class="o lora sh" id="c1" style="top:560px;font-size:78px;line-height:1.2">Imaginez lire le Coran<br><span style="color:var(--gold2)">vous-même</span> ce Ramadan,</div>
+  <div class="o it sh" id="c2" style="top:830px;font-size:60px;color:rgba(247,241,227,.8)">au lieu de seulement écouter.</div>
+  <div class="o lora" id="c3" style="top:1060px;font-size:120px;color:rgba(247,241,227,.55)"><span id="ecouter" style="position:relative">écouter<span id="strike" style="position:absolute;left:-10px;top:52%;height:8px;background:#e8806a;border-radius:4px;width:0"></span></span></div>
+  <div class="o lora glow" id="c4" style="top:1220px;font-size:170px;color:var(--gold2)">lire</div>
+
+  <div class="o lora sh" id="d1" style="top:330px;font-size:84px;line-height:1.2">Avec <span style="color:var(--gold2)">2 cours</span><br>par semaine,</div>
+  <div class="o lora glow" id="d2" style="top:700px;font-size:260px;line-height:1;color:var(--gold2)"><span id="ncours">0</span></div>
+  <div class="o lora sh" id="d3" style="top:980px;font-size:70px">cours d'ici le Ramadan</div>
+
+  <div class="o lora glow" id="e1" style="top:380px;font-size:86px;line-height:1.2">Un enseignant<br><span style="color:var(--gold2)">rien que pour vous</span></div>
+  <div class="o" id="e2" style="top:720px"><span class="pill">À domicile · Dakar</span></div>
+  <div class="o" id="e3" style="top:850px"><span class="pill">En ligne · partout</span></div>
+  <div class="o" id="e4" style="top:980px"><span class="pill">Aux horaires de votre choix</span></div>
+
+  <div class="o lora sh" id="f1" style="top:560px;font-size:86px;line-height:1.2">Le meilleur moment<br>pour commencer,</div>
+  <div class="o lora glow" id="f2" style="top:820px;font-size:130px;line-height:1.1;color:var(--gold2)">c'est<br>maintenant.</div>
+
+  <img class="o" id="g1" src="../shared/a/logo_white.png" style="left:330px;width:420px;height:420px;top:360px">
+  <div class="o lora glow" id="g2" style="top:830px;font-size:100px;letter-spacing:6px">ALIF ACADEMIE</div>
+
+  <div class="o lora glow" id="z1" style="top:300px;font-size:100px;line-height:1.15">Écrivez-nous<br>sur WhatsApp</div>
+  <div class="o" id="z2" style="top:600px"><div class="wa"><svg viewBox="0 0 64 64"><path d="M32 8C18.7 8 8 18.2 8 30.8c0 4.6 1.4 8.8 3.9 12.4L9 56l13.3-3.4c3 1.5 6.3 2.2 9.7 2.2 13.3 0 24-10.2 24-22.8S45.3 8 32 8z" fill="#fff"/><path d="M24 22c1-.6 2.2-.4 2.8.7l2.2 4.4c.4.9.2 1.9-.6 2.5l-1.4 1.1c1.6 3.2 4 5.6 7.2 7.2l1.1-1.4c.6-.8 1.6-1 2.5-.6l4.4 2.2c1.1.6 1.3 1.8.7 2.8-1.6 2.7-4.6 3.8-7.6 2.6-6.4-2.6-11.4-7.6-14-14-1.2-3 0-6 2.7-7.5z" fill="#25d366"/></svg><span id="num"></span></div></div>
+  <div class="o" id="z3" style="top:810px"><div style="display:inline-block;background:#fff;border-radius:34px;padding:28px;border:3px solid rgba(212,169,60,.7);box-shadow:0 20px 60px rgba(0,0,0,.45)"><img src="../shared/a/qr.png" style="width:340px;height:340px;display:block;image-rendering:pixelated"></div></div>
+  <div class="o" id="z4" style="top:1270px;font-size:42px;font-weight:700;line-height:1.6">ALIF ACADEMIE · @alif_academie<br><span style="color:var(--gold2)">Commencez avant le Ramadan</span></div>
+
+  <div id="badge"><svg viewBox="0 0 40 40"><path d="M26 6a15 15 0 1 0 8 27A13 13 0 1 1 26 6z" fill="#f0d27a"/></svg>Ramadan · J-80</div>
+  <div id="bar"></div>
+</div>
+<script>
+const $ = id => document.getElementById(id), ctx = $('c').getContext('2d'), W_ = 1080, H_ = 1920;
+const cl = x => Math.max(0, Math.min(1, x));
+const eo = x => 1 - Math.pow(1 - cl(x), 3);
+const eio = x => { x = cl(x); return x < .5 ? 4*x*x*x : 1 - Math.pow(-2*x + 2, 3) / 2; };
+const back = x => { x = cl(x); const c = 1.4, c3 = c + 1; return 1 + c3*Math.pow(x - 1, 3) + c*Math.pow(x - 1, 2); };
+const lerp = (a, b, p) => a + (b - a) * p;
+function K(t, kf) { if (t <= kf[0][0]) return kf[0][1];
+  for (let i = 1; i < kf.length; i++) if (t <= kf[i][0]) { const p = eio((t - kf[i-1][0]) / (kf[i][0] - kf[i-1][0])); return lerp(kf[i-1][1], kf[i][1], p); }
+  return kf[kf.length - 1][1]; }
+function vis(id, t, a, b, o = {}) {
+  const el = $(id), d = o.d ?? .6, dOut = o.out ?? .4, pin = (o.ease ?? eo)((t - a) / d), pout = b == null ? 1 : cl((b - t) / dOut);
+  const op = Math.min(cl((t - a) / d), pout); el.style.opacity = op; el.style.display = op <= .001 ? 'none' : (o.disp ?? 'block');
+  el.style.transform = `translate(${(o.x ?? 0) * (1 - pin)}px,${(o.y ?? 40) * (1 - pin) - (o.yOut ?? 20) * (1 - pout)}px) scale(${lerp(o.s ?? 1, 1, pin)})`;
+  el.style.filter = o.blur ? `blur(${(1 - Math.min(pin, pout)) * o.blur}px)` : ''; return pin; }
+function rng(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+  t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const rgb = (c, a = 1) => `rgba(${c[0] | 0},${c[1] | 0},${c[2] | 0},${a})`;
+function glowDot(x, y, r, a, col) { if (a <= 0.002 || r <= 0) return; const g = ctx.createRadialGradient(x, y, 0, x, y, r);
+  g.addColorStop(0, rgb(col, a)); g.addColorStop(.45, rgb(col, a * .4)); g.addColorStop(1, rgb(col, 0)); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, r, 0, 6.283); ctx.fill(); }
+
+// --- rythme : respirations mesurées de la piste ---
+const P = [2.3, 5.6, 9.6, 12.9, 16.9, 20.2, 24.2, 27.5, 31.5, 34.8, 38.8, 42.1, 46.1, 49.4, 53.4, 56.7];
+const TOTAL = 56.0;
+const T = { hook: 0, days: 5.3, read: 12.6, count: 19.9, teach: 27.2, now: 34.5, alif: 41.8, cta: 45.8 };
+
+const R = rng(42);
+// ciel étoilé en accéléré
+const STARS = Array.from({ length: 460 }, () => ({ r: 150 + R() * 2400, a: R() * 6.283, s: .5 + R() * 1.8, ph: R() * 6.3 }));
+function sky(t, a) { const px = 900, py = -300, rot = t * .03;
+  STARS.forEach(s => { const ang = s.a + rot, x = px + Math.cos(ang) * s.r, y = py + Math.sin(ang) * s.r; if (y < -10 || y > 1920 || x < -10 || x > 1090) return;
+    ctx.strokeStyle = `rgba(220,230,255,${a * .22})`; ctx.lineWidth = s.s * .8; ctx.beginPath(); ctx.arc(px, py, s.r, ang - .01, ang); ctx.stroke();
+    ctx.fillStyle = `rgba(235,240,255,${a * (.5 + .5 * Math.sin(t * 3 + s.ph))})`; ctx.beginPath(); ctx.arc(x, y, s.s, 0, 6.283); ctx.fill(); }); }
+// croissant de lune
+const moonC = document.createElement('canvas'); moonC.width = moonC.height = 800; const mctx = moonC.getContext('2d');
+function crescent(cx, cy, r, a) { if (a <= 0 || r <= 0) return; glowDot(cx, cy, r * 3.2, .3 * a, [255, 220, 140]);
+  // croissant découpé sur un calque séparé : disque, puis on retire un disque décalé
+  mctx.clearRect(0, 0, 800, 800); const c = 400, rr = 300;
+  const g = mctx.createRadialGradient(c - rr * .4, c, rr * .1, c, c, rr); g.addColorStop(0, '#fff3cc'); g.addColorStop(1, '#e8bf5a');
+  mctx.globalCompositeOperation = 'source-over'; mctx.fillStyle = g; mctx.beginPath(); mctx.arc(c, c, rr, 0, 6.283); mctx.fill();
+  mctx.globalCompositeOperation = 'destination-out'; mctx.beginPath(); mctx.arc(c + rr * .42, c - rr * .24, rr * .86, 0, 6.283); mctx.fill();
+  mctx.globalCompositeOperation = 'source-over';
+  ctx.save(); ctx.globalAlpha = a; ctx.shadowColor = 'rgba(255,215,120,.9)'; ctx.shadowBlur = 40; const k = r / rr;
+  ctx.drawImage(moonC, cx - c * k, cy - c * k, 800 * k, 800 * k); ctx.restore(); }
+// lanternes suspendues (fanous)
+function lantern(x, len, s, t, a, ph) { if (a <= 0) return; const sw = Math.sin(t * 1.1 + ph) * .06, bx = x + Math.sin(sw) * len, by = Math.cos(sw) * len;
+  ctx.save(); ctx.globalAlpha = a; ctx.strokeStyle = 'rgba(240,210,122,.6)'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(x, -10); ctx.lineTo(bx, by); ctx.stroke();
+  ctx.translate(bx, by); ctx.rotate(-sw);
+  glowDot(0, s * 1.6, s * 3.2, .55, [255, 180, 80]);
+  ctx.fillStyle = '#c9952f'; ctx.beginPath(); ctx.moveTo(-s * .35, 0); ctx.lineTo(s * .35, 0); ctx.lineTo(s * .7, s * .6); ctx.lineTo(-s * .7, s * .6); ctx.closePath(); ctx.fill();
+  const g = ctx.createLinearGradient(0, s * .6, 0, s * 2.6); g.addColorStop(0, '#ffe39a'); g.addColorStop(1, '#f2a33a');
+  ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(-s * .7, s * .6); ctx.lineTo(s * .7, s * .6); ctx.lineTo(s * .55, s * 2.6); ctx.lineTo(-s * .55, s * 2.6); ctx.closePath(); ctx.fill();
+  ctx.strokeStyle = 'rgba(120,70,10,.6)'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(0, s * .6); ctx.lineTo(0, s * 2.6); ctx.moveTo(-s * .62, s * 1.6); ctx.lineTo(s * .62, s * 1.6); ctx.stroke();
+  ctx.fillStyle = '#c9952f'; ctx.beginPath(); ctx.moveTo(-s * .55, s * 2.6); ctx.lineTo(s * .55, s * 2.6); ctx.lineTo(s * .2, s * 3.1); ctx.lineTo(-s * .2, s * 3.1); ctx.closePath(); ctx.fill();
+  ctx.restore(); }
+// bokeh de lanternes
+const BOK = Array.from({ length: 40 }, () => ({ x: R() * W_, y: R() * H_, r: 40 + R() * 140, a: .08 + R() * .22, sp: .2 + R() * .7, ph: R() * 6.3 }));
+function bokeh(t, a) { if (a <= 0) return; BOK.forEach(b => { const y = ((b.y - t * 30 * b.sp) % (H_ + 300) + H_ + 300) % (H_ + 300) - 150;
+  glowDot(b.x + Math.sin(t * .5 + b.ph) * 40, y, b.r, a * b.a, [255, 175, 80]); }); }
+// particules dorées
+const DUST = Array.from({ length: 200 }, () => ({ x: R() * W_, y: R() * H_, z: .3 + R() * .9, s: .6 + R() * 2.4, ph: R() * 6.3 }));
+function dust(t, a) { DUST.forEach(d => { const y = ((d.y - t * 20 * d.z) % H_ + H_) % H_, x = d.x + Math.sin(t * .6 + d.ph) * 16 * d.z;
+  ctx.fillStyle = `rgba(255,224,150,${a * d.z * (.45 + .55 * Math.sin(t * 2.2 + d.ph))})`; ctx.beginPath(); ctx.arc(x, y, d.s * d.z, 0, 6.283); ctx.fill(); }); }
+// calendrier : 80 jours
+function days(t, a0, on) { if (on <= 0) return; ctx.save(); ctx.globalAlpha = on; const cols = 10, sp = 82, x0 = 540 - (cols - 1) * sp / 2, y0 = 580;
+  for (let i = 0; i < 80; i++) { const c = i % cols, r = Math.floor(i / cols), x = x0 + c * sp, y = y0 + r * sp, p = cl((t - a0 - i * .045) / .3);
+    ctx.strokeStyle = 'rgba(240,210,122,.35)'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(x, y, 26, 0, 6.283); ctx.stroke();
+    if (p > 0) { ctx.fillStyle = `rgba(240,210,122,${.9 * p})`; ctx.beginPath(); ctx.arc(x, y, 26 * back(p) * .78, 0, 6.283); ctx.fill(); } }
+  // dernier jour : le croissant
+  const p = eo((t - a0 - 3.8) / .6); if (p > 0) crescent(x0 + 9 * sp, y0 + 7 * sp, 24 * p, 1);
+  ctx.restore(); }
+// rangée de cours
+function lessons(t, a0, on) { if (on <= 0) return; ctx.save(); ctx.globalAlpha = on; const n = 22, cols = 11, sp = 80, x0 = 540 - (cols - 1) * sp / 2;
+  for (let i = 0; i < n; i++) { const x = x0 + (i % cols) * sp, y = 1180 + Math.floor(i / cols) * 100, p = back((t - a0 - i * .09) / .35);
+    if (p <= 0) continue; ctx.fillStyle = i % 2 ? '#f0d27a' : '#d4a93c'; ctx.save(); ctx.translate(x, y); ctx.scale(cl(p) + (p - cl(p)), cl(p) + (p - cl(p)));
+    ctx.beginPath(); ctx.roundRect(-24, -30, 48, 60, 8); ctx.fill(); ctx.fillStyle = 'rgba(5,15,30,.5)'; ctx.fillRect(-2, -30, 4, 60); ctx.restore(); }
+  ctx.restore(); }
+
+let lastN = '';
+function render(t) {
+  // ciel nocturne
+  const g = ctx.createLinearGradient(0, 0, 0, H_); g.addColorStop(0, '#020713'); g.addColorStop(.6, '#071a2a'); g.addColorStop(1, '#0b2a26'); ctx.fillStyle = g; ctx.fillRect(0, 0, W_, H_);
+  sky(t, 1);
+  const warm = K(t, [[T.read - .3, 0], [T.read + .8, 1], [T.count, 1], [T.count + 1, .3], [T.now - .3, .3], [T.now + .8, 1], [T.alif, 1], [T.alif + 1, .5]]);
+  bokeh(t, warm);
+  // croissant : grand dans l'accroche, puis en retrait
+  const big = K(t, [[0, 0], [.4, 0], [2.3, 1], [T.days - .3, 1], [T.days + .7, 0]]);
+  crescent(lerp(880, 540, big), lerp(240, 420, big), lerp(70, 150, big), K(t, [[0, 0], [.8, 1]]));
+  // lanternes
+  const la = K(t, [[T.read - .2, 0], [T.read + 1, 1], [T.count - .2, 1], [T.count + .6, 0], [T.now - .2, 0], [T.now + 1, 1], [T.alif + .5, 1], [T.alif + 1.5, 0]]);
+  [[170, 200, 46, 0], [420, 120, 34, 1.3], [660, 170, 40, 2.1]].forEach(([x, l, s, ph]) => lantern(x, l * la, s, t, la, ph));
+  dust(t, .55);
+  days(t, T.days + .5, Math.min(cl((t - T.days - .2) / .5), cl((T.read + .3 - t) / .4)));
+  lessons(t, P[6] - .2, Math.min(cl((t - P[6] + .4) / .4), cl((T.teach + .3 - t) / .4)));
+  const vg = ctx.createRadialGradient(540, 960, 450, 540, 960, 1250); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,.55)'); ctx.fillStyle = vg; ctx.fillRect(0, 0, W_, H_);
+  const fade = K(t, [[0, 1], [.6, 0]]); if (fade > 0) { ctx.fillStyle = `rgba(2,6,12,${fade})`; ctx.fillRect(0, 0, W_, H_); }
+
+  // compte à rebours 120 -> 80
+  vis('h1', t, .4, T.days, { y: 30 });
+  const n = Math.round(lerp(120, 80, eio((t - .6) / 1.9))); const ns = String(n); if (ns !== lastN) { $('cnt').textContent = ns; lastN = ns; }
+  vis('cnt', t, .5, T.days, { y: 0, s: .7, d: .5 }); $('cnt').style.transform += ` scale(${1 + .06 * Math.max(0, 1 - Math.abs(t - 2.5) / .3)})`;
+  vis('h2', t, P[0] - .1, T.days, { y: 20 });
+  vis('badge', t, T.days + .3, null, { y: -20, disp: 'flex' });
+  // 80 jours
+  vis('b1', t, T.days + .1, T.read, { y: 30 }); vis('b2', t, P[2] - .3, T.read, { y: 30, blur: 8 });
+  // lire plutôt qu'écouter
+  vis('c1', t, T.read + .1, T.count, { y: 30, d: .7 }); vis('c2', t, P[4] - .3, T.count, { y: 20 });
+  vis('c3', t, P[4] - .1, T.count, { y: 0 }); $('strike').style.width = (eio((t - P[4] - .5) / .5) * 100 + 4) * (t > P[4] + .5 ? 1 : 0) + '%';
+  vis('c4', t, P[4] + 1.0, T.count, { y: 0, s: .5, ease: back, blur: 8 });
+  // 2 cours par semaine -> 22 cours
+  vis('d1', t, T.count + .1, T.teach, { y: 30 });
+  vis('d2', t, P[6] - .3, T.teach, { y: 0, s: .7 }); const nc = Math.round(lerp(0, 22, eio((t - P[6] + .2) / 2.1))); $('ncours').textContent = nc >= 20 ? nc + '' : nc;
+  vis('d3', t, P[6] + .3, T.teach, { y: 20 });
+  // enseignant
+  vis('e1', t, T.teach + .1, T.now, { y: 30 }); vis('e2', t, T.teach + 1.2, T.now, { y: 0, s: .5, ease: back }); vis('e3', t, P[8] - .3, T.now, { y: 0, s: .5, ease: back }); vis('e4', t, P[8] + .5, T.now, { y: 0, s: .5, ease: back });
+  // maintenant
+  vis('f1', t, T.now + .1, T.alif, { y: 30 }); vis('f2', t, P[10] - .3, T.alif, { y: 0, s: .6, ease: back, blur: 10, d: .7 });
+  // ALIF
+  vis('g1', t, T.alif + .1, T.cta, { y: 0, s: .5, ease: back, d: .9 }); const pn = vis('g2', t, T.alif + .5, T.cta, { y: 30 }); $('g2').style.letterSpacing = lerp(28, 6, pn) + 'px';
+  // WhatsApp
+  vis('z1', t, T.cta + .1, null, { y: 40 }); vis('z2', t, T.cta + .6, null, { y: 0, s: .6, ease: back });
+  const num = '+221 78 145 09 09', k = Math.floor(cl((t - T.cta - .8) / 1.3) * num.length); $('num').textContent = num.slice(0, Math.max(k, 1));
+  vis('z3', t, P[13] - .3, null, { y: 80, d: .8 }); vis('z4', t, P[13] + .4, null, { y: 20 });
+  $('bar').style.width = cl(t / TOTAL) * 1080 + 'px';
+}
+window.TL = { total: TOTAL };
+window.render = render;
+window.ready = Promise.all(['700 80px Lora', 'italic 700 80px Lora', '800 40px Cairo', '700 40px Cairo'].map(f => document.fonts.load(f, 'Aa8é'))).then(() => render(0));
+</script>
+</body>
+</html>

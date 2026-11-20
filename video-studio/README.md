@@ -13,6 +13,7 @@ Les vidéos finies sont dans `../videos-test/`.
 | `pub-6-racines-arabes/` | « La magie des racines » (ك ت ب), sans voix off, fond sonore ALIF, 53 s | ✅ `videos-test/alif-academie-racines-arabes.mp4` |
 | `pub-7-reprendre-le-coran/` | « Reprendre la lecture du Coran à l'âge adulte », sans voix off, 58 s | ✅ `videos-test/alif-academie-reprendre-le-coran.mp4` |
 | `pub-8-trois-erreurs/` | « 3 erreurs des adultes qui apprennent à lire le Coran », sans voix off, 56 s | ✅ `videos-test/alif-academie-trois-erreurs.mp4` |
+| `pub-9-compte-a-rebours-ramadan/` | « Compte à rebours avant le Ramadan », sans voix off, 56 s — **valable fin novembre 2026** | ✅ `videos-test/alif-academie-compte-a-rebours-ramadan.mp4` |
 
 ## Principe
 
@@ -153,3 +154,12 @@ Format liste en motion design : grands chiffres tracés à l'or, formes géomét
 traînées d'or à chaque section. Un schéma par erreur (seul face à un enseignant absent ; courbe de concentration qui
 chute après 1 h ; courbe d'oubli entre deux cours), puis la solution en 3 cartes cochées et, en miroir de l'erreur 3,
 la courbe qui reste haute avec un cours suivi chaque semaine. Les schémas illustrent le message, ce ne sont pas des données mesurées.
+
+## Pub 9 — « Compte à rebours avant le Ramadan » (sans voix off)
+
+⚠️ Vidéo datée : « environ 80 jours » est juste le 20 novembre 2026 (Ramadan 1448 attendu vers le 8 février 2027,
+selon l'observation de la lune). 2 cours/semaine × 11,4 semaines ≈ 22 cours. Pour une autre date, changer le compteur
+(`lerp(120, 80, …)`), le badge « J-80 », le texte « 80 jours », la grille de 80 jours et le nombre de cours (22).
+
+Ciel étoilé en accéléré, croissant de lune, lanternes (fanous) suspendues, bokeh chaud ; compteur 120 → 80 jours,
+calendrier de 80 points, « écouter » barré → « lire », compteur de 22 cours, badge « Ramadan · J-80 » permanent.
