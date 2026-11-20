@@ -111,7 +111,9 @@ class MoneyPrinterService
             $video->statut = Video::STATUT_ECHEC;
             $video->erreur = (string) ($task['error'] ?? 'La génération a échoué.');
         } elseif ($state === self::STATE_COMPLETE) {
-            $source = ($task['combined_videos'] ?? [])[0] ?? ($task['videos'] ?? [])[0] ?? null;
+            // `videos` = rendu final (voix, musique, sous-titres) ; `combined_videos` = montage
+            // intermédiaire muet, utilisé seulement en dernier recours.
+            $source = ($task['videos'] ?? [])[0] ?? ($task['combined_videos'] ?? [])[0] ?? null;
             if (! $source) {
                 $video->statut = Video::STATUT_ECHEC;
                 $video->erreur = 'Tâche terminée sans fichier vidéo.';

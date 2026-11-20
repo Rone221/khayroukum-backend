@@ -94,9 +94,11 @@ class VideoTest extends TestCase
         Http::fake([
             'mpt.test/api/v1/tasks/task-9' => Http::response(['status' => 200, 'data' => [
                 'state' => 1, 'progress' => 100, 'script' => 'Le script',
+                'videos' => ['http://autre-hote:8080/tasks/task-9/final-1.mp4'],
                 'combined_videos' => ['http://autre-hote:8080/tasks/task-9/combined-1.mp4'],
             ]]),
-            'mpt.test/tasks/task-9/combined-1.mp4' => Http::response('MP4DATA'),
+            'mpt.test/tasks/task-9/final-1.mp4' => Http::response('FINAL'),
+            'mpt.test/tasks/task-9/combined-1.mp4' => Http::response('INTERMEDIAIRE'),
         ]);
 
         $this->actingAs($presta, 'sanctum')
@@ -104,7 +106,8 @@ class VideoTest extends TestCase
             ->assertOk()
             ->assertJson(['statut' => 'termine', 'progression' => 100, 'script' => 'Le script']);
 
-        Storage::disk('local')->assertExists("videos/{$video->id}.mp4");
+        // C'est bien le rendu final (avec voix et sous-titres) qui est conservé.
+        $this->assertSame('FINAL', Storage::disk('local')->get("videos/{$video->id}.mp4"));
 
         $this->actingAs($presta, 'sanctum')
             ->get("/api/videos/{$video->id}/download")
