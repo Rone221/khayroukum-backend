@@ -10,6 +10,7 @@ Les vidéos finies sont dans `../videos-test/`.
 | `pub-3-personnages-reels/` | « Le savoir qui vient à vous », images du catalogue ALIF, voix homme, 51 s | ✅ `videos-test/alif-academie-personnages.mp4` |
 | `pub-4-mots-arabes/` | « Vous parlez arabe sans le savoir », sans voix off, fond sonore ALIF, 56 s | ✅ `videos-test/alif-academie-mots-arabes.mp4` |
 | `pub-5-mots-arabes-voix-off/` | Même sujet, voix off homme « professeur », fond sonore en retrait, 50 s | ✅ `videos-test/alif-academie-mots-arabes-voix-off.mp4` |
+| `pub-6-racines-arabes/` | « La magie des racines » (ك ت ب), sans voix off, fond sonore ALIF, 53 s | ✅ `videos-test/alif-academie-racines-arabes.mp4` |
 
 ## Principe
 
@@ -129,3 +130,10 @@ acompressor=threshold=-22dB:ratio=3:attack=8:release=150:makeup=2,aecho=0.85:0.6
 Les mots arabes sont écrits phonétiquement pour la voix (`tts_script.json` : soukkar, kahwa, koutn, makhazine,
 Ouatsappe) et correctement à l'écran. Le fond sonore ALIF passe sous la voix (`mix.m4a`, compression déclenchée
 par la voix + volume 55 %).
+
+## Pub 6 — « La magie des racines » (sans voix off)
+
+Racine ك ت ب (K-T-B) et cinq mots : kataba, kitâb, kâtib, maktab, maktaba. Dans chaque mot, les lettres de la racine
+sont en or (`<b>` dans le texte arabe, la liaison des lettres est conservée par Chromium) et les lettres ajoutées en crème.
+Fonds générés sur canvas : gouttes d'encre qui éclosent dans l'eau (ralenti), fumée verte, particules dorées,
+texture papier (séquence « plus vite qu'on ne croit »). Rythme calé sur les respirations du fond sonore (constante `P`).
