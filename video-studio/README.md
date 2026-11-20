@@ -7,7 +7,7 @@ Les vidéos finies sont dans `../videos-test/`.
 |---|---|---|
 | `pub-1-presentation/` | Présentation vert et or, voix femme, 57 s | ✅ `videos-test/alif-academie-presentation.mp4` |
 | `pub-2-tout-commence-par-un-point/` | Film « de la nuit à l'aube », voix homme, 72 s | ✅ `videos-test/alif-academie-voix-homme.mp4` |
-| `pub-3-personnages-reels/` | Pub avec de vraies personnes (vidéos Pexels), voix homme, 51 s | ⏳ voix off prête, images à récupérer |
+| `pub-3-personnages-reels/` | « Le savoir qui vient à vous », images du catalogue ALIF, voix homme, 51 s | ✅ `videos-test/alif-academie-personnages.mp4` |
 
 ## Principe
 
@@ -58,6 +58,15 @@ Astuces de prononciation (le texte lu peut différer du texte affiché) :
 - « Alif » et « Coran » sont bien prononcés (Whisper les retranscrit « à l'if » / « courant », c'est normal).
 
 ## Pub 3 — « Le savoir qui vient à vous » (personnages réels)
+
+Réalisée avec les images du catalogue envoyé par ALIF (`Catalogue_images_envoyees_ALIF.pdf`, non versionné) :
+`tools/crop.py` découpe chaque miniature du catalogue, `tools/upscale.py` les agrandit ×4 avec Real-ESRGAN
+(modèle ONNX `Meeperomi/RealESRGAN_x4-onnx` sur Hugging Face). Les 20 images retenues sont dans `img/`
+(nom = page et position dans le catalogue). Exclues volontairement : captures de conversations WhatsApp
+(données personnelles), visuels d'autres écoles, captures d'écran. Pour une netteté maximale, refaire
+le découpage à partir des fichiers originaux.
+
+Plan d'origine prévu avec Pexels (non utilisé, la clé API était refusée) :
 
 Voix off prête (`pub-3-personnages-reels/narration.m4a`, minutage dans `timeline.json`). Plan des images :
 
