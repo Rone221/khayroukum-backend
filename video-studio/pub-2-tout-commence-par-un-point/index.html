@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Alif Académie — Tout commence par un point</title>
+<style>
+@font-face{font-family:Lora;font-weight:700;src:url(../shared/f/lora-latin-700-normal.woff2)}
+@font-face{font-family:Lora;font-style:italic;font-weight:400;src:url(../shared/f/lora-latin-400-italic.woff2)}
+@font-face{font-family:Lora;font-style:italic;font-weight:700;src:url(../shared/f/lora-latin-700-italic.woff2)}
+@font-face{font-family:Cairo;font-weight:400;src:url(../shared/f/cairo-latin-400-normal.woff2)}
+@font-face{font-family:Cairo;font-weight:600;src:url(../shared/f/cairo-latin-600-normal.woff2)}
+@font-face{font-family:Cairo;font-weight:700;src:url(../shared/f/cairo-latin-700-normal.woff2)}
+@font-face{font-family:Cairo;font-weight:800;src:url(../shared/f/cairo-latin-800-normal.woff2)}
+@font-face{font-family:Sch;font-weight:400;src:url(../shared/f/scheherazade-new-arabic-400-normal.woff2)}
+@font-face{font-family:Sch;font-weight:700;src:url(../shared/f/scheherazade-new-arabic-700-normal.woff2)}
+:root{--gold:#d4a93c;--gold2:#f0d27a;--cream:#f7f1e3;--g1:#0d5a2b;--ink:#0b3a1c}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#020d06}
+#stage{position:relative;width:1080px;height:1920px;overflow:hidden;font-family:Cairo,sans-serif;color:var(--cream)}
+canvas{position:absolute;inset:0}
+.o{position:absolute;left:0;right:0;text-align:center;opacity:0;will-change:transform,opacity}
+.lora{font-family:Lora;font-weight:700}
+.it{font-family:Lora;font-style:italic;font-weight:700}
+.ar{font-family:Sch;direction:rtl}
+.small{font-family:Cairo;font-weight:700;letter-spacing:12px;font-size:30px;color:var(--gold)}
+.glow{text-shadow:0 0 30px rgba(240,210,122,.45)}
+.pill{display:inline-block;padding:16px 34px;margin:10px 8px;border-radius:999px;border:2px solid rgba(212,169,60,.8);background:rgba(3,25,12,.55);font-size:42px;font-weight:700;color:var(--cream)}
+#captions{position:absolute;left:50px;right:50px;top:1610px;text-align:center;font-family:Cairo;font-weight:700;font-size:54px;line-height:1.3;color:#fff;text-shadow:0 2px 14px rgba(0,0,0,.85),0 0 2px rgba(0,0,0,.9)}
+#captions span{display:inline-block;margin:0 7px;transition:none}
+#captions span.on{color:var(--gold2)}
+#bar{position:absolute;left:0;top:0;height:8px;background:linear-gradient(90deg,var(--gold),var(--gold2));z-index:9}
+</style>
+</head>
+<body>
+<div id="stage">
+  <canvas id="c" width="1080" height="1920"></canvas>
+
+  <!-- 2 -->
+  <div class="o lora glow" id="t2name" style="top:1150px;font-size:96px;letter-spacing:30px">ALIF</div>
+  <div class="o small" id="t2first" style="top:1290px">LA PREMIÈRE LETTRE</div>
+  <!-- 3 -->
+  <div class="o" id="t3a" style="top:600px"><div class="ar glow" style="font-size:130px;color:var(--gold2);line-height:1.1">القِرَاءَة</div><div class="it" style="font-size:44px">la lecture</div></div>
+  <div class="o" id="t3b" style="top:600px"><div class="ar glow" style="font-size:130px;color:var(--gold2);line-height:1.1">التِّلَاوَة</div><div class="it" style="font-size:44px">la récitation</div></div>
+  <div class="o" id="t3c" style="top:600px"><div class="ar glow" style="font-size:150px;color:var(--gold2);line-height:1.1">القُرْآن</div><div class="it" style="font-size:44px">le Coran</div></div>
+  <!-- 4 -->
+  <div class="o lora" id="t4a" style="top:470px;font-size:100px;color:#cfd6cf">Trop loin.</div>
+  <div class="o lora" id="t4b" style="top:630px;font-size:100px;color:#cfd6cf">Pas le temps.</div>
+  <div class="o lora" id="t4c" style="top:790px;font-size:88px;color:#cfd6cf">Personne<br>pour guider.</div>
+  <!-- 5 -->
+  <img class="o" id="t5logo" src="../shared/a/logo_white.png" style="left:330px;width:420px;height:420px;top:150px">
+  <div class="o lora glow" id="t5title" style="top:600px;font-size:72px;line-height:1.15">Le savoir<br>vient à vous</div>
+  <div class="o" id="t5l1" style="top:1260px;left:40px;right:auto;width:500px"><div class="lora" style="font-size:50px">À domicile</div><div style="font-size:36px;color:var(--gold2);font-weight:700">Dakar</div></div>
+  <div class="o" id="t5l2" style="top:1260px;left:auto;right:40px;width:500px"><div class="lora" style="font-size:50px">En ligne</div><div style="font-size:36px;color:var(--gold2);font-weight:700">partout dans le monde</div></div>
+  <!-- 6 -->
+  <div class="o small" id="t6k" style="top:250px">100 % INDIVIDUEL</div>
+  <div class="o lora glow" id="t6t" style="top:310px;font-size:80px;line-height:1.15">Un enseignant,<br>rien que pour vous</div>
+  <div class="o" id="t6l" style="top:940px;font-size:38px;font-weight:700"><div style="display:flex;justify-content:space-between;padding:0 0 0 0"><span style="width:660px;text-align:center;margin-left:0">Enseignant</span><span style="width:420px;text-align:center;margin-left:-240px">Élève</span></div></div>
+  <div class="o it" id="t6a" style="top:1150px;font-size:70px;color:var(--gold2)">Il écoute.</div>
+  <div class="o it" id="t6b" style="top:1150px;font-size:70px;color:var(--gold2)">Il corrige.</div>
+  <div class="o it" id="t6c" style="top:1150px;font-size:70px;color:var(--gold2)">À votre rythme.</div>
+  <!-- 7 -->
+  <div class="o" id="t7a" style="top:190px"><div class="small">PROGRAMME 1</div><div class="ar glow" style="font-size:150px;line-height:1.2;color:var(--gold2)">القُرْآن</div><div class="lora" style="font-size:72px">Le Coran</div></div>
+  <div class="o" id="t7a1" style="top:640px"><span class="pill" id="p1">Lire</span><span class="pill" id="p2">Réciter · tajwid</span><span class="pill" id="p3">Mémoriser</span></div>
+  <div class="o" id="t7b" style="top:900px"><div class="small">PROGRAMME 2</div><div class="ar glow" style="font-size:150px;line-height:1.2;color:var(--gold2)">العَرَبِيَّة</div><div class="lora" style="font-size:72px">La langue arabe</div></div>
+  <div class="o" id="t7b1" style="top:1320px"><span class="pill" id="q1">Comprendre</span><span class="pill" id="q2">Parler</span><br><span class="pill" id="q3">Construire ses phrases</span></div>
+  <!-- 8 -->
+  <div class="o lora glow" id="t8a" style="top:420px;font-size:150px;letter-spacing:8px">ENFANTS</div>
+  <div class="o it" id="t8amp" style="top:620px;font-size:110px;color:var(--gold)">&amp;</div>
+  <div class="o lora glow" id="t8b" style="top:780px;font-size:150px;letter-spacing:8px">ADULTES</div>
+  <div class="o" id="t8sw" style="top:1100px">
+    <div style="position:relative;display:inline-flex;width:860px;height:130px;border-radius:999px;border:3px solid var(--gold);background:rgba(3,25,12,.6)">
+      <div id="knob" style="position:absolute;top:8px;left:8px;width:418px;height:108px;border-radius:999px;background:linear-gradient(180deg,var(--gold2),var(--gold))"></div>
+      <div id="sw1" style="position:relative;flex:1;display:flex;align-items:center;justify-content:center;font-size:44px;font-weight:800">Enseignant</div>
+      <div id="sw2" style="position:relative;flex:1;display:flex;align-items:center;justify-content:center;font-size:44px;font-weight:800">Enseignante</div>
+    </div>
+    <div class="it" style="font-size:52px;margin-top:30px;color:var(--gold2)">c'est vous qui choisissez</div>
+  </div>
+  <!-- 9 -->
+  <img class="o" id="t9logo" src="../shared/a/logo_white.png" style="left:300px;width:480px;height:480px;top:140px">
+  <div class="o lora glow" id="t9name" style="top:650px;font-size:92px;letter-spacing:6px">ALIF ACADEMIE</div>
+  <div class="o it glow" id="t9tag" style="top:1330px;font-size:62px;line-height:1.3;color:var(--gold2)">Une vague de connaissances,<br>sur votre canapé.</div>
+  <!-- 10 -->
+  <img class="o" id="t10logo" src="../shared/a/logo_green.png" style="left:390px;width:300px;height:300px;top:120px">
+  <div class="o lora" id="t10t" style="top:470px;font-size:84px;line-height:1.15;color:var(--ink)">Votre premier pas<br>commence ici.</div>
+  <div class="o" id="t10wa" style="top:740px;color:var(--ink)">
+    <div style="display:inline-flex;align-items:center;gap:26px;padding:22px 44px;border-radius:999px;background:#25d366;color:#fff;font-size:62px;font-weight:800;box-shadow:0 16px 40px rgba(37,211,102,.35)">
+      <svg viewBox="0 0 64 64" style="width:78px;height:78px"><path d="M32 8C18.7 8 8 18.2 8 30.8c0 4.6 1.4 8.8 3.9 12.4L9 56l13.3-3.4c3 1.5 6.3 2.2 9.7 2.2 13.3 0 24-10.2 24-22.8S45.3 8 32 8z" fill="#fff"/><path d="M24 22c1-.6 2.2-.4 2.8.7l2.2 4.4c.4.9.2 1.9-.6 2.5l-1.4 1.1c1.6 3.2 4 5.6 7.2 7.2l1.1-1.4c.6-.8 1.6-1 2.5-.6l4.4 2.2c1.1.6 1.3 1.8.7 2.8-1.6 2.7-4.6 3.8-7.6 2.6-6.4-2.6-11.4-7.6-14-14-1.2-3 0-6 2.7-7.5z" fill="#25d366"/></svg>
+      <span id="t10num"></span></div></div>
+  <div class="o" id="t10qr" style="top:930px"><div style="display:inline-block;background:#fff;border-radius:34px;padding:30px;box-shadow:0 20px 50px rgba(11,58,28,.25);border:3px solid rgba(212,169,60,.6)"><img src="../shared/a/qr.png" style="width:340px;height:340px;image-rendering:pixelated;display:block"></div>
+    <div style="font-size:34px;color:#4b5d50;font-weight:600;margin-top:16px">Scannez pour nous écrire</div></div>
+  <div class="o" id="t10c" style="top:1440px;font-size:40px;font-weight:700;line-height:1.55;color:var(--ink)">@alif_academie · alifacademie25@gmail.com<br><span style="color:#8a6a12">Dakar à domicile · en ligne partout</span></div>
+
+  <div id="captions"></div>
+  <div id="bar"></div>
+</div>
+<script src="timeline.js"></script>
+<script>
+const SC = TL.scenes, $ = id => document.getElementById(id);
+const ctx = $('c').getContext('2d'), W_ = 1080, H_ = 1920;
+const cl = x => Math.max(0, Math.min(1, x));
+const eo = x => 1 - Math.pow(1 - cl(x), 3);
+const eio = x => { x = cl(x); return x < .5 ? 4*x*x*x : 1 - Math.pow(-2*x + 2, 3) / 2; };
+const back = x => { x = cl(x); const c = 1.4, c3 = c + 1; return 1 + c3*Math.pow(x - 1, 3) + c*Math.pow(x - 1, 2); };
+const lerp = (a, b, p) => a + (b - a) * p;
+const norm = s => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]/g, '');
+function W(n, word, nth = 0) { const k = norm(word); let c = 0;
+  for (const w of SC[n - 1].words) if (norm(w.w).startsWith(k)) { if (c++ === nth) return w.s; }
+  return SC[n - 1].audioStart; }
+const ST = n => SC[n - 1].start, EN = n => SC[n - 1].end;
+// courbe par images clés [[t,v],...] avec lissage
+function K(t, kf) { if (t <= kf[0][0]) return kf[0][1];
+  for (let i = 1; i < kf.length; i++) if (t <= kf[i][0]) { const p = eio((t - kf[i-1][0]) / (kf[i][0] - kf[i-1][0])); return lerp(kf[i-1][1], kf[i][1], p); }
+  return kf[kf.length - 1][1]; }
+// visibilité d'un élément DOM : entrée à a, sortie à b
+function vis(id, t, a, b, o = {}) {
+  const el = $(id), d = o.d ?? .6, dOut = o.out ?? .45;
+  const pin = (o.ease ?? eo)((t - a) / d), pout = b == null ? 1 : cl((b - t) / dOut);
+  const op = Math.min(cl((t - a) / d), pout);
+  el.style.opacity = op;
+  const dy = (o.y ?? 40) * (1 - pin) - (o.yOut ?? 0) * (1 - pout), s = lerp(o.s ?? 1, 1, pin);
+  el.style.transform = `translate(${(o.x ?? 0) * (1 - pin)}px,${dy}px) scale(${s})`;
+  el.style.filter = o.blur ? `blur(${(1 - Math.min(pin, pout)) * o.blur}px)` : '';
+  el.style.display = op <= 0.001 ? 'none' : 'block';
+  return pin;
+}
+// aléatoire déterministe
+function rng(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+  t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const R = rng(7);
+const dust = Array.from({ length: 170 }, () => ({ x: R() * W_, y: R() * H_, z: .3 + R() * .9, s: .6 + R() * 2.4, ph: R() * 6.28 }));
+const LETTERS = 'ابتثجحخدذرزسشصضطظعغفقكلمنهوي'.split('');
+const hex = h => [parseInt(h.slice(1,3),16), parseInt(h.slice(3,5),16), parseInt(h.slice(5,7),16)];
+const mix = (a, b, p) => a.map((v, i) => Math.round(lerp(v, b[i], p)));
+const rgb = (c, a = 1) => `rgba(${c[0]},${c[1]},${c[2]},${a})`;
+
+// ---- primitives de dessin ----
+function polyLen(pts) { let L = 0; for (let i = 1; i < pts.length; i++) L += Math.hypot(pts[i][0]-pts[i-1][0], pts[i][1]-pts[i-1][1]); return L; }
+function drawPoly(pts, p, close = false) {
+  if (p <= 0) return; const all = close ? [...pts, pts[0]] : pts, L = polyLen(all) * cl(p); let acc = 0;
+  ctx.beginPath(); ctx.moveTo(...all[0]);
+  for (let i = 1; i < all.length; i++) { const seg = Math.hypot(all[i][0]-all[i-1][0], all[i][1]-all[i-1][1]);
+    if (acc + seg >= L) { const f = (L - acc) / seg; ctx.lineTo(lerp(all[i-1][0], all[i][0], f), lerp(all[i-1][1], all[i][1], f)); break; }
+    ctx.lineTo(...all[i]); acc += seg; }
+  ctx.stroke();
+}
+function rrPts(x, y, w, h, r, n = 6) { // rectangle arrondi échantillonné
+  const pts = [], arc = (cx, cy, a0) => { for (let i = 0; i <= n; i++) { const a = a0 + i / n * Math.PI / 2; pts.push([cx + r * Math.cos(a), cy + r * Math.sin(a)]); } };
+  arc(x + w - r, y + r, -Math.PI / 2); arc(x + w - r, y + h - r, 0); arc(x + r, y + h - r, Math.PI / 2); arc(x + r, y + r, Math.PI); return pts; }
+function glowDot(x, y, r, a, col = [255, 226, 150]) {
+  const g = ctx.createRadialGradient(x, y, 0, x, y, r);
+  g.addColorStop(0, rgb(col, a)); g.addColorStop(.35, rgb(col, a * .35)); g.addColorStop(1, rgb(col, 0));
+  ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, r, 0, 6.283); ctx.fill(); }
+// trait calligraphique de l'alif (légèrement incliné, plus épais en haut)
+function alif(cx, top, h, w, p, a) {
+  if (p <= 0 || a <= 0) return; const len = h * p, tilt = .1;
+  const x0 = cx + h * tilt / 2, x1 = cx - h * tilt / 2;
+  const pt = f => [lerp(x0, x1, f), top + h * f];
+  ctx.save(); ctx.globalAlpha = a; ctx.shadowColor = 'rgba(255,215,120,.85)'; ctx.shadowBlur = 40;
+  const gr = ctx.createLinearGradient(0, top, 0, top + h); gr.addColorStop(0, '#fff1c4'); gr.addColorStop(.5, '#f0cf6e'); gr.addColorStop(1, '#c08e22');
+  ctx.fillStyle = gr; ctx.beginPath();
+  const N = 30, L = [], Rt = [];
+  for (let i = 0; i <= N; i++) { const f = i / N * p, [x, y] = pt(f), ww = w * (1 - .55 * f) * (f < .04 ? .55 + f / .04 * .45 : 1); L.push([x - ww / 2, y]); Rt.push([x + ww / 2, y]); }
+  ctx.moveTo(...L[0]); L.forEach(q => ctx.lineTo(...q)); const [ex, ey] = pt(p); ctx.quadraticCurveTo(ex, ey + w * .35, ...Rt[Rt.length - 1]);
+  for (let i = Rt.length - 1; i >= 0; i--) ctx.lineTo(...Rt[i]); ctx.closePath(); ctx.fill(); ctx.restore();
+  glowDot(...pt(p), w * 2.2, .55 * a); // tête lumineuse
+}
+// océan de lettres
+function ocean(t, o) {
+  if (o.level <= 0.001) return; ctx.save(); ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  const rows = 8;
+  for (let r = rows - 1; r >= 0; r--) {
+    const depth = r / (rows - 1), size = lerp(30, 76, depth), sp = size * 1.25, y0 = o.top + r * lerp(48, 92, depth) + (1 - o.level) * 900;
+    const col = mix(hex('#3f8f5a'), hex('#f0d27a'), depth * o.bright + .1);
+    ctx.font = `700 ${size}px Sch`; const dir = r % 2 ? 1 : -1, n = Math.ceil(W_ / sp) + 2;
+    for (let j = 0; j < n; j++) {
+      let x = (j * sp + t * 22 * dir * (1 + depth)) % (n * sp); if (x < 0) x += n * sp; x -= sp;
+      const y = y0 + o.amp * (Math.sin(x * .011 + t * 1.3 + r * .8) * 26 + Math.sin(x * .023 - t * .8 + r) * 12) * lerp(.6, 1.2, depth);
+      const crest = .5 + .5 * Math.sin(x * .011 + t * 1.3 + r * .8);
+      ctx.fillStyle = rgb(col, cl(o.level * o.bright * lerp(.18, .95, depth) * (.55 + .45 * crest)));
+      ctx.fillText(LETTERS[(j * 7 + r * 5) % LETTERS.length], x, y);
+    }
+  }
+  ctx.restore();
+}
+// globe orthographique
+function globe(cx, cy, r, t, p, arcsP) {
+  if (p <= 0) return; ctx.save(); ctx.globalAlpha = p;
+  const lon0 = (-12 - (t - ST(5)) * 3) * Math.PI / 180, lat0 = 30 * Math.PI / 180;
+  const proj = (lat, lon) => { lat *= Math.PI / 180; lon *= Math.PI / 180;
+    const c = Math.sin(lat0) * Math.sin(lat) + Math.cos(lat0) * Math.cos(lat) * Math.cos(lon - lon0);
+    return [cx + r * Math.cos(lat) * Math.sin(lon - lon0), cy - r * (Math.cos(lat0) * Math.sin(lat) - Math.sin(lat0) * Math.cos(lat) * Math.cos(lon - lon0)), c]; };
+  const g = ctx.createRadialGradient(cx - r * .3, cy - r * .3, r * .1, cx, cy, r); g.addColorStop(0, 'rgba(40,120,70,.55)'); g.addColorStop(1, 'rgba(4,40,18,.85)');
+  ctx.fillStyle = g; ctx.beginPath(); ctx.arc(cx, cy, r * eo(p), 0, 6.283); ctx.fill();
+  ctx.strokeStyle = 'rgba(212,169,60,.8)'; ctx.lineWidth = 3; ctx.stroke();
+  ctx.lineWidth = 1.6; ctx.strokeStyle = 'rgba(240,210,122,.35)';
+  const line = pts => { ctx.beginPath(); let pen = false; for (const [x, y, c] of pts) { if (c > 0) { pen ? ctx.lineTo(x, y) : ctx.moveTo(x, y); pen = true; } else pen = false; } ctx.stroke(); };
+  for (let lon = -180; lon < 180; lon += 30) line(Array.from({ length: 61 }, (_, i) => proj(-90 + i * 3, lon)));
+  for (let lat = -60; lat <= 60; lat += 30) line(Array.from({ length: 121 }, (_, i) => proj(lat, -180 + i * 3)));
+  const dakar = [14.7, -17.4], cities = [[48.85, 2.35], [45.46, 9.19], [40.7, -74], [45.5, -73.6], [51.5, -0.1]];
+  cities.forEach((cty, k) => {
+    const ap = cl(arcsP * 1.6 - k * .15); if (ap <= 0) return;
+    const pts = []; for (let i = 0; i <= 40 * ap; i++) { const f = i / 40, la = lerp(dakar[0], cty[0], f), lo = lerp(dakar[1], cty[1], f);
+      const [x, y, c] = proj(la, lo), lift = 1 + .22 * Math.sin(Math.PI * f); pts.push([cx + (x - cx) * lift, cy + (y - cy) * lift, c]); }
+    ctx.strokeStyle = 'rgba(255,226,150,.95)'; ctx.lineWidth = 3.5; line(pts);
+    if (ap >= 1) { const [x, y, c] = proj(...cty); if (c > 0) glowDot(x, y, 22, .9); }
+  });
+  const [dx, dy, dc] = proj(...dakar); if (dc > 0) { glowDot(dx, dy, 46, 1); ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(dx, dy, 6, 0, 6.283); ctx.fill(); }
+  ctx.restore();
+}
+// maison (inspirée du logo)
+function house(cx, cy, s, p, light) {
+  if (p <= 0) return; ctx.save(); ctx.strokeStyle = '#f0d27a'; ctx.lineWidth = 7; ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+  ctx.shadowColor = 'rgba(240,210,122,.6)'; ctx.shadowBlur = 18;
+  const P = (x, y) => [cx + x * s, cy + y * s];
+  drawPoly([P(-1.15, -.15), P(0, -1.1), P(1.15, -.15)], cl(p * 2));
+  drawPoly([P(-.85, -.4), P(-.85, .85), P(.85, .85), P(.85, -.4)], cl(p * 2 - .6));
+  if (light > 0) { glowDot(...P(0, .25), 230 * s / 100, .8 * light); ctx.fillStyle = `rgba(255,214,120,${.85 * light})`; ctx.shadowBlur = 40;
+    const [wx, wy] = P(-.32, -.05); ctx.fillRect(wx, wy, .64 * s, .55 * s); ctx.strokeStyle = 'rgba(3,25,12,.9)'; ctx.lineWidth = 5; ctx.shadowBlur = 0;
+    ctx.beginPath(); ctx.moveTo(...P(0, -.05)); ctx.lineTo(...P(0, .5)); ctx.moveTo(...P(-.32, .22)); ctx.lineTo(...P(.32, .22)); ctx.stroke(); }
+  ctx.restore();
+}
+// deux sphères de lumière reliées par un flux de particules
+function orbs(t, p, flow, dir, rise) {
+  if (p <= 0) return; const y = 760 - rise * 120, A = [330, y], B = [750, y];
+  ctx.save(); ctx.globalAlpha = p;
+  for (let i = 0; i < 26 * flow; i++) { const f = ((t * .55 * dir + i / 26) % 1 + 1) % 1, x = lerp(A[0], B[0], f), yy = y - Math.sin(f * Math.PI) * 90 + Math.sin(i * 3.1 + t * 3) * 10;
+    glowDot(x, yy, 16, .7 * Math.sin(f * Math.PI)); }
+  glowDot(...A, 170, .9); glowDot(...B, 130, .8, [247, 241, 227]);
+  ctx.fillStyle = '#fff3cf'; ctx.beginPath(); ctx.arc(...A, 34, 0, 6.283); ctx.fill(); ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.arc(...B, 26, 0, 6.283); ctx.fill();
+  ctx.restore();
+}
+// canapé + livre ouvert
+function sofa(cx, cy, s, p, bookP) {
+  if (p <= 0) return; ctx.save(); ctx.strokeStyle = '#f0d27a'; ctx.lineWidth = 7; ctx.lineJoin = 'round'; ctx.lineCap = 'round'; ctx.shadowColor = 'rgba(240,210,122,.6)'; ctx.shadowBlur = 16;
+  const P = (x, y) => [cx + x * s, cy + y * s];
+  drawPoly(rrPts(cx - 1.55 * s, cy - .95 * s, 3.1 * s, .9 * s, .25 * s), cl(p * 1.6), true);
+  drawPoly(rrPts(cx - 1.9 * s, cy - .4 * s, .5 * s, 1.0 * s, .2 * s), cl(p * 1.6 - .3), true);
+  drawPoly(rrPts(cx + 1.4 * s, cy - .4 * s, .5 * s, 1.0 * s, .2 * s), cl(p * 1.6 - .3), true);
+  drawPoly([P(-1.4, .6), P(1.4, .6)], cl(p * 1.6 - .45));
+  drawPoly([P(-1.4, -.05), P(1.4, -.05)], cl(p * 1.6 - .5));
+  drawPoly([P(-1.6, .6), P(-1.6, .85)], cl(p * 2 - 1)); drawPoly([P(1.6, .6), P(1.6, .85)], cl(p * 2 - 1));
+  if (bookP > 0) { const by = cy - .55 * s - 40 * eo(bookP); glowDot(cx, by - 40, 260, .7 * bookP);
+    ctx.globalAlpha = bookP; ctx.fillStyle = '#fff6dc'; ctx.strokeStyle = '#d4a93c'; ctx.lineWidth = 5;
+    ctx.beginPath(); ctx.moveTo(cx, by); ctx.quadraticCurveTo(cx - 70, by - 40, cx - 150, by - 22); ctx.lineTo(cx - 150, by + 40); ctx.quadraticCurveTo(cx - 70, by + 22, cx, by + 62);
+    ctx.quadraticCurveTo(cx + 70, by + 22, cx + 150, by + 40); ctx.lineTo(cx + 150, by - 22); ctx.quadraticCurveTo(cx + 70, by - 40, cx, by); ctx.fill(); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(cx, by); ctx.lineTo(cx, by + 62); ctx.stroke(); }
+  ctx.restore();
+}
+// chemin interrompu (scène 4)
+function brokenPath(t, p, dim) {
+  if (p <= 0) return; ctx.save(); ctx.strokeStyle = `rgba(212,169,60,${.85 * (1 - dim * .6)})`; ctx.lineWidth = 8; ctx.lineCap = 'round'; ctx.setLineDash([2, 26]);
+  const pts = Array.from({ length: 60 }, (_, i) => { const f = i / 59; return [lerp(110, 700, f) + Math.sin(f * 5) * 50, lerp(1560, 760, f)]; });
+  drawPoly(pts.slice(0, 34), cl(p * 1.4)); ctx.setLineDash([]);
+  if (p > .7) { const [x, y] = pts[33]; ctx.lineWidth = 6; ctx.strokeStyle = `rgba(230,120,90,${cl((p - .7) / .2) * .9})`; ctx.beginPath();
+    ctx.moveTo(x - 26, y - 26); ctx.lineTo(x + 26, y + 26); ctx.moveTo(x + 26, y - 26); ctx.lineTo(x - 26, y + 26); ctx.stroke(); }
+  ctx.restore();
+}
+
+// ---- sous-titres ----
+const chunks = SC.map(sc => { const out = []; let cur = [];
+  sc.words.forEach((w, i) => { cur.push(i); const len = cur.map(j => sc.words[j].w).join(' ').length;
+    if (/[.,:?!]$/.test(w.w) || len > 24) { out.push(cur); cur = []; } }); if (cur.length) out.push(cur); return out; });
+let lastCap = '';
+function captions(t) { const el = $('captions'); let html = '', v = 0;
+  SC.forEach((sc, n) => { if (n >= 8) return; chunks[n].forEach(ch => { const s = sc.words[ch[0]].s - .06, e = sc.words[ch[ch.length - 1]].e + .3;
+    if (t >= s && t < e) { html = ch.map(j => `<span class="${t >= sc.words[j].s - .03 ? 'on' : ''}">${sc.words[j].w}</span>`).join(''); v = Math.min(cl((t - s) / .12), cl((e - t) / .15)); } }); });
+  if (html !== lastCap) { el.innerHTML = html; lastCap = html; } el.style.opacity = v; el.style.transform = `translateY(${(1 - v) * 16}px)`; }
+
+// ---- rendu d'une image ----
+function render(t) {
+  // fond : nuit -> aube
+  const night = [hex('#020d06'), hex('#062a15')], dawn = [hex('#fbf6ea'), hex('#efe4c8')];
+  const dawnP = K(t, [[ST(10) - .2, 0], [ST(10) + 1.2, 1]]);
+  const warm = K(t, [[0, 0], [ST(5), 0], [W(5, 'savoir'), .55], [ST(6), .35], [ST(9), .35], [ST(9) + 1, .7]]);
+  const top = mix(mix(night[0], hex('#0b2a14'), warm), dawn[0], dawnP), bot = mix(mix(night[1], hex('#14482a'), warm), dawn[1], dawnP);
+  const bg = ctx.createLinearGradient(0, 0, 0, H_); bg.addColorStop(0, rgb(top)); bg.addColorStop(1, rgb(bot)); ctx.fillStyle = bg; ctx.fillRect(0, 0, W_, H_);
+  // halo central
+  const halo = K(t, [[0, 0], [.6, .0], [1.3, .35], [ST(2), .5], [ST(4), .25], [W(4, 'personne'), .1], [ST(5), .3], [W(5, 'savoir'), .7], [ST(6), .4], [ST(9), .5], [ST(10), 0]]);
+  glowDot(540, 780, 900, halo * .45, [212, 169, 60]);
+  // poussière lumineuse
+  const dustA = K(t, [[0, 0], [1, .6], [ST(4), .6], [W(4, 'personne'), .25], [ST(5), .6], [ST(10), .6], [ST(10) + 1, .25]]);
+  dust.forEach(d => { const y = ((d.y - t * 18 * d.z) % H_ + H_) % H_, x = d.x + Math.sin(t * .6 + d.ph) * 14 * d.z;
+    ctx.fillStyle = dawnP > .5 ? `rgba(180,140,40,${dustA * .5 * d.z})` : `rgba(255,226,150,${dustA * d.z * (.5 + .5 * Math.sin(t * 2 + d.ph))})`;
+    ctx.beginPath(); ctx.arc(x, y, d.s * d.z, 0, 6.283); ctx.fill(); });
+
+  // océan de lettres
+  const oc = {
+    level: K(t, [[0, 0], [W(3, 'nait') - .4, 0], [W(3, 'ocean') + .4, 1], [ST(7), 1], [ST(7) + .6, 0], [ST(9) - .2, 0], [ST(9) + 1.5, 1], [ST(10), 1], [ST(10) + .8, 0]]),
+    top: K(t, [[0, 1180], [ST(5), 1180], [W(5, 'savoir'), 1080], [ST(6), 1330], [ST(9), 1500]]),
+    amp: K(t, [[0, 1], [W(4, 'arrete'), .25], [ST(5), .3], [W(5, 'savoir'), 1.6], [W(5, 'chez', 1), .9], [ST(6), .6], [ST(9), 1]]),
+    bright: K(t, [[0, 1], [W(4, 'arrete'), .35], [ST(5), .4], [W(5, 'savoir'), 1.1], [W(5, 'chez', 1), .55], [ST(6), .4], [ST(9), .8]])
+  };
+  ocean(t, oc);
+
+  // 1-2-3 : point -> alif
+  { const pointA = K(t, [[.5, 0], [1.2, 1]]) * K(t, [[ST(4) - .3, 1], [ST(4) + .3, 0]]);
+    const pulse = 1 + .25 * Math.sin(t * 3.2) + K(t, [[W(1, 'point') - .1, 0], [W(1, 'point') + .15, 1.2], [W(1, 'point') + .8, 0]]);
+    const draw = eio((t - W(2, 'trait') + .15) / .9);
+    const cy = K(t, [[0, 560], [W(3, 'nait') - .3, 560], [W(3, 'nait') + .9, 250]]), h = K(t, [[0, 520], [W(3, 'nait') - .3, 520], [W(3, 'nait') + .9, 280]]);
+    const w = h * .13;
+    if (draw <= 0) { glowDot(540, cy, 120 * pulse, .9 * pointA); ctx.fillStyle = `rgba(255,248,225,${pointA})`; ctx.beginPath(); ctx.arc(540, cy, 13 * pulse, 0, 6.283); ctx.fill(); }
+    else alif(540, cy, h, w, draw, pointA);
+  }
+  vis('t2name', t, W(2, 'alif') - .1, ST(3) + .3, { d: .9, y: 0, blur: 14, s: 1.25 }); $('t2name').style.letterSpacing = lerp(60, 26, eo((t - W(2, 'alif')) / 1.4)) + 'px';
+  vis('t2first', t, W(2, 'premiere') - .2, ST(3) + .3, { y: 20 });
+  vis('t3a', t, W(3, 'lecture') - .3, W(3, 'recitation') - .35, { y: 50, blur: 8, out: .3 });
+  vis('t3b', t, W(3, 'recitation') - .3, W(3, 'coran') - .35, { y: 50, blur: 8, out: .3 });
+  vis('t3c', t, W(3, 'coran') - .3, EN(3), { y: 50, blur: 8, s: .9 });
+
+  // 4 : le chemin s'arrête
+  brokenPath(t, K(t, [[ST(4), 0], [W(4, 'arrete') + .3, 1], [EN(4), 1]]) * K(t, [[EN(4) - .3, 1], [EN(4) + .4, 0]]) , 0);
+  vis('t4a', t, W(4, 'trop', 1) - .2, EN(4), { y: 30 }); vis('t4b', t, W(4, 'pas') - .2, EN(4), { y: 30 }); vis('t4c', t, W(4, 'personne') - .2, EN(4), { y: 30 });
+  ['t4a', 't4b'].forEach((id, i) => { if (t > [W(4, 'pas'), W(4, 'personne')][i]) $(id).style.opacity = Math.min(+$(id).style.opacity, lerp(1, .35, cl((t - [W(4, 'pas'), W(4, 'personne')][i]) / .5))); });
+
+  // 5 : le savoir vient à vous
+  vis('t5logo', t, W(5, 'alif') - .3, EN(5), { d: .9, y: 0, s: .6, ease: back });
+  vis('t5title', t, W(5, 'savoir') - .3, EN(5), { y: 40, blur: 6 });
+  house(290, 1080, 120, K(t, [[W(5, 'chez', 1) - .3, 0], [W(5, 'chez', 1) + 1.1, 1]]) * K(t, [[EN(5) - .2, 1], [EN(5) + .4, 0]]), K(t, [[W(5, 'dakar') - .2, 0], [W(5, 'dakar') + .4, 1], [EN(5) - .2, 1], [EN(5) + .4, 0]]));
+  vis('t5l1', t, W(5, 'dakar') - .3, EN(5), { y: 30 });
+  globe(790, 1060, 200, t, K(t, [[W(5, 'ligne') - .5, 0], [W(5, 'ligne') + .4, 1], [EN(5) - .2, 1], [EN(5) + .4, 0]]), K(t, [[W(5, 'ou', 1), 0], [W(5, 'monde') + .5, 1]]));
+  vis('t5l2', t, W(5, 'ligne') - .3, EN(5), { y: 30 });
+
+  // 6 : un enseignant, un élève
+  { const p = K(t, [[ST(6), 0], [W(6, 'enseignant') + .3, 1], [EN(6) - .2, 1], [EN(6) + .4, 0]]);
+    const ecoute = W(6, 'ecoute'), corrige = W(6, 'corrige'), avance = W(6, 'avance');
+    const dir = t < ecoute ? 1 : t < corrige ? -1 : 1, flow = K(t, [[W(6, 'rien'), 0], [W(6, 'rien') + .6, 1]]);
+    orbs(t, p, flow, dir, K(t, [[avance - .2, 0], [EN(6), 1]]));
+    vis('t6k', t, ST(6) + .2, EN(6), { y: 20 }); vis('t6t', t, ST(6) + .3, EN(6), { y: 40 }); vis('t6l', t, W(6, 'enseignant'), EN(6), { y: 20 });
+    vis('t6a', t, ecoute - .25, corrige - .25, { y: 30, out: .25 }); vis('t6b', t, corrige - .2, avance - .4, { y: 30, out: .25 }); vis('t6c', t, avance - .35, EN(6), { y: 30 }); }
+
+  // 7 : deux programmes
+  vis('t7a', t, W(7, 'coran') - .35, EN(7), { y: 40, blur: 8 });
+  vis('t7a1', t, W(7, 'lire') - .3, EN(7), { y: 0, d: .01 });
+  [['p1', 'lire'], ['p2', 'reciter'], ['p3', 'memoriser']].forEach(([id, w]) => { const p = back((t - W(7, w) + .25) / .5); $(id).style.opacity = cl((t - W(7, w) + .25) / .3); $(id).style.transform = `scale(${lerp(.4, 1, p)})`; });
+  vis('t7b', t, W(7, 'langue') - .35, EN(7), { y: 40, blur: 8 });
+  vis('t7b1', t, W(7, 'comprendre') - .3, EN(7), { y: 0, d: .01 });
+  [['q1', 'comprendre'], ['q2', 'parler'], ['q3', 'construire']].forEach(([id, w]) => { const p = back((t - W(7, w) + .25) / .5); $(id).style.opacity = cl((t - W(7, w) + .25) / .3); $(id).style.transform = `scale(${lerp(.4, 1, p)})`; });
+  if (t > ST(7) && t < EN(7) + .5) { ctx.save(); ctx.globalAlpha = K(t, [[W(7, 'langue') - .4, 0], [W(7, 'langue'), 1], [EN(7), 1], [EN(7) + .4, 0]]);
+    const g = ctx.createLinearGradient(140, 0, 940, 0); g.addColorStop(0, 'rgba(212,169,60,0)'); g.addColorStop(.5, 'rgba(212,169,60,.9)'); g.addColorStop(1, 'rgba(212,169,60,0)');
+    ctx.fillStyle = g; ctx.fillRect(140, 850, 800 * eo((t - W(7, 'langue') + .4) / .8), 4); ctx.restore(); }
+
+  // 8 : enfants & adultes, enseignant ou enseignante
+  vis('t8a', t, W(8, 'enfants') - .3, EN(8), { y: 0, s: 1.4, blur: 12, d: .6 });
+  vis('t8amp', t, W(8, 'comme') - .1, EN(8), { y: 0, s: .3, ease: back });
+  vis('t8b', t, W(8, 'adultes') - .3, EN(8), { y: 0, s: 1.4, blur: 12, d: .6 });
+  vis('t8sw', t, W(8, 'enseignant') - .35, EN(8), { y: 50 });
+  { const a = W(8, 'enseignante'), c = W(8, 'choisissez');
+    const pos = K(t, [[a - .1, 0], [a + .35, 1], [c - .2, 1], [c + .25, 0], [c + .55, 0], [c + .9, 1]]);
+    $('knob').style.left = (8 + pos * 426) + 'px'; $('sw1').style.color = pos < .5 ? '#0b3a1c' : '#f7f1e3'; $('sw2').style.color = pos >= .5 ? '#0b3a1c' : '#f7f1e3'; }
+
+  // 9 : signature, canapé
+  vis('t9logo', t, ST(9) + .1, EN(9), { y: 0, s: .55, ease: back, d: 1 });
+  vis('t9name', t, W(9, 'academie') - .2, EN(9), { y: 30 }); $('t9name').style.letterSpacing = lerp(30, 6, eo((t - W(9, 'academie')) / 1)) + 'px';
+  sofa(540, 1110, 125, K(t, [[W(9, 'vague') - .2, 0], [W(9, 'canape') + .3, 1]]) * K(t, [[EN(9) - .2, 1], [EN(9) + .5, 0]]), K(t, [[W(9, 'canape') - .1, 0], [W(9, 'canape') + .6, 1], [EN(9) - .2, 1], [EN(9) + .5, 0]]));
+  vis('t9tag', t, W(9, 'vague') - .2, EN(9), { y: 30, blur: 8, d: .8 });
+
+  // 10 : appel à l'action (aube)
+  vis('t10logo', t, ST(10) + .5, null, { y: 0, s: .6, ease: back, d: .9 });
+  vis('t10t', t, W(10, 'votre') - .1, null, { y: 40 });
+  vis('t10wa', t, W(10, 'ecrivez') - .3, null, { y: 30, s: .8, ease: back });
+  { const num = '+221 78 145 09 09', k = Math.floor(cl((t - W(10, 'ecrivez')) / 1.3) * num.length); $('t10num').textContent = num.slice(0, Math.max(k, 1)); }
+  vis('t10qr', t, W(10, 'whatsapp') - .4, null, { y: 80, d: .8 });
+  vis('t10c', t, W(10, 'whatsapp') + .5, null, { y: 20 });
+  if (t > ST(10)) { const a = K(t, [[ST(10) + .6, 0], [ST(10) + 1.6, .16]]); alif(110, 1460, 260, 34, 1, a); alif(970, 220, 200, 26, 1, a * .7); }
+
+  // vignette
+  const vg = ctx.createRadialGradient(540, 900, 500, 540, 960, 1250); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, `rgba(0,0,0,${.55 * (1 - dawnP)})`);
+  ctx.fillStyle = vg; ctx.fillRect(0, 0, W_, H_);
+  // fondu d'ouverture et de fin
+  const fade = K(t, [[0, 1], [.5, 0]]);
+  if (fade > 0) { ctx.fillStyle = `rgba(2,13,6,${fade})`; ctx.fillRect(0, 0, W_, H_); }
+  $('bar').style.width = cl(t / TL.total) * 1080 + 'px';
+  captions(t);
+}
+window.render = render;
+window.ready = Promise.all(['700 80px Sch', '700 80px Lora', 'italic 700 80px Lora', '700 40px Cairo', '800 40px Cairo'].map(f => document.fonts.load(f, 'اAa'))).then(() => render(0));
+</script>
+</body>
+</html>

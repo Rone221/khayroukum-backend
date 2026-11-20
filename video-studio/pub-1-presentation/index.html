@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Alif Académie</title>
+<style>
+@font-face{font-family:Lora;font-weight:700;src:url(../shared/f/lora-latin-700-normal.woff2)}
+@font-face{font-family:Lora;font-style:italic;font-weight:400;src:url(../shared/f/lora-latin-400-italic.woff2)}
+@font-face{font-family:Lora;font-style:italic;font-weight:700;src:url(../shared/f/lora-latin-700-italic.woff2)}
+@font-face{font-family:Cairo;font-weight:400;src:url(../shared/f/cairo-latin-400-normal.woff2)}
+@font-face{font-family:Cairo;font-weight:600;src:url(../shared/f/cairo-latin-600-normal.woff2)}
+@font-face{font-family:Cairo;font-weight:700;src:url(../shared/f/cairo-latin-700-normal.woff2)}
+@font-face{font-family:Cairo;font-weight:800;src:url(../shared/f/cairo-latin-800-normal.woff2)}
+@font-face{font-family:Sch;font-weight:400;src:url(../shared/f/scheherazade-new-arabic-400-normal.woff2)}
+@font-face{font-family:Sch;font-weight:700;src:url(../shared/f/scheherazade-new-arabic-700-normal.woff2)}
+:root{--g1:#0d5a2b;--g2:#073d1b;--g3:#1d7a3e;--gold:#cfa53a;--gold2:#e6c76a;--cream:#f7f1e3;--ink:#0b3a1c;--muted:#5d6b5f}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;overflow:hidden;background:var(--g2)}
+#stage{position:relative;width:1080px;height:1920px;overflow:hidden;font-family:Cairo,sans-serif;color:var(--cream)}
+.scene{position:absolute;inset:0;opacity:0;overflow:hidden}
+.bg{position:absolute;inset:-40px;background-size:cover;background-position:center}
+.green .bg{background-image:linear-gradient(180deg,rgba(13,90,43,.55),rgba(5,40,18,.85)),url(../shared/a/bg_green.jpg)}
+.cream .bg{background-image:linear-gradient(180deg,rgba(247,241,227,.35),rgba(240,231,208,.6)),url(../shared/a/bg_cream.jpg)}
+.cream{color:var(--ink)}
+.content{position:absolute;inset:0}
+.abs{position:absolute;left:0;right:0;text-align:center}
+.label{font-family:Cairo;font-weight:700;letter-spacing:10px;font-size:30px;color:var(--gold)}
+.h1{font-family:Lora;font-weight:700;font-size:92px;line-height:1.12}
+.h2{font-family:Lora;font-weight:700;font-size:76px;line-height:1.15}
+.body{font-size:44px;font-weight:600;line-height:1.35}
+.ar{font-family:Sch;direction:rtl}
+.goldline{height:6px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:0 auto}
+.pill{display:inline-flex;align-items:center;gap:22px;padding:22px 40px;border-radius:999px;border:3px solid var(--gold);background:rgba(4,40,18,.55);font-size:40px;font-weight:700;color:var(--cream)}
+.pill svg{width:54px;height:54px;flex:none}
+.card{position:absolute;left:70px;right:70px;height:236px;background:#fffdf6;border-radius:34px;box-shadow:0 18px 50px rgba(11,58,28,.18);border:2px solid rgba(207,165,58,.45);display:flex;align-items:center;padding:0 44px;gap:34px}
+.num{width:96px;height:96px;border-radius:50%;background:var(--g1);color:var(--cream);font-family:Lora;font-weight:700;font-size:52px;display:flex;align-items:center;justify-content:center;flex:none;box-shadow:0 0 0 8px rgba(207,165,58,.35)}
+.card .t{font-family:Lora;font-weight:700;font-size:52px;color:var(--ink)}
+.card .d{font-size:34px;color:var(--muted);font-weight:600;margin-top:4px}
+.card .a{margin-left:auto;font-family:Sch;font-weight:700;font-size:84px;color:var(--g3);direction:rtl}
+.tile{position:absolute;width:440px;height:440px;border-radius:40px;background:#fffdf6;border:2px solid rgba(207,165,58,.5);box-shadow:0 18px 50px rgba(11,58,28,.16);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px;color:var(--ink)}
+.tile .big{font-family:Lora;font-weight:700;font-size:150px;color:var(--g1);line-height:1}
+.tile .cap{font-size:40px;font-weight:700;line-height:1.2;margin-top:16px}
+.tile svg{width:170px;height:170px}
+.chip{position:absolute;left:110px;right:110px;height:150px;border-radius:30px;background:rgba(4,40,18,.6);border:3px solid rgba(207,165,58,.7);display:flex;align-items:center;gap:34px;padding:0 44px;font-size:52px;font-weight:800;color:var(--cream)}
+.chip .n{font-family:Lora;color:var(--gold);font-size:56px;width:60px}
+.chip .s{font-size:32px;font-weight:600;color:rgba(247,241,227,.75);margin-left:auto}
+#captions{position:absolute;left:60px;right:60px;top:1575px;height:250px;display:flex;align-items:center;justify-content:center;pointer-events:none}
+#capbox{padding:22px 36px;border-radius:28px;background:rgba(5,35,16,.82);border:2px solid rgba(207,165,58,.55);font-family:Cairo;font-weight:800;font-size:58px;line-height:1.25;text-align:center;color:#fff;max-width:960px;box-shadow:0 14px 40px rgba(0,0,0,.25)}
+#capbox span{display:inline-block;margin:0 7px}
+#capbox span.on{color:var(--gold2)}
+#progress{position:absolute;left:0;top:0;height:10px;background:linear-gradient(90deg,var(--gold),var(--gold2));z-index:20}
+.ring{position:absolute;border-radius:50%;border:3px solid var(--gold)}
+</style>
+</head>
+<body>
+<div id="stage">
+
+  <!-- 1 : accroche -->
+  <section class="scene cream" id="s1"><div class="bg"></div><div class="content">
+    <div class="ring" id="s1ring" style="left:190px;top:180px;width:700px;height:700px"></div>
+    <div class="abs ar" id="s1alif" style="top:120px;font-size:720px;line-height:1;color:var(--g1);font-weight:700">ا</div>
+    <div class="abs h1" id="s1q" style="top:1000px;color:var(--ink)"></div>
+  </div></section>
+
+  <!-- 2 : logo -->
+  <section class="scene green" id="s2"><div class="bg"></div><div class="content">
+    <svg id="s2ring" style="position:absolute;left:170px;top:120px;width:740px;height:740px" viewBox="0 0 740 740"><circle cx="370" cy="370" r="360" fill="none" stroke="#cfa53a" stroke-width="3" stroke-dasharray="4 18"/></svg>
+    <img id="s2logo" src="../shared/a/logo_white.png" style="position:absolute;left:220px;top:170px;width:640px;height:640px">
+    <div class="abs h1" id="s2name" style="top:900px;font-size:104px">ALIF ACADEMIE</div>
+    <div class="goldline" id="s2line" style="position:absolute;left:340px;top:1035px;width:400px"></div>
+    <div class="abs body" id="s2sub" style="top:1075px;font-size:46px">Cours individuels de Coran<br>et de langue arabe</div>
+    <div class="abs" id="s2p1" style="top:1260px"><span class="pill"><svg viewBox="0 0 64 64" fill="none" stroke="#e6c76a" stroke-width="5" stroke-linejoin="round"><path d="M8 30 32 10l24 20"/><path d="M15 26v28h34V26"/><path d="M27 54V40h10v14"/></svg>À domicile · Dakar</span></div>
+    <div class="abs" id="s2p2" style="top:1390px"><span class="pill"><svg viewBox="0 0 64 64" fill="none" stroke="#e6c76a" stroke-width="5"><circle cx="32" cy="32" r="24"/><path d="M8 32h48M32 8c-9 8-9 40 0 48M32 8c9 8 9 40 0 48"/></svg>En ligne · partout dans le monde</span></div>
+  </div></section>
+
+  <!-- 3 : un enseignant, un élève -->
+  <section class="scene cream" id="s3"><div class="bg"></div><div class="content">
+    <div class="abs label" id="s3label" style="top:150px">100 % INDIVIDUEL</div>
+    <div class="abs h2" id="s3title" style="top:210px">Un enseignant.<br>Un seul élève.</div>
+    <div id="s3a" style="position:absolute;left:110px;top:560px;width:330px;text-align:center">
+      <svg viewBox="0 0 200 200" style="width:300px;height:300px"><circle cx="100" cy="100" r="96" fill="#0d5a2b"/><circle cx="100" cy="78" r="34" fill="#f7f1e3"/><path d="M38 168c8-34 34-50 62-50s54 16 62 50" fill="#f7f1e3"/></svg>
+      <div style="font-family:Lora;font-weight:700;font-size:46px;margin-top:10px">1 enseignant</div></div>
+    <div id="s3b" style="position:absolute;right:110px;top:560px;width:330px;text-align:center">
+      <svg viewBox="0 0 200 200" style="width:300px;height:300px"><circle cx="100" cy="100" r="96" fill="#cfa53a"/><circle cx="100" cy="84" r="28" fill="#fffdf6"/><path d="M50 166c6-28 26-42 50-42s44 14 50 42" fill="#fffdf6"/></svg>
+      <div style="font-family:Lora;font-weight:700;font-size:46px;margin-top:10px">1 élève</div></div>
+    <svg style="position:absolute;left:440px;top:690px;width:200px;height:60px" viewBox="0 0 200 60"><path id="s3link" d="M6 30 C60 0 140 60 194 30" fill="none" stroke="#cfa53a" stroke-width="8" stroke-linecap="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/></svg>
+    <div class="abs" id="s3att" style="top:1040px"><span class="pill" style="background:#0d5a2b;font-size:46px">Toute son attention est pour vous</span></div>
+    <div class="abs" id="s3ry" style="top:1200px">
+      <svg viewBox="0 0 600 120" style="width:600px;height:120px"><path id="s3wave" d="M0 60 Q37.5 0 75 60 T150 60 T225 60 T300 60 T375 60 T450 60 T525 60 T600 60" fill="none" stroke="#1d7a3e" stroke-width="8" stroke-linecap="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/></svg>
+      <div style="font-family:Lora;font-style:italic;font-weight:700;font-size:58px;color:var(--g1)">à votre rythme</div></div>
+  </div></section>
+
+  <!-- 4 : programme Coran -->
+  <section class="scene cream" id="s4"><div class="bg"></div><div class="content">
+    <div class="abs label" id="s4label" style="top:150px">PROGRAMME 1</div>
+    <div class="abs h2" id="s4title" style="top:210px">L'apprentissage<br>du Coran</div>
+    <div class="goldline" id="s4line" style="position:absolute;left:390px;top:420px;width:300px"></div>
+    <div class="card" id="s4c1" style="top:520px"><div class="num">1</div><div><div class="t">La lecture</div><div class="d">Même en partant de zéro</div></div><div class="a">القِرَاءَة</div></div>
+    <div class="card" id="s4c2" style="top:800px"><div class="num">2</div><div><div class="t">Le tajwid</div><div class="d">Réciter avec justesse</div></div><div class="a">التَّجْوِيد</div></div>
+    <div class="card" id="s4c3" style="top:1080px"><div class="num">3</div><div><div class="t">Les sourates</div><div class="d">Mémorisées une par une</div></div><div class="a">القُرْآن</div></div>
+  </div></section>
+
+  <!-- 5 : langue arabe -->
+  <section class="scene green" id="s5"><div class="bg"></div><div class="content">
+    <div class="abs label" id="s5label" style="top:150px">PROGRAMME 2</div>
+    <div class="abs h2" id="s5title" style="top:210px">La langue arabe</div>
+    <div class="abs ar" id="s5ar" style="top:300px;font-size:300px;line-height:1.25;font-weight:700;color:var(--cream)">العَرَبِيَّة</div>
+    <div class="goldline" id="s5line" style="position:absolute;left:240px;top:760px;width:600px"></div>
+    <div class="chip" id="s5c1" style="top:830px"><span class="n">1</span>Vocabulaire<span class="s ar" style="font-size:60px;color:var(--gold2)">المُفْرَدَات</span></div>
+    <div class="chip" id="s5c2" style="top:1010px"><span class="n">2</span>Grammaire<span class="s ar" style="font-size:60px;color:var(--gold2)">النَّحْو</span></div>
+    <div class="chip" id="s5c3" style="top:1190px"><span class="n">3</span>Conjugaison<span class="s ar" style="font-size:60px;color:var(--gold2)">الصَّرْف</span></div>
+    <div class="abs" id="s5med" style="top:1385px"><span class="pill" style="background:var(--gold);color:var(--ink);border-color:var(--gold2)">Méthode de Médine · pas à pas</span></div>
+  </div></section>
+
+  <!-- 6 : flexibilité -->
+  <section class="scene cream" id="s6"><div class="bg"></div><div class="content">
+    <div class="abs label" id="s6label" style="top:150px">SUR MESURE</div>
+    <div class="abs h2" id="s6title" style="top:210px">Des cours qui<br>s'adaptent à vous</div>
+    <div class="tile" id="s6t1" style="left:70px;top:500px"><div class="big" id="s6count">1</div><div class="cap">cours par semaine<br><span style="color:var(--muted);font-size:32px">de 1 à 3, 45 min à 1 h</span></div></div>
+    <div class="tile" id="s6t2" style="right:70px;top:500px">
+      <svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" fill="#fffdf6" stroke="#0d5a2b" stroke-width="8"/><g id="s6hand"><line x1="60" y1="60" x2="60" y2="22" stroke="#cfa53a" stroke-width="8" stroke-linecap="round"/></g><line x1="60" y1="60" x2="84" y2="60" stroke="#0d5a2b" stroke-width="8" stroke-linecap="round"/><circle cx="60" cy="60" r="6" fill="#0d5a2b"/></svg>
+      <div class="cap">Horaires<br>de votre choix</div></div>
+    <div class="tile" id="s6t3" style="left:70px;top:980px">
+      <svg viewBox="0 0 170 120" style="width:220px"><circle cx="48" cy="40" r="22" fill="#0d5a2b"/><path d="M8 112c4-30 20-44 40-44s36 14 40 44" fill="#0d5a2b"/><circle cx="122" cy="40" r="22" fill="#cfa53a"/><path d="M82 112c4-30 20-44 40-44s36 14 40 44" fill="#cfa53a"/></svg>
+      <div class="cap">Enseignant<br>ou enseignante</div><div style="font-size:32px;color:var(--muted);font-weight:600">au choix</div></div>
+    <div class="tile" id="s6t4" style="right:70px;top:980px">
+      <svg viewBox="0 0 140 110"><path d="M70 22C52 10 28 8 8 12v84c20-4 44-2 62 10 18-12 42-14 62-10V12c-20-4-44-2-62 10z" fill="#fffdf6" stroke="#0d5a2b" stroke-width="7" stroke-linejoin="round"/><path d="M70 22v84" stroke="#0d5a2b" stroke-width="6"/></svg>
+      <div class="cap">Livres</div>
+      <div id="s6stamp" style="margin-top:10px;padding:8px 26px;border:4px solid var(--gold);border-radius:14px;color:var(--gold);font-weight:800;font-size:40px;letter-spacing:4px">OFFERTS</div></div>
+  </div></section>
+
+  <!-- 7 : pour qui -->
+  <section class="scene green" id="s7"><div class="bg"></div><div class="content">
+    <div id="s7rings"></div>
+    <div class="abs label" id="s7label" style="top:150px">POUR QUI ?</div>
+    <div class="abs h2" id="s7title" style="top:210px">Pour toute<br>la famille</div>
+    <div class="chip" id="s7c1" style="top:520px"><span class="n">1</span>Les enfants<span class="s">après l'école</span></div>
+    <div class="chip" id="s7c2" style="top:700px"><span class="n">2</span>Les étudiants<span class="s">sans se déplacer</span></div>
+    <div class="chip" id="s7c3" style="top:880px"><span class="n">3</span>Les parents<span class="s">sur leur temps libre</span></div>
+    <div class="chip" id="s7c4" style="top:1060px"><span class="n">4</span>La diaspora<span class="s">partout dans le monde</span></div>
+    <div class="abs" id="s7home" style="top:1290px;font-family:Lora;font-style:italic;font-weight:700;font-size:64px;color:var(--gold2)">Chacun apprend chez soi.</div>
+  </div></section>
+
+  <!-- 8 : appel à l'action -->
+  <section class="scene green" id="s8"><div class="bg"></div><div class="content">
+    <div id="s8icon" style="position:absolute;left:420px;top:170px;width:240px;height:240px;border-radius:50%;background:#25d366;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 16px rgba(37,211,102,.25)">
+      <svg viewBox="0 0 64 64" style="width:130px;height:130px"><path d="M32 8C18.7 8 8 18.2 8 30.8c0 4.6 1.4 8.8 3.9 12.4L9 56l13.3-3.4c3 1.5 6.3 2.2 9.7 2.2 13.3 0 24-10.2 24-22.8S45.3 8 32 8z" fill="#fff"/><path d="M24 22c1-.6 2.2-.4 2.8.7l2.2 4.4c.4.9.2 1.9-.6 2.5l-1.4 1.1c1.6 3.2 4 5.6 7.2 7.2l1.1-1.4c.6-.8 1.6-1 2.5-.6l4.4 2.2c1.1.6 1.3 1.8.7 2.8-1.6 2.7-4.6 3.8-7.6 2.6-6.4-2.6-11.4-7.6-14-14-1.2-3 0-6 2.7-7.5z" fill="#25d366"/></svg></div>
+    <div class="abs h1" id="s8title" style="top:480px">Écrivez-nous<br>dès aujourd'hui</div>
+    <div class="abs" id="s8num" style="top:735px;font-family:Cairo;font-weight:800;font-size:96px;color:var(--gold2);letter-spacing:2px"></div>
+    <div id="s8qr" style="position:absolute;left:340px;top:900px;width:400px;height:400px;background:#fff;border-radius:36px;padding:34px;box-shadow:0 20px 60px rgba(0,0,0,.35)"><img src="../shared/a/qr.png" style="width:100%;height:100%;image-rendering:pixelated"></div>
+    <div class="abs body" id="s8scan" style="top:1335px;font-size:38px;color:rgba(247,241,227,.85)">Scannez pour nous écrire sur WhatsApp</div>
+  </div></section>
+
+  <!-- 9 : signature -->
+  <section class="scene green" id="s9"><div class="bg"></div><div class="content">
+    <div id="s9rings"></div>
+    <img id="s9logo" src="../shared/a/logo_white.png" style="position:absolute;left:250px;top:200px;width:580px;height:580px">
+    <div class="abs h1" id="s9name" style="top:840px;font-size:100px">ALIF ACADEMIE</div>
+    <div class="goldline" id="s9line" style="position:absolute;left:340px;top:975px;width:400px"></div>
+    <div class="abs" id="s9tag" style="top:1015px;font-family:Lora;font-style:italic;font-weight:700;font-size:62px;line-height:1.3;color:var(--gold2)">« Vague de connaissances<br>sur votre canapé »</div>
+    <div class="abs" id="s9c" style="top:1330px;font-size:42px;font-weight:700;line-height:1.6">WhatsApp <span style="color:var(--gold2)">+221 78 145 09 09</span><br>@alif_academie · alifacademie25@gmail.com<br><span style="font-weight:600;color:rgba(247,241,227,.8)">Dakar à domicile · en ligne partout</span></div>
+  </div></section>
+
+  <div id="captions"><div id="capbox"></div></div>
+  <div id="progress"></div>
+</div>
+
+<script src="timeline.js"></script>
+<script>
+const SC = TL.scenes, $ = id => document.getElementById(id);
+const cl = x => Math.max(0, Math.min(1, x));
+const eo = x => 1 - Math.pow(1 - cl(x), 3);
+const eio = x => { x = cl(x); return x < .5 ? 4*x*x*x : 1 - Math.pow(-2*x + 2, 3) / 2; };
+const back = x => { x = cl(x); const c = 1.70158, c3 = c + 1; return 1 + c3*Math.pow(x - 1, 3) + c*Math.pow(x - 1, 2); };
+const norm = s => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]/g, '');
+// instant où le mot (préfixe) est prononcé dans la scène n
+function W(n, word, nth = 0) {
+  const k = norm(word); let c = 0;
+  for (const w of SC[n - 1].words) if (norm(w.w).startsWith(k)) { if (c++ === nth) return w.s; }
+  return SC[n - 1].audioStart;
+}
+// apparition générique
+function show(el, t, t0, o = {}) {
+  el = typeof el === 'string' ? $(el) : el;
+  const d = o.d ?? .55, p = (o.ease ?? eo)((t - t0) / d), q = cl((t - t0) / d);
+  const dx = o.x ?? 0, dy = o.y ?? 50, s0 = o.s ?? 1, r0 = o.r ?? 0;
+  el.style.opacity = o.noFade ? 1 : q;
+  el.style.transform = `translate(${dx*(1-p)}px,${dy*(1-p)}px) scale(${s0 + (1-s0)*p}) rotate(${r0*(1-p)}deg)`;
+  if (o.blur) el.style.filter = `blur(${(1-q)*o.blur}px)`;
+  return p;
+}
+// anneaux "vague de connaissances"
+function rings(container, t, t0, color) {
+  const c = $(container);
+  if (!c.childElementCount) for (let i = 0; i < 5; i++) { const r = document.createElement('div'); r.className = 'ring'; c.appendChild(r); }
+  [...c.children].forEach((r, i) => {
+    const p = ((t - t0) * .22 + i / 5) % 1, size = 300 + p * 1500;
+    Object.assign(r.style, { width: size + 'px', height: size + 'px', left: (540 - size/2) + 'px', top: (520 - size/2) + 'px',
+      opacity: (t < t0 ? 0 : (1 - p) * .35).toString(), borderColor: color });
+  });
+}
+// sous-titres mot à mot
+const chunks = SC.map(sc => {
+  const out = []; let cur = [];
+  sc.words.forEach((w, i) => {
+    cur.push(i);
+    const len = cur.map(j => sc.words[j].w).join(' ').length;
+    if (/[.,:?!]$/.test(w.w) || len > 22) { out.push(cur); cur = []; }
+  });
+  if (cur.length) out.push(cur);
+  return out;
+});
+let lastCap = '';
+function captions(t) {
+  const box = $('capbox'), wrap = $('captions');
+  let html = '', vis = 0;
+  SC.forEach((sc, n) => {
+    if (n >= 7) return; // CTA et signature : texte déjà à l'écran
+    chunks[n].forEach(ch => {
+      const s = sc.words[ch[0]].s - .08, e = sc.words[ch[ch.length - 1]].e + .25;
+      if (t >= s && t < e) {
+        html = ch.map(j => `<span class="${t >= sc.words[j].s - .03 ? 'on' : ''}">${sc.words[j].w}</span>`).join('');
+        vis = Math.min(cl((t - s) / .12), cl((e - t) / .12));
+      }
+    });
+  });
+  if (html !== lastCap) { box.innerHTML = html; lastCap = html; }
+  wrap.style.opacity = html ? vis : 0;
+  wrap.style.transform = `translateY(${(1 - vis) * 20}px)`;
+}
+
+function render(t) {
+  // scènes : fondu enchaîné + léger zoom avant
+  SC.forEach((sc, n) => {
+    // la scène entrante se dévoile par une vague circulaire montant du bas ; la sortante reste opaque dessous
+    const el = $('s' + sc.index), TR = .7;
+    const on = t >= sc.start - .01 && t < sc.end + TR + .02;
+    el.style.display = on ? 'block' : 'none';
+    el.style.opacity = 1;
+    const r = n === 0 ? 1 : eio((t - sc.start) / TR);
+    el.style.clipPath = r >= 1 ? 'none' : `circle(${r * 125}% at 50% 105%)`;
+    const life = cl((t - sc.start) / (sc.end - sc.start + .45));
+    el.querySelector('.bg').style.transform = `scale(${1.08 - .06 * life}) translateY(${-20 * life}px)`;
+    el.querySelector('.content').style.transform = `scale(${1 + .012 * life})`;
+  });
+  $('progress').style.width = (cl(t / TL.total) * 1080) + 'px';
+
+  // 1 — accroche
+  { const t0 = 0;
+    const p = eio((t - t0 - .05) / 1.1);
+    $('s1alif').style.clipPath = `inset(0 0 ${100 - p * 100}% 0)`;
+    $('s1alif').style.opacity = 1;
+    show('s1ring', t, .2, { d: 1.2, y: 0, s: .4 });
+    $('s1ring').style.opacity = cl((t - .2) / 1) * .6;
+    const q = $('s1q');
+    if (!q.childElementCount) q.innerHTML = [['Et','si','le','savoir'],['venait',"jusqu'à",'vous','?']]
+      .map(l => l.map(w => `<span style="display:inline-block;margin:0 10px;${w === '?' ? 'color:var(--gold)' : ''}">${w}</span>`).join('')).join('<br>');
+    [...q.querySelectorAll('span')].forEach((s, i) => show(s, t, SC[0].words[Math.min(i, SC[0].words.length - 1)].s - .1, { d: .35, y: 40 }));
+  }
+  // 2 — logo
+  { const sc = SC[1];
+    show('s2logo', t, sc.start + .1, { d: 1.1, s: .55, r: -12, y: 0, ease: back });
+    $('s2ring').style.transform = `rotate(${(t - sc.start) * 14}deg) scale(${.7 + .3 * eo((t - sc.start) / 1.2)})`;
+    $('s2ring').style.opacity = cl((t - sc.start) / .8);
+    const pn = show('s2name', t, sc.start + .5, { d: .8, y: 30 });
+    $('s2name').style.letterSpacing = (30 * (1 - pn) + 4) + 'px';
+    $('s2line').style.transform = `scaleX(${eo((t - sc.start - .9) / .6)})`;
+    show('s2sub', t, W(2, 'cours') - .1, { y: 30 });
+    show('s2p1', t, W(2, 'domicile') - .15, { x: -120, y: 0, ease: back, d: .6 });
+    show('s2p2', t, W(2, 'ligne') - .15, { x: 120, y: 0, ease: back, d: .6 });
+  }
+  // 3 — un enseignant, un élève
+  { const sc = SC[2];
+    show('s3label', t, sc.start + .15, { y: 20 }); show('s3title', t, sc.start + .25, { y: 40 });
+    show('s3a', t, W(3, 'enseignant') - .1, { s: .5, y: 0, ease: back, d: .6 });
+    show('s3b', t, W(3, 'eleve') - .15, { s: .5, y: 0, ease: back, d: .6 });
+    $('s3link').style.strokeDashoffset = 1 - eio((t - W(3, 'eleve')) / .7);
+    show('s3att', t, W(3, 'attention') - .15, { y: 40, s: .9 });
+    show('s3ry', t, W(3, 'rythme') - .35, { y: 30 });
+    $('s3wave').style.strokeDashoffset = 1 - eio((t - W(3, 'rythme') + .3) / 1.1);
+  }
+  // 4 — Coran
+  { const sc = SC[3];
+    show('s4label', t, sc.start + .15, { y: 20 }); show('s4title', t, sc.start + .25, { y: 40 });
+    $('s4line').style.transform = `scaleX(${eo((t - sc.start - .6) / .6)})`;
+    [['s4c1', 'lire'], ['s4c2', 'tajwid'], ['s4c3', 'memorisez']].forEach(([id, w]) => {
+      const t0 = W(4, w) - .25; show(id, t, t0, { x: 260, y: 0, d: .6 });
+      const num = $(id).querySelector('.num'); show(num, t, t0 + .15, { s: .2, y: 0, ease: back, d: .5, noFade: true });
+      const ar = $(id).querySelector('.a'); ar.style.opacity = cl((t - t0 - .3) / .5);
+    });
+  }
+  // 5 — langue arabe
+  { const sc = SC[4];
+    show('s5label', t, sc.start + .15, { y: 20 }); show('s5title', t, sc.start + .25, { y: 40 });
+    const p = eio((t - W(5, "l'arabe") + .25) / 1.2);
+    $('s5ar').style.clipPath = `inset(0 0 0 ${100 - p * 100}%)`;  // dévoilement de droite à gauche
+    $('s5line').style.transform = `scaleX(${eo((t - W(5, "l'arabe") - .6) / .7)})`;
+    show('s5c1', t, W(5, 'vocabulaire') - .2, { x: -200, y: 0 });
+    show('s5c2', t, W(5, 'grammaire') - .2, { x: -200, y: 0 });
+    show('s5c3', t, W(5, 'conjugaison') - .2, { x: -200, y: 0 });
+    show('s5med', t, W(5, 'medine') - .4, { s: .6, y: 0, ease: back, d: .6 });
+  }
+  // 6 — flexibilité
+  { const sc = SC[5];
+    show('s6label', t, sc.start + .15, { y: 20 }); show('s6title', t, sc.start + .25, { y: 40 });
+    show('s6t1', t, W(6, 'de') - .1, { s: .7, y: 40, ease: back, d: .6 });
+    const c = Math.round(1 + 2 * eio((t - W(6, 'trois') + .3) / .8));
+    $('s6count').textContent = c === 1 ? '1' : (c === 2 ? '1-2' : '1-3');
+    show('s6t2', t, W(6, 'horaires') - .2, { s: .7, y: 40, ease: back, d: .6 });
+    $('s6hand').style.transform = `rotate(${(t - W(6, 'horaires')) * 220}deg)`; $('s6hand').style.transformOrigin = '60px 60px';
+    show('s6t3', t, W(6, 'enseignant') - .2, { s: .7, y: 40, ease: back, d: .6 });
+    show('s6t4', t, W(6, 'livres') - .25, { s: .7, y: 40, ease: back, d: .6 });
+    show('s6stamp', t, W(6, 'offerts') - .1, { s: 2.2, y: 0, r: -18, d: .4, ease: eo });
+  }
+  // 7 — pour qui
+  { const sc = SC[6];
+    rings('s7rings', t, sc.start, 'rgba(207,165,58,1)');
+    show('s7label', t, sc.start + .15, { y: 20 }); show('s7title', t, sc.start + .25, { y: 40 });
+    [['s7c1', 'enfants'], ['s7c2', 'etudiants'], ['s7c3', 'parents'], ['s7c4', 'diaspora']].forEach(([id, w], i) =>
+      show(id, t, W(7, w) - .2, { x: i % 2 ? 220 : -220, y: 0, d: .55 }));
+    show('s7home', t, W(7, 'chacun') - .15, { y: 30, s: .9 });
+  }
+  // 8 — appel à l'action
+  { const sc = SC[7];
+    show('s8icon', t, sc.start + .1, { s: .2, y: 0, ease: back, d: .7 });
+    $('s8icon').style.boxShadow = `0 0 0 ${16 + 10 * Math.sin((t - sc.start) * 5)}px rgba(37,211,102,.25)`;
+    show('s8title', t, sc.start + .3, { y: 40 });
+    const num = '+221 78 145 09 09', k = Math.floor(cl((t - sc.start - .7) / 1.2) * num.length);
+    $('s8num').textContent = num.slice(0, k) + (k < num.length && t > sc.start + .7 ? '|' : '');
+    show('s8qr', t, sc.start + .9, { y: 120, d: .7 });
+    show('s8scan', t, sc.start + 1.3, { y: 20 });
+  }
+  // 9 — signature
+  { const sc = SC[8];
+    rings('s9rings', t, sc.start, 'rgba(230,199,106,1)');
+    show('s9logo', t, sc.start + .1, { s: .5, y: 0, ease: back, d: 1 });
+    const pn = show('s9name', t, sc.start + .5, { y: 30, d: .8 });
+    $('s9name').style.letterSpacing = (24 * (1 - pn) + 4) + 'px';
+    $('s9line').style.transform = `scaleX(${eo((t - sc.start - .9) / .6)})`;
+    show('s9tag', t, W(9, 'vague') - .2, { y: 30, blur: 10, d: .8 });
+    show('s9c', t, W(9, 'canape') + .2, { y: 30, d: .6 });
+  }
+  captions(t);
+}
+window.render = render;
+window.ready = document.fonts.ready.then(() => render(0));
+</script>
+</body>
+</html>
