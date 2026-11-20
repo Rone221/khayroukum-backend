@@ -28,6 +28,16 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'moneyprinter' => [
+        // URL de l'API MoneyPrinterTurbo (python main.py), sans /api/v1
+        'url' => env('MONEYPRINTER_URL', 'http://127.0.0.1:8080'),
+        // Doit correspondre à `api_key` dans config.toml de MoneyPrinterTurbo (vide = pas d'auth)
+        'api_key' => env('MONEYPRINTER_API_KEY'),
+        'timeout' => (int) env('MONEYPRINTER_TIMEOUT', 30),
+        // Disque Laravel où les vidéos terminées sont copiées
+        'disk' => env('MONEYPRINTER_DISK', 'local'),
+    ],
+
     'slack' => [
         'notifications' => [
             'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),

@@ -17,6 +17,7 @@ use App\Http\Controllers\Admin\ContentController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\MediaController;
 use App\Http\Controllers\ContributionController;
+use App\Http\Controllers\VideoController;
 
 // Routes publiques (sans authentification)
 Route::prefix('public')->group(function () {
@@ -93,6 +94,15 @@ Route::middleware('auth:sanctum')->group(function () {
     // Routes du dashboard prestataire
     Route::get('prestataire/stats', [PrestataireDashboardController::class, 'stats'])->middleware('role:prestataire');
     Route::get('prestataire/activity', [PrestataireDashboardController::class, 'activity'])->middleware('role:prestataire');
+
+    // Vidéos courtes générées par MoneyPrinterTurbo
+    Route::middleware('role:administrateur|prestataire')->group(function () {
+        Route::get('videos', [VideoController::class, 'index']);
+        Route::post('videos', [VideoController::class, 'store']);
+        Route::get('videos/{video}', [VideoController::class, 'show']);
+        Route::get('videos/{video}/download', [VideoController::class, 'download'])->name('api.videos.download');
+        Route::delete('videos/{video}', [VideoController::class, 'destroy']);
+    });
 
     // Routes admin pour le CMS
     Route::prefix('admin')->middleware('role:administrateur')->group(function () {
