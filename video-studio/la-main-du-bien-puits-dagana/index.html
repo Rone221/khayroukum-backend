@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>La Main du Bien — Un puits pour Dagana</title>
+<style>
+@font-face{font-family:Pop;font-weight:400;src:url(f/poppins-latin-400-normal.woff2)}
+@font-face{font-family:Pop;font-weight:600;src:url(f/poppins-latin-600-normal.woff2)}
+@font-face{font-family:Pop;font-weight:700;src:url(f/poppins-latin-700-normal.woff2)}
+@font-face{font-family:Pop;font-weight:800;src:url(f/poppins-latin-800-normal.woff2)}
+@font-face{font-family:Pop;font-weight:900;src:url(f/poppins-latin-900-normal.woff2)}
+@font-face{font-family:Lora;font-style:italic;font-weight:400;src:url(f/lora-latin-400-italic.woff2)}
+@font-face{font-family:Lora;font-style:italic;font-weight:700;src:url(f/lora-latin-700-italic.woff2)}
+@font-face{font-family:Sch;font-weight:700;src:url(f/scheherazade-new-arabic-700-normal.woff2)}
+*{margin:0;padding:0}html,body{width:1080px;height:1920px;overflow:hidden;background:#12301E}canvas{position:absolute;inset:0}
+</style>
+</head>
+<body>
+<canvas id="c" width="1080" height="1920"></canvas>
+<script>
+const ctx = document.getElementById('c').getContext('2d'), W = 1080, H = 1920, TOTAL = 51.35;
+const C = { forest: [18, 48, 30], green: [30, 86, 49], gold: [198, 154, 62], sand: [223, 201, 150], cream: [247, 243, 232], water: [70, 160, 210] };
+const rgb = (c, a = 1) => `rgba(${c[0]},${c[1]},${c[2]},${a})`;
+const cl = x => Math.max(0, Math.min(1, x)), lerp = (a, b, p) => a + (b - a) * p;
+const eo = x => 1 - Math.pow(1 - cl(x), 3), eio = x => { x = cl(x); return x < .5 ? 4*x*x*x : 1 - Math.pow(-2*x + 2, 3) / 2; };
+const back = x => { x = cl(x); const c = 1.5, c3 = c + 1; return 1 + c3*Math.pow(x - 1, 3) + c*Math.pow(x - 1, 2); };
+function K(t, kf) { if (t <= kf[0][0]) return kf[0][1]; for (let i = 1; i < kf.length; i++) if (t <= kf[i][0]) return lerp(kf[i-1][1], kf[i][1], eio((t - kf[i-1][0]) / (kf[i][0] - kf[i-1][0]))); return kf[kf.length - 1][1]; }
+function rng(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const img = s => new Promise(r => { const i = new Image(); i.onload = () => r(i); i.src = s; });
+const fmt = n => Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+// scènes calées sur les phrases de la voix off fournie
+const S = { a: 0, b: 5.7, c: 12.2, d: 20.6, e: 25.9, f: 31.7, g: 41.7 };
+const seg = (t, a, b) => Math.min(cl((t - a) / .5), b == null ? 1 : cl((b - t) / .45));
+function T(s, x, y, font, color, a = 1, o = {}) { if (a <= .003) return; ctx.save(); ctx.globalAlpha = a; ctx.font = font; ctx.fillStyle = color; ctx.textAlign = o.align || 'center'; ctx.textBaseline = 'middle';
+  if (o.ls) ctx.letterSpacing = o.ls + 'px'; if (o.dir) ctx.direction = o.dir; if (o.shadow !== false) { ctx.shadowColor = 'rgba(0,0,0,.45)'; ctx.shadowBlur = 16; } ctx.fillText(s, x, y); ctx.restore(); }
+function up(t, t0, d = .6) { return { a: cl((t - t0) / d), y: (1 - eo((t - t0) / d)) * 36 }; }
+function glow(x, y, r, a, c) { if (a <= .003) return; const g = ctx.createRadialGradient(x, y, 0, x, y, r); g.addColorStop(0, rgb(c, a)); g.addColorStop(1, rgb(c, 0)); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, r, 0, 6.283); ctx.fill(); }
+function rr(x, y, w, h, r) { ctx.beginPath(); ctx.roundRect(x, y, w, h, r); }
+let LOGO, WAVE, OM, PHOTO;
+const R = rng(3);
+// terre craquelée (générée une fois)
+const crack = document.createElement('canvas'); crack.width = W; crack.height = H;
+{ const x = crack.getContext('2d'), r = rng(9); const g = x.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#6b4a2a'); g.addColorStop(1, '#3a2615'); x.fillStyle = g; x.fillRect(0, 0, W, H);
+  const pts = Array.from({ length: 90 }, () => [r() * W, r() * H]); x.strokeStyle = 'rgba(25,14,6,.85)'; x.lineCap = 'round';
+  for (let yy = 0; yy < H; yy += 6) for (let xx = 0; xx < W; xx += 6) { let a = 1e9, b = 1e9; for (const p of pts) { const d = (p[0] - xx) ** 2 + (p[1] - yy) ** 2; if (d < a) { b = a; a = d; } else if (d < b) b = d; }
+    if (Math.sqrt(b) - Math.sqrt(a) < 3.2) { x.fillStyle = 'rgba(25,14,6,.8)'; x.fillRect(xx, yy, 6, 6); } }
+  for (let i = 0; i < 6000; i++) { x.fillStyle = `rgba(${r() < .5 ? '255,220,170' : '20,10,5'},${r() * .08})`; x.fillRect(r() * W, r() * H, 2, 2); } }
+const DUST = Array.from({ length: 140 }, () => ({ x: R() * W, y: R() * H, z: .3 + R() * .9, s: .6 + R() * 2.2, ph: R() * 6.3 }));
+function dust(t, a, c = C.sand) { DUST.forEach(d => { const x = ((d.x + t * 22 * d.z) % W + W) % W, y = ((d.y - t * 6 * d.z) % H + H) % H; ctx.fillStyle = rgb(c, a * d.z * (.5 + .5 * Math.sin(t * 2 + d.ph))); ctx.beginPath(); ctx.arc(x, y, d.s * d.z, 0, 6.283); ctx.fill(); }); }
+// goutte d'eau
+function drop(x, y, s, a, fill = C.water) { if (a <= 0) return; ctx.save(); ctx.globalAlpha = a; ctx.translate(x, y); ctx.scale(s, s); ctx.beginPath(); ctx.moveTo(0, -60); ctx.bezierCurveTo(30, -20, 44, 6, 44, 24); ctx.arc(0, 24, 44, 0, Math.PI); ctx.bezierCurveTo(-44, 6, -30, -20, 0, -60); ctx.closePath();
+  const g = ctx.createLinearGradient(-40, -60, 40, 70); g.addColorStop(0, '#bfe6ff'); g.addColorStop(1, rgb(fill)); ctx.fillStyle = g; ctx.shadowColor = 'rgba(120,200,255,.7)'; ctx.shadowBlur = 30; ctx.fill(); ctx.restore(); }
+// puits en coupe qui se remplit
+function well(cx, cy, w, h, level, a, t) { if (a <= 0) return; ctx.save(); ctx.globalAlpha = a;
+  // sol
+  ctx.fillStyle = rgb([92, 62, 34]); ctx.fillRect(cx - w * 1.1, cy - h / 2 - 20, w * 2.2, h + 40);
+  ctx.fillStyle = rgb([24, 16, 10]); rr(cx - w / 2, cy - h / 2, w, h, 18); ctx.fill();
+  // eau
+  const lv = cy + h / 2 - h * level; ctx.save(); rr(cx - w / 2, cy - h / 2, w, h, 18); ctx.clip();
+  const g = ctx.createLinearGradient(0, lv, 0, cy + h / 2); g.addColorStop(0, '#7fd0ff'); g.addColorStop(1, '#1d5f8f'); ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(cx - w / 2, cy + h / 2);
+  for (let x = cx - w / 2; x <= cx + w / 2; x += 8) ctx.lineTo(x, lv + Math.sin(x * .03 + t * 3) * 6); ctx.lineTo(cx + w / 2, cy + h / 2); ctx.fill(); ctx.restore();
+  // margelle en pierre
+  ctx.fillStyle = rgb(C.sand); for (let i = 0; i < 6; i++) { const bw = w * 1.5 / 6; rr(cx - w * .75 + i * bw + 3, cy - h / 2 - 70 + (i % 2) * 4, bw - 6, 60, 8); ctx.fill(); }
+  // portique + seau
+  ctx.strokeStyle = rgb([120, 84, 46]); ctx.lineWidth = 16; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(cx - w * .62, cy - h / 2 - 60); ctx.lineTo(cx - w * .62, cy - h / 2 - 300); ctx.lineTo(cx + w * .62, cy - h / 2 - 300); ctx.lineTo(cx + w * .62, cy - h / 2 - 60); ctx.stroke();
+  const by = cy - h / 2 - 240 + Math.sin(t * 1.6) * 30; ctx.strokeStyle = rgb(C.sand); ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(cx, cy - h / 2 - 300); ctx.lineTo(cx, by); ctx.stroke();
+  ctx.fillStyle = rgb(C.gold); ctx.beginPath(); ctx.moveTo(cx - 34, by); ctx.lineTo(cx + 34, by); ctx.lineTo(cx + 26, by + 50); ctx.lineTo(cx - 26, by + 50); ctx.closePath(); ctx.fill();
+  ctx.restore(); }
+// rivière partagée
+function river(t, a) { if (a <= 0) return; ctx.save(); ctx.globalAlpha = a; const y0 = 1240;
+  const g = ctx.createLinearGradient(0, y0 - 60, 0, y0 + 200); g.addColorStop(0, '#7d6a3f'); g.addColorStop(1, '#4b3d22'); ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(0, y0);
+  for (let x = 0; x <= W; x += 10) ctx.lineTo(x, y0 + Math.sin(x * .012 + t) * 14); ctx.lineTo(W, H); ctx.lineTo(0, H); ctx.fill();
+  ctx.strokeStyle = 'rgba(220,200,150,.35)'; ctx.lineWidth = 3; for (let k = 0; k < 6; k++) { ctx.beginPath(); for (let x = 0; x <= W; x += 12) { const y = y0 + 40 + k * 70 + Math.sin(x * .01 + t * 1.3 + k) * 10; x ? ctx.lineTo(x, y) : ctx.moveTo(x, y); } ctx.stroke(); }
+  ctx.restore(); }
+// silhouettes : personne + chèvre/vache qui boivent (formes simples)
+function silhouettes(a) { if (a <= 0) return; ctx.save(); ctx.globalAlpha = a; ctx.fillStyle = rgb([28, 18, 10]);
+  // personne avec bassine
+  ctx.beginPath(); ctx.arc(330, 1040, 34, 0, 6.283); ctx.fill(); ctx.beginPath(); ctx.moveTo(290, 1080); ctx.lineTo(370, 1080); ctx.lineTo(400, 1250); ctx.lineTo(260, 1250); ctx.closePath(); ctx.fill();
+  ctx.beginPath(); ctx.ellipse(330, 995, 62, 16, 0, 0, 6.283); ctx.fill();
+  // vache
+  ctx.beginPath(); ctx.ellipse(720, 1150, 150, 70, 0, 0, 6.283); ctx.fill(); ctx.beginPath(); ctx.ellipse(590, 1215, 44, 30, .8, 0, 6.283); ctx.fill();
+  for (const lx of [640, 690, 760, 810]) ctx.fillRect(lx, 1190, 22, 70); ctx.beginPath(); ctx.moveTo(560, 1180); ctx.lineTo(540, 1150); ctx.lineTo(575, 1170); ctx.fill();
+  ctx.restore(); }
+
+const CHART = [['16/11', 0], ['18/11', 83650], ['18/11', 100450], ['19/11', 123500], ['19/11', 124500], ['20/11', 140100], ['21/11', 182000], ['22/11', 214100]];
+const GOAL = 650000, GOT = 214100;
+
+function render(t) {
+  // fond vert forêt
+  const g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#0d2416'); g.addColorStop(1, rgb(C.forest)); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  // ===== A : 30 ans sans eau (terre craquelée) =====
+  const aA = K(t, [[0, 1], [S.b - .3, 1], [S.b + .4, 0]]);
+  if (aA > 0) { ctx.save(); ctx.globalAlpha = aA; ctx.drawImage(crack, 0, 0); ctx.restore(); glow(W / 2, 400, 700, .35 * aA, [255, 190, 90]); dust(t, aA * .7);
+    const n = Math.round(lerp(0, 30, eio((t - .4) / 2.2))); const sc = 1 + .08 * Math.max(0, 1 - Math.abs(t - 2.65) / .25);
+    ctx.save(); ctx.translate(W / 2, 720); ctx.scale(sc, sc); T(String(n), 0, 0, '900 380px Pop', rgb(C.cream), aA * cl(t / .4)); ctx.restore();
+    T('ANS', W / 2, 960, '800 120px Pop', rgb(C.gold), aA * cl((t - 1.2) / .5), { ls: 20 });
+    const u = up(t, 2.6); T('SANS UNE GOUTTE', W / 2, 1150 + u.y, '800 70px Pop', rgb(C.cream), aA * u.a); T("D'EAU POTABLE", W / 2, 1240 + u.y, '800 70px Pop', rgb(C.cream), aA * u.a);
+    // goutte qui tombe et s'évapore
+    const dp = cl((t - 3.6) / 1.2); drop(W / 2, lerp(1350, 1640, eio(dp)), lerp(1, .2, dp), aA * (1 - dp) * cl((t - 3.4) / .3)); }
+  // ===== B : Dagana, la rivière partagée =====
+  const aB = seg(t, S.b - .1, S.c);
+  if (aB > 0) { ctx.save(); ctx.globalAlpha = aB; ctx.fillStyle = '#c98a4a'; const sky = ctx.createLinearGradient(0, 0, 0, 1240); sky.addColorStop(0, '#f2b766'); sky.addColorStop(1, '#a8603a'); ctx.fillStyle = sky; ctx.fillRect(0, 0, W, 1260); ctx.restore();
+    glow(800, 760, 300, .8 * aB, [255, 230, 160]); river(t, aB); silhouettes(aB);
+    const u = up(t, S.b + .2); T('UN VILLAGE DU DÉPARTEMENT DE', W / 2, 240 + u.y, '600 38px Pop', rgb([60, 28, 10]), aB * u.a, { ls: 4, shadow: false });
+    T('DAGANA', W / 2, 330 + u.y, '900 140px Pop', rgb([40, 18, 6]), aB * u.a, { shadow: false }); T('Région de Saint-Louis · nord du Sénégal', W / 2, 440 + u.y, '600 40px Pop', rgb([60, 28, 10]), aB * u.a, { shadow: false });
+    const v = up(t, 8.4); ctx.save(); ctx.globalAlpha = aB * v.a; ctx.fillStyle = 'rgba(18,48,30,.88)'; rr(70, 1480 + v.y, 940, 250, 30); ctx.fill(); ctx.restore();
+    T("Ils boivent l'eau de la rivière", W / 2, 1560 + v.y, '700 50px Pop', rgb(C.cream), aB * v.a); T('qu\'ils partagent avec leurs animaux.', W / 2, 1640 + v.y, '700 46px Pop', rgb(C.gold), aB * v.a); }
+  // ===== C : verset + hadith =====
+  const aC = seg(t, S.c - .1, S.d);
+  if (aC > 0) { ctx.save(); ctx.globalAlpha = aC * .35; const s = W / PHOTO.width * 1.0; ctx.filter = 'blur(6px) grayscale(.3)'; ctx.drawImage(PHOTO, 0, 0, W, PHOTO.height * s * 1.0); ctx.restore();
+    ctx.fillStyle = rgb(C.forest, .7 * aC); ctx.fillRect(0, 0, W, H); dust(t, aC * .5, C.gold);
+    const u = up(t, S.c + .2, .9); T('وَأَنفِقُوا فِي سَبِيلِ اللَّهِ', W / 2, 560 + u.y, '700 120px Sch', rgb(C.gold), aC * u.a, { dir: 'rtl' });
+    T("« Et dépensez dans le sentier d'Allah. »", W / 2, 720 + u.y, 'italic 700 52px Lora', rgb(C.cream), aC * cl((t - S.c - .8) / .6)); T('Sourate Al-Baqara, 2:195', W / 2, 800, '600 34px Pop', rgb(C.sand), aC * cl((t - S.c - 1.2) / .6));
+    const v = up(t, 16.2, .8); ctx.save(); ctx.globalAlpha = aC * v.a; ctx.strokeStyle = rgb(C.gold); ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(340, 1010); ctx.lineTo(740, 1010); ctx.stroke(); ctx.restore();
+    drop(W / 2, 1120 + v.y, .9, aC * v.a);
+    T('« La meilleure des aumônes', W / 2, 1290 + v.y, 'italic 700 62px Lora', rgb(C.cream), aC * v.a); T("est de donner de l'eau à boire. »", W / 2, 1375 + v.y, 'italic 700 62px Lora', rgb(C.gold), aC * v.a);
+    T('Hadith rapporté par Ahmad, an-Nasâ\'î et Ibn Mâjah', W / 2, 1470, '600 32px Pop', rgb(C.sand), aC * cl((t - 17.2) / .6)); }
+  // ===== D : sadaqa jariya, le puits =====
+  const aD = seg(t, S.d - .1, S.e);
+  if (aD > 0) { dust(t, aD * .4, C.gold); well(W / 2, 1180, 380, 420, K(t, [[S.d, .05], [S.e, .75]]), aD, t);
+    const u = up(t, S.d + .2); T('SADAQA JARIYA', W / 2, 300 + u.y, '900 96px Pop', rgb(C.gold), aD * u.a, { ls: 6 });
+    T('Un puits, c\'est une aumône', W / 2, 430 + u.y, '700 56px Pop', rgb(C.cream), aD * u.a); T('qui continue de couler', W / 2, 505 + u.y, '700 56px Pop', rgb(C.cream), aD * u.a);
+    T('pendant des générations.', W / 2, 1660, 'italic 700 58px Lora', rgb(C.sand), aD * cl((t - 22.5) / .7)); }
+  // ===== E : la preuve, puits déjà construits =====
+  const aE = seg(t, S.e - .1, S.f);
+  if (aE > 0) { const u = up(t, S.e + .1); T('NOUS L\'AVONS DÉJÀ FAIT', W / 2, 300 + u.y, '900 74px Pop', rgb(C.cream), aE * u.a); T('Puits déjà construits par La Main du Bien', W / 2, 390 + u.y, '600 38px Pop', rgb(C.gold), aE * u.a);
+    ['Thiadiaye', 'Lerane Coly', 'Lerane Sambou'].forEach((n, i) => { const p = back((t - S.e - .7 - i * .55) / .55), y = 620 + i * 300; if (p <= 0) return;
+      ctx.save(); ctx.globalAlpha = aE * cl(p); ctx.translate(W / 2, y); ctx.scale(lerp(.6, 1, p), lerp(.6, 1, p)); ctx.fillStyle = 'rgba(247,243,232,.96)'; rr(-430, -110, 860, 220, 36); ctx.fill();
+      ctx.fillStyle = rgb(C.green); ctx.beginPath(); ctx.arc(-320, 0, 64, 0, 6.283); ctx.fill(); ctx.strokeStyle = '#fff'; ctx.lineWidth = 14; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.beginPath(); ctx.moveTo(-350, 2); ctx.lineTo(-328, 26); ctx.lineTo(-288, -22); ctx.stroke();
+      ctx.restore(); T(n, W / 2 + 70, y - 22, '800 64px Pop', rgb(C.forest), aE * cl(p), { shadow: false }); T('puits construit ✓', W / 2 + 70, y + 46, '600 34px Pop', rgb(C.green), aE * cl(p), { shadow: false }); });
+    T('Insha Allah, Dagana sera le prochain.', W / 2, 1600, 'italic 700 50px Lora', rgb(C.gold), aE * cl((t - 29.6) / .6)); }
+  // ===== F : la cagnotte avance =====
+  const aF = seg(t, S.f - .1, S.g);
+  if (aF > 0) { const u = up(t, S.f + .1); T('LA CAGNOTTE AVANCE', W / 2, 220 + u.y, '900 80px Pop', rgb(C.cream), aF * u.a); T('depuis le 16 novembre', W / 2, 305 + u.y, '600 38px Pop', rgb(C.gold), aF * u.a);
+    // graphique
+    const x0 = 120, x1 = 960, yb = 900, yt = 470, bw = (x1 - x0) / CHART.length;
+    CHART.forEach(([d, v], i) => { const p = eo((t - S.f - .6 - i * .22) / .6); if (p <= 0) return; const h = (yb - yt) * v / 230000 * p, last = i === CHART.length - 1;
+      ctx.save(); ctx.globalAlpha = aF; ctx.fillStyle = last ? rgb(C.gold) : rgb(C.green); rr(x0 + i * bw + 12, yb - h, bw - 24, Math.max(h, 2), 10); ctx.fill(); ctx.restore();
+      T(d, x0 + i * bw + bw / 2, yb + 34, '600 26px Pop', rgb(C.sand), aF * p, { shadow: false }); if (v) T(fmt(v * p), x0 + i * bw + bw / 2, yb - h - 26, `700 ${last ? 30 : 22}px Pop`, rgb(last ? C.gold : C.cream), aF * p, { shadow: false }); });
+    // puits-jauge + chiffres
+    const fill = eio((t - 36) / 2.2) * GOT / GOAL; well(300, 1460, 220, 300, Math.max(.02, fill), aF * cl((t - 35.4) / .5), t);
+    const v = up(t, 35.8); T(fmt(GOT * eio((t - 36) / 2.2)) + ' F', 700, 1250 + v.y, '900 84px Pop', rgb(C.gold), aF * v.a); T('déjà collectés', 700, 1325 + v.y, '600 40px Pop', rgb(C.cream), aF * v.a);
+    T('Objectif : 650 000 F', 700, 1440 + v.y, '700 46px Pop', rgb(C.cream), aF * v.a);
+    ctx.save(); ctx.globalAlpha = aF * v.a; ctx.fillStyle = 'rgba(255,255,255,.15)'; rr(480, 1500, 440, 28, 14); ctx.fill(); ctx.fillStyle = rgb(C.gold); rr(480, 1500, 440 * fill, 28, 14); ctx.fill(); ctx.restore();
+    T(Math.round(fill * 100) + ' % atteint', 700, 1570, '800 42px Pop', rgb(C.gold), aF * v.a);
+    T('Il reste 435 900 F pour leur offrir l\'eau.', W / 2, 1760, 'italic 700 52px Lora', rgb(C.cream), aF * cl((t - 39) / .6)); }
+  // ===== G : appel au don =====
+  const aG = cl((t - S.g + .1) / .5);
+  if (aG > 0) { glow(W / 2, 700, 800, .25 * aG, C.gold); dust(t, aG * .5, C.gold);
+    const p = back((t - S.g) / .8); ctx.save(); ctx.globalAlpha = aG; const ls = 360 * lerp(.6, 1, p); ctx.fillStyle = rgb(C.cream); ctx.beginPath(); ctx.arc(W / 2, 120 + ls / 2, ls * .56, 0, 6.283); ctx.fill(); ctx.drawImage(LOGO, W / 2 - ls / 2, 120, ls, ls); ctx.restore();
+    const u = up(t, S.g + .5); T('Faites un don', W / 2, 600 + u.y, '900 104px Pop', rgb(C.cream), aG * u.a); T('fisabilillah', W / 2, 715 + u.y, 'italic 700 96px Lora', rgb(C.gold), aG * u.a);
+    const v = up(t, S.g + 1.4); ctx.save(); ctx.globalAlpha = aG * v.a; ctx.fillStyle = 'rgba(247,243,232,.97)'; rr(70, 830 + v.y, 940, 400, 40); ctx.fill();
+    ctx.drawImage(WAVE, 200, 870 + v.y, 150, 150); ctx.drawImage(OM, 640, 870 + v.y, 230, 230 * OM.height / OM.width); ctx.restore();
+    T('Wave · Orange Money', W / 2, 1075 + v.y, '700 44px Pop', rgb(C.forest), aG * v.a, { shadow: false });
+    const num = '+221 78 837 22 69', k = Math.floor(cl((t - S.g - 1.8) / 1.4) * num.length); T(num.slice(0, Math.max(1, k)), W / 2, 1160 + v.y, '900 82px Pop', rgb(C.green), aG * v.a, { shadow: false });
+    T('Virement depuis l\'étranger : écrivez-nous', W / 2, 1320, '600 36px Pop', rgb(C.sand), aG * cl((t - 45.2) / .6)); T('lamaindubien26@gmail.com · TikTok @la_main_du_bien', W / 2, 1380, '600 32px Pop', rgb(C.sand), aG * cl((t - 45.6) / .6));
+    // jauge rappel
+    ctx.save(); ctx.globalAlpha = aG * cl((t - 46.2) / .6); ctx.fillStyle = 'rgba(255,255,255,.15)'; rr(170, 1500, 740, 30, 15); ctx.fill(); ctx.fillStyle = rgb(C.gold); rr(170, 1500, 740 * .33, 30, 15); ctx.fill(); ctx.restore();
+    T('214 100 F / 650 000 F · 33 %', W / 2, 1570, '700 38px Pop', rgb(C.cream), aG * cl((t - 46.2) / .6));
+    T('« Une main qui donne,', W / 2, 1700, 'italic 700 62px Lora', rgb(C.cream), aG * cl((t - 47.6) / .7)); T('un cœur qui construit. »', W / 2, 1785, 'italic 700 62px Lora', rgb(C.gold), aG * cl((t - 48.1) / .7)); }
+  // bandeau marque (haut)
+  const bA = K(t, [[S.b, 0], [S.b + .6, 1], [S.g - .3, 1], [S.g, 0]]);
+  if (bA > 0) { ctx.save(); ctx.globalAlpha = bA; ctx.fillStyle = rgb(C.cream); ctx.beginPath(); ctx.arc(95, 95, 60, 0, 6.283); ctx.fill(); ctx.drawImage(LOGO, 40, 40, 110, 110); ctx.restore(); T('LA MAIN DU BIEN', 168, 80, '800 32px Pop', rgb(t < S.c ? [40, 18, 6] : C.cream), bA, { align: 'left', shadow: false }); T('Cagnotte puits · Dagana', 168, 120, '600 26px Pop', rgb(t < S.c ? [60, 28, 10] : C.sand), bA, { align: 'left', shadow: false });
+    ctx.save(); ctx.globalAlpha = bA; ctx.fillStyle = rgb(C.gold); rr(800, 62, 240, 70, 35); ctx.fill(); ctx.restore(); T('URGENCE EAU', 920, 98, '800 28px Pop', rgb(C.forest), bA, { shadow: false }); }
+  const vg = ctx.createRadialGradient(W / 2, H / 2, 600, W / 2, H / 2, 1250); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,.4)'); ctx.fillStyle = vg; ctx.fillRect(0, 0, W, H);
+  const fade = Math.max(K(t, [[0, 1], [.5, 0]]), K(t, [[TOTAL - .8, 0], [TOTAL, .6]])); if (fade > 0) { ctx.fillStyle = `rgba(0,0,0,${fade})`; ctx.fillRect(0, 0, W, H); }
+}
+window.TL = { total: TOTAL }; window.render = render;
+window.ready = Promise.all([img('img/logo1.png'), img('img/logo2.png'), img('img/big.png'), img('img/photo.jpg'),
+  ...['900 80px Pop', '800 80px Pop', '700 80px Pop', '600 40px Pop', 'italic 700 60px Lora', '700 80px Sch'].map(f => document.fonts.load(f, 'Aaé'))])
+  .then(([l, w, o, p]) => { LOGO = l; WAVE = w; OM = o; PHOTO = p; render(0); });
+</script>
+</body>
+</html>
