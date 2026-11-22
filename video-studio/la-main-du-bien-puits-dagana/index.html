@@ -123,8 +123,8 @@ function render(t) {
     T('pendant des générations.', W / 2, 1660, 'italic 700 58px Lora', rgb(C.sand), aD * cl((t - 22.5) / .7)); }
   // ===== E : la preuve, puits déjà construits =====
   const aE = seg(t, S.e - .1, S.f);
-  if (aE > 0) { const u = up(t, S.e + .1); T('NOUS L\'AVONS DÉJÀ FAIT', W / 2, 300 + u.y, '900 74px Pop', rgb(C.cream), aE * u.a); T('Puits déjà construits par La Main du Bien', W / 2, 390 + u.y, '600 38px Pop', rgb(C.gold), aE * u.a);
-    ['Thiadiaye', 'Lerane Coly', 'Lerane Sambou'].forEach((n, i) => { const p = back((t - S.e - .7 - i * .55) / .55), y = 620 + i * 300; if (p <= 0) return;
+  if (aE > 0) { const u = up(t, S.e + .1); T('NOUS L\'AVONS DÉJÀ FAIT', W / 2, 300 + u.y, '900 74px Pop', rgb(C.cream), aE * u.a); T('Un puits déjà construit par La Main du Bien', W / 2, 390 + u.y, '600 38px Pop', rgb(C.gold), aE * u.a);
+    ['Thiadiaye'].forEach((n, i) => { const p = back((t - S.e - .7) / .6), y = 920; if (p <= 0) return;
       ctx.save(); ctx.globalAlpha = aE * cl(p); ctx.translate(W / 2, y); ctx.scale(lerp(.6, 1, p), lerp(.6, 1, p)); ctx.fillStyle = 'rgba(247,243,232,.96)'; rr(-430, -110, 860, 220, 36); ctx.fill();
       ctx.fillStyle = rgb(C.green); ctx.beginPath(); ctx.arc(-320, 0, 64, 0, 6.283); ctx.fill(); ctx.strokeStyle = '#fff'; ctx.lineWidth = 14; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.beginPath(); ctx.moveTo(-350, 2); ctx.lineTo(-328, 26); ctx.lineTo(-288, -22); ctx.stroke();
       ctx.restore(); T(n, W / 2 + 70, y - 22, '800 64px Pop', rgb(C.forest), aE * cl(p), { shadow: false }); T('puits construit ✓', W / 2 + 70, y + 46, '600 34px Pop', rgb(C.green), aE * cl(p), { shadow: false }); });
