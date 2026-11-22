@@ -2,7 +2,7 @@
 
 Deux versions (1080×1920, 65 s, mêmes images) :
 - `videos-test/fragments-d-un-rescape-voix-off.mp4` — voix off masculine de bande-annonce + musique ;
-- `videos-test/fragments-d-un-rescape-musique.mp4` — musique seule.
+- `videos-test/fragments-d-un-rescape-musique.mp4` — sans voix off, sur le fond sonore fourni (`mix_sans_voix.m4a` : boucle de 60 s prolongée à 65 s par fondu enchaîné).
 
 Concept : la fragmentation de la couverture. Les phrases du 4e de couverture se fissurent puis volent en éclats ;
 l'illustration (agrandie ×4 avec Real-ESRGAN) s'anime, des fragments se détachent du corps de l'homme ;
