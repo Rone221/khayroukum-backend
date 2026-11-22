@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Fragments d'un rescapé — YassMina</title>
+<style>
+@font-face{font-family:Bebas;src:url(f/bebas-neue-latin-400-normal.woff2)}
+@font-face{font-family:Oswald;font-weight:300;src:url(f/oswald-latin-300-normal.woff2)}
+@font-face{font-family:Oswald;font-weight:500;src:url(f/oswald-latin-500-normal.woff2)}
+@font-face{font-family:Oswald;font-weight:700;src:url(f/oswald-latin-700-normal.woff2)}
+@font-face{font-family:Corm;font-style:italic;font-weight:500;src:url(f/cormorant-garamond-latin-500-italic.woff2)}
+@font-face{font-family:Corm;font-style:italic;font-weight:600;src:url(f/cormorant-garamond-latin-600-italic.woff2)}
+@font-face{font-family:Corm;font-weight:600;src:url(f/cormorant-garamond-latin-600-normal.woff2)}
+@font-face{font-family:Mont;font-weight:500;src:url(f/montserrat-latin-500-normal.woff2)}
+@font-face{font-family:Mont;font-weight:700;src:url(f/montserrat-latin-700-normal.woff2)}
+*{margin:0;padding:0}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#000}
+canvas{position:absolute;inset:0}
+</style>
+</head>
+<body>
+<canvas id="c" width="1080" height="1920"></canvas>
+<script>
+const ctx = document.getElementById('c').getContext('2d'), W = 1080, H = 1920, TOTAL = 65.05;
+const cl = x => Math.max(0, Math.min(1, x)), lerp = (a, b, p) => a + (b - a) * p;
+const eo = x => 1 - Math.pow(1 - cl(x), 3), eio = x => { x = cl(x); return x < .5 ? 4*x*x*x : 1 - Math.pow(-2*x + 2, 3) / 2; };
+function K(t, kf) { if (t <= kf[0][0]) return kf[0][1]; for (let i = 1; i < kf.length; i++) if (t <= kf[i][0]) return lerp(kf[i-1][1], kf[i][1], eio((t - kf[i-1][0]) / (kf[i][0] - kf[i-1][0]))); return kf[kf.length - 1][1]; }
+function rng(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const img = s => new Promise(r => { const i = new Image(); i.onload = () => r(i); i.src = s; });
+const rgba = (c, a) => `rgba(${c[0]},${c[1]},${c[2]},${a})`;
+function glow(x, y, r, a, c) { if (a <= .003 || r <= 0) return; const g = ctx.createRadialGradient(x, y, 0, x, y, r); g.addColorStop(0, rgba(c, a)); g.addColorStop(.45, rgba(c, a * .35)); g.addColorStop(1, rgba(c, 0)); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, r, 0, 6.283); ctx.fill(); }
+
+// ---------- texte qui se fissure puis vole en éclats ----------
+const off = document.createElement('canvas'); off.width = W; off.height = H; const octx = off.getContext('2d', { willReadFrequently: true });
+const cache = {};
+function layout(p) { // dessine la phrase (centrée, multi-lignes) dans un contexte
+  return (c) => { c.textAlign = 'center'; c.textBaseline = 'middle'; c.font = p.font; c.fillStyle = p.color;
+    if (p.shadow) { c.shadowColor = p.shadow; c.shadowBlur = 30; }
+    p.lines.forEach((l, i) => { if (typeof l === 'string') c.fillText(l, W / 2, p.y + i * p.lh); else { c.fillStyle = l.c; c.font = l.font || p.font; c.fillText(l.t, W / 2, p.y + i * p.lh); c.fillStyle = p.color; c.font = p.font; } });
+    c.shadowBlur = 0; }; }
+function particlesOf(p, key, step = 3) { if (cache[key]) return cache[key];
+  octx.clearRect(0, 0, W, H); layout(p)(octx); const d = octx.getImageData(0, 0, W, H).data, pts = [], r = rng(key.length * 97 + 13);
+  let minX = W, maxX = 0, minY = H, maxY = 0;
+  for (let y = 0; y < H; y += step) for (let x = 0; x < W; x += step) { const i = (y * W + x) * 4; if (d[i + 3] > 140) { pts.push({ x, y, c: [d[i], d[i + 1], d[i + 2]], vx: (r() - .3) * 380, vy: (r() - .65) * 300, rot: r() * 6.3, vr: (r() - .5) * 8, s: 2 + r() * 3.2, d: r() * .25, sx: r() * W, sy: r() * H });
+    minX = Math.min(minX, x); maxX = Math.max(maxX, x); minY = Math.min(minY, y); maxY = Math.max(maxY, y); } }
+  return cache[key] = { pts, box: [minX, minY, maxX, maxY] }; }
+// fissures : lignes brisées générées une fois par phrase
+function cracksOf(key, box) { if (cache['k' + key]) return cache['k' + key]; const r = rng(key.length * 31 + 7), lines = [];
+  for (let k = 0; k < 7; k++) { let x = lerp(box[0], box[2], r()), y = lerp(box[1], box[3], r()), a = r() * 6.3; const pts = [[x, y]];
+    for (let s = 0; s < 9; s++) { a += (r() - .5) * 1.1; x += Math.cos(a) * (20 + r() * 40); y += Math.sin(a) * (14 + r() * 26); pts.push([x, y]); } lines.push(pts); }
+  return cache['k' + key] = lines; }
+// une phrase : apparaît (tIn), se fissure puis éclate (tOut). Mode 'gather' : naît d'éclats qui se rassemblent.
+function phrase(t, p) {
+  const key = p.key; if (t < p.tIn - 1.4 || t > (p.tOut ?? 1e9) + 2.2) return;
+  const { pts, box } = particlesOf(p, key, p.step || 3);
+  const gatherEnd = p.gather ? p.tIn + 1.1 : p.tIn;
+  if (p.gather && t < gatherEnd) { // les éclats convergent
+    const f = eio((t - (p.tIn - .3)) / 1.4); ctx.save();
+    for (const q of pts) { const ff = cl(f * 1.15 - q.d * .6); const x = lerp(q.sx, q.x, ff), y = lerp(q.sy, q.y, ff), s = q.s * (1.4 - .6 * ff);
+      ctx.globalAlpha = .25 + .75 * ff; ctx.fillStyle = rgba(q.c, 1); ctx.save(); ctx.translate(x, y); ctx.rotate(q.rot * (1 - ff)); ctx.fillRect(-s / 2, -s / 2, s, s); ctx.restore(); }
+    ctx.restore(); if (t < gatherEnd - .15) return; }
+  const tOut = p.tOut ?? 1e9;
+  if (t < tOut) { // texte net
+    const a = p.gather ? cl((t - gatherEnd + .15) / .2) : cl((t - p.tIn) / .7), bl = p.gather ? 0 : (1 - eo((t - p.tIn) / .8)) * 14;
+    ctx.save(); ctx.globalAlpha = a; if (bl > .3) ctx.filter = `blur(${bl}px)`; ctx.translate(0, (1 - eo((t - p.tIn) / .9)) * 24 * (p.gather ? 0 : 1)); layout(p)(ctx); ctx.restore();
+    // fissures juste avant l'éclatement
+    const cr = cl((t - (tOut - .45)) / .45);
+    if (cr > 0) { const lines = cracksOf(key, box); ctx.save(); ctx.strokeStyle = 'rgba(255,236,200,.95)'; ctx.lineWidth = 2.4; ctx.shadowColor = 'rgba(255,170,80,.9)'; ctx.shadowBlur = 12;
+      lines.forEach(l => { const n = Math.max(1, Math.floor(l.length * cr)); ctx.beginPath(); ctx.moveTo(...l[0]); for (let i = 1; i < n; i++) ctx.lineTo(...l[i]); ctx.stroke(); }); ctx.restore(); }
+    return; }
+  // éclatement : chaque fragment part, tourne, s'éteint
+  const lt = t - tOut; ctx.save();
+  for (const q of pts) { const tt = Math.max(0, lt - q.d * .5), drag = 1 - Math.exp(-tt * 1.6);
+    const x = q.x + q.vx * drag * .9 + (p.wind ?? 120) * tt, y = q.y + q.vy * drag * .9 + 60 * tt * tt, a = cl(1 - tt / 1.7);
+    if (a <= 0) continue; ctx.globalAlpha = a; ctx.fillStyle = tt < .15 ? 'rgba(255,240,215,1)' : rgba(q.c, 1);
+    ctx.save(); ctx.translate(x, y); ctx.rotate(q.rot + q.vr * tt); ctx.fillRect(-q.s / 2, -q.s / 2, q.s, q.s * .7); ctx.restore(); }
+  ctx.restore();
+  if (lt < .25) glow((box[0] + box[2]) / 2, (box[1] + box[3]) / 2, (box[2] - box[0]) * .7, .35 * (1 - lt / .25), [255, 200, 140]);
+}
+
+// ---------- éléments de décor ----------
+let ART, MOCK, REAL, FLAT, artPix;
+const R = rng(5);
+const DUST = Array.from({ length: 160 }, () => ({ x: R() * W, y: R() * H, z: .3 + R() * .9, s: .5 + R() * 2.2, ph: R() * 6.3 }));
+function dust(t, a, col = [255, 200, 140]) { DUST.forEach(d => { const x = ((d.x + t * 14 * d.z) % W + W) % W, y = ((d.y - t * 10 * d.z) % H + H) % H;
+  ctx.fillStyle = rgba(col, a * d.z * (.5 + .5 * Math.sin(t * 2 + d.ph))); ctx.beginPath(); ctx.arc(x, y, d.s * d.z, 0, 6.283); ctx.fill(); }); }
+const SMOKE = Array.from({ length: 12 }, () => ({ x: R() * W, y: R() * H, r: 300 + R() * 400, sp: .1 + R() * .25, ph: R() * 6.3 }));
+function smoke(t, a, col) { SMOKE.forEach(s => glow(s.x + Math.sin(t * s.sp + s.ph) * 180, s.y + Math.cos(t * s.sp * .8 + s.ph) * 120, s.r, a * .18, col)); }
+// l'illustration de couverture (homme qui marche), cadrage animé
+const MAN = { cx: 1002, cy: 720, left: 819, right: 1000, top: 150, bot: 900 };   // en pixels de art.jpg
+function artXform(z, panX = 0, panY = 0) { const s = Math.max(W / ART.width, H / ART.height) * z;
+  const ox = Math.min(0, Math.max(W - ART.width * s, W / 2 - MAN.cx * s + panX)), oy = Math.min(0, Math.max(H - ART.height * s, H * .52 - MAN.cy * s + panY)); return { s, ox, oy }; }
+function drawArt(t, a, z, panX, panY, blur = 0, dark = 0) { if (a <= 0) return; const X = artXform(z, panX, panY);
+  ctx.save(); ctx.globalAlpha = a; if (blur) ctx.filter = `blur(${blur}px)`; ctx.drawImage(ART, X.ox, X.oy, ART.width * X.s, ART.height * X.s); ctx.restore();
+  if (dark > 0) { ctx.fillStyle = `rgba(0,0,0,${dark * a})`; ctx.fillRect(0, 0, W, H); } return X; }
+// fragments qui se détachent du corps (comme sur la couverture)
+const SHARDS = Array.from({ length: 260 }, () => ({ u: R(), v: R(), sp: .5 + R() * 1.2, sz: 4 + R() * 14, rot: R() * 6.3, vr: (R() - .5) * 3, ph: R() * 50, up: R() }));
+function manShards(t, a, X, rate = 1) { if (a <= 0 || !X) return; ctx.save();
+  for (const s of SHARDS) { const life = 4.2 / s.sp, age = ((t * rate + s.ph) % life) / life;   // cycle continu
+    const bx = lerp(MAN.left, MAN.right, s.u * .6), by = lerp(MAN.top, MAN.bot, s.v);
+    const dx = -age * (180 + 220 * s.up) - Math.sin(age * 6 + s.ph) * 20, dy = -age * (80 + 160 * s.up);
+    const x = X.ox + (bx + dx) * X.s, y = X.oy + (by + dy) * X.s;
+    const al = a * Math.sin(Math.PI * age) * .95, sz = s.sz * (1 - age * .5) * X.s;
+    const ci = artPix ? artPix(bx, by) : [255, 200, 150];
+    ctx.globalAlpha = al; ctx.fillStyle = `rgb(${Math.min(255, ci[0] + 60)},${Math.min(255, ci[1] + 40)},${Math.min(255, ci[2] + 20)})`;
+    ctx.save(); ctx.translate(x, y); ctx.rotate(s.rot + s.vr * age * 4); ctx.fillRect(-sz / 2, -sz / 2, sz, sz * .8); ctx.restore();
+    if (s.sz > 13) glow(x, y, sz * 2.5, al * .25, [255, 180, 90]); }
+  ctx.restore(); }
+// éclats de verre plein écran (tension)
+const GLASS = Array.from({ length: 26 }, () => { const n = 3 + Math.floor(R() * 2), r = 40 + R() * 140, pts = []; for (let i = 0; i < n; i++) { const a = i / n * 6.283 + R() * .8; pts.push([Math.cos(a) * r * (.6 + R() * .6), Math.sin(a) * r * (.6 + R() * .6)]); }
+  return { x: R() * W, y: R() * H, pts, rot: R() * 6.3, vr: (R() - .5) * .6, vx: (R() - .5) * 40, vy: (R() - .5) * 40 }; });
+function glass(t, a, pull = 0) { if (a <= 0) return; ctx.save();
+  GLASS.forEach(g => { let x = g.x + g.vx * t, y = g.y + g.vy * t; x = lerp(x, W / 2, pull); y = lerp(y, H * .45, pull);
+    ctx.save(); ctx.translate(x, y); ctx.rotate(g.rot + g.vr * t + pull * 4); ctx.scale(1 - pull * .8, 1 - pull * .8); ctx.beginPath(); g.pts.forEach((p, i) => i ? ctx.lineTo(...p) : ctx.moveTo(...p)); ctx.closePath();
+    ctx.fillStyle = `rgba(255,220,180,${.05 * a})`; ctx.fill(); ctx.strokeStyle = `rgba(255,235,210,${.55 * a})`; ctx.lineWidth = 1.6; ctx.stroke(); ctx.restore(); });
+  ctx.restore(); }
+
+// ---------- minutage (calé sur la voix off) ----------
+const C = {
+  s1: 1.8, fort: 3.44, s2: 5.38, larmes: 6.74, taire: 8.26, s3: 11.2, s4: 15.35, homme1: 18.37, s5: 20.6, ressent: 21.36, doute: 22.32, souffre: 24.12, aime: 26.0,
+  s6: 27.82, mal: 30.9, survivre: 32.56, indemne: 34.48, title: 36.35, s8: 39.24, reste: 41.2, s9: 44.41, histoire: 46.87, s10: 50.77, preco: 54.37, avant: 56.59, end: TOTAL };
+const SER = (sz, w = 600) => `italic ${w} ${sz}px Corm`;
+const PH = [
+  { key: 'p1', lines: ['On lui a appris', 'à être fort.'], font: SER(104), lh: 112, y: 860, color: '#f3e7d6', tIn: C.s1 - .2, tOut: 4.75 },
+  { key: 'p2', lines: ['À retenir', 'ses larmes.'], font: SER(108), lh: 116, y: 860, color: '#f3e7d6', tIn: C.s2 - .2, tOut: 7.95 },
+  { key: 'p3', lines: ['À taire', 'ses blessures.'], font: SER(108), lh: 116, y: 860, color: '#f3e7d6', tIn: C.taire - .2, tOut: 10.6 },
+  { key: 'p4', lines: ['À avancer…', 'sans jamais regarder', 'derrière lui.'], font: SER(80), lh: 92, y: 330, color: '#fff3e2', shadow: 'rgba(0,0,0,.8)', tIn: C.s3 - .1, tOut: 14.75, wind: -140 },
+  { key: 'p5', lines: ['Mais derrière', 'cette apparente solidité…'], font: SER(76), lh: 88, y: 300, color: '#fff3e2', shadow: 'rgba(0,0,0,.8)', tIn: C.s4 - .1, tOut: 18.1 },
+  { key: 'p6', lines: [{ t: 'il y a un homme.', c: '#ffcf8a' }], font: SER(96), lh: 100, y: 330, color: '#ffcf8a', shadow: 'rgba(0,0,0,.8)', tIn: C.homme1 - .15, tOut: 20.1 },
+  { key: 'w1', lines: ['qui ressent.'], font: SER(120), lh: 120, y: 900, color: '#fff3e2', shadow: 'rgba(0,0,0,.7)', tIn: C.ressent - .2, tOut: C.doute - .3 },
+  { key: 'w2', lines: ['qui doute.'], font: SER(120), lh: 120, y: 900, color: '#fff3e2', shadow: 'rgba(0,0,0,.7)', tIn: C.doute - .2, tOut: C.souffre - .3 },
+  { key: 'w3', lines: ['qui souffre.'], font: SER(120), lh: 120, y: 900, color: '#fff3e2', shadow: 'rgba(0,0,0,.7)', tIn: C.souffre - .2, tOut: C.aime - .3 },
+  { key: 'w4', lines: [{ t: 'qui aime.', c: '#ffcf8a' }], font: SER(130), lh: 120, y: 900, color: '#ffcf8a', shadow: 'rgba(0,0,0,.7)', tIn: C.aime - .2, tOut: 27.4 },
+  { key: 'p7', lines: ['Un homme peut être fort', { t: 'et avoir mal.', c: '#ffcf8a' }], font: SER(82), lh: 96, y: 330, color: '#fff3e2', shadow: 'rgba(0,0,0,.85)', tIn: C.s6 - .1, tOut: 32.2 },
+  { key: 'p8', lines: ['Il peut survivre…', { t: 'sans être indemne.', c: '#ffcf8a' }], font: SER(84), lh: 98, y: 330, color: '#fff3e2', shadow: 'rgba(0,0,0,.85)', tIn: C.survivre - .1, tOut: 35.9 },
+  { key: 'tg1', lines: ['Le corps survit.'], font: SER(84), lh: 90, y: 1260, color: '#fff3e2', tIn: C.s8 - .15, tOut: 43.9, wind: 60 },
+  { key: 'tg2', lines: [{ t: 'Le reste s\'effrite.', c: '#ffb86b' }], font: SER(84), lh: 90, y: 1360, color: '#ffb86b', tIn: C.reste - .15, tOut: 43.0, wind: 260 },
+];
+const TITLE = [{ key: 'T1', lines: ['FRAGMENTS'], font: '400 250px Bebas', lh: 0, y: 760, color: '#f6efe6', gather: true, tIn: C.title, tOut: 43.9, step: 3 },
+  { key: 'T2', lines: ['D\'UN'], font: '400 92px Bebas', lh: 0, y: 905, color: '#e9dccb', gather: true, tIn: C.title + .25, tOut: 43.9, step: 2 },
+  { key: 'T3', lines: ['RESCAPÉ'], font: '400 270px Bebas', lh: 0, y: 1060, color: '#ffae5c', gather: true, tIn: C.title + .45, tOut: 43.9, step: 3 }];
+
+function txt(s, x, y, font, color, a = 1, align = 'center', ls = 0) { if (a <= 0) return; ctx.save(); ctx.globalAlpha = a; ctx.font = font; ctx.fillStyle = color; ctx.textAlign = align; ctx.textBaseline = 'middle';
+  if (ls) { ctx.letterSpacing = ls + 'px'; } ctx.shadowColor = 'rgba(0,0,0,.7)'; ctx.shadowBlur = 18; ctx.fillText(s, x, y); ctx.restore(); }
+function fadeIn(t, t0, d = .7) { return eo((t - t0) / d); }
+
+function render(t) {
+  ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H);
+  // ===== 1-2 : noir, battements, phrases qui éclatent =====
+  const warm = K(t, [[0, 0], [4, .4], [10, .7], [11.2, 0]]);
+  smoke(t, warm, [120, 50, 20]); dust(t, K(t, [[0, .2], [10, .6]]));
+  // ===== 3-6 : la couverture prend vie =====
+  const artA = K(t, [[10.6, 0], [11.6, 1], [C.title - .25, 1], [C.title, 0]]);
+  if (artA > 0) {
+    const z = K(t, [[10.6, 1.0], [20.3, 1.18], [27.5, 1.32], [C.title, 1.55]]), pan = K(t, [[10.6, 60], [20.3, 0]]);
+    const blur = K(t, [[20.1, 0], [20.6, 6], [27.2, 6], [27.6, 0]]), dark = K(t, [[10.6, .15], [20.1, .15], [20.6, .55], [27.2, .55], [27.6, .25], [34, .35]]);
+    const X = drawArt(t, artA, z, pan, 0, blur, dark);
+    manShards(t, artA * K(t, [[11, .4], [15, .8], [28, 1]]), X, K(t, [[11, .7], [28, 1.0], [35, 1.8]]));
+    // vignette haute pour les textes
+    const g = ctx.createLinearGradient(0, 0, 0, 760); g.addColorStop(0, `rgba(0,0,0,${.75 * artA})`); g.addColorStop(1, 'rgba(0,0,0,0)'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, 760);
+  }
+  glass(t, K(t, [[27.5, 0], [29, .9], [35.2, 1], [36.2, 0]]), eio((t - 34.8) / 1.5));
+  // ===== 7 : flash + titre qui se rassemble =====
+  const fl = K(t, [[C.title - .12, 0], [C.title, 1], [C.title + .5, 0]]);
+  const titleBg = K(t, [[C.title - .1, 0], [C.title + .1, 1], [44.0, 1], [44.8, 0]]);
+  if (titleBg > 0) { ctx.save(); ctx.globalAlpha = titleBg; smoke(t, 1, [180, 70, 20]); smoke(t + 30, .7, [60, 30, 15]); dust(t, .8, [255, 170, 90]); ctx.restore(); }
+  TITLE.forEach(p => phrase(t, p));
+  if (t > C.title + .9 && t < 44.0) { const a = fadeIn(t, C.title + 1.2) * cl((43.9 - t) / .4); txt('YASSMINA', W / 2, 600, '500 40px Oswald', '#e9dccb', a, 'center', 14);
+    ctx.save(); ctx.globalAlpha = a; ctx.strokeStyle = 'rgba(233,220,203,.6)'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(300, 905); ctx.lineTo(450, 905); ctx.moveTo(630, 905); ctx.lineTo(780, 905); ctx.stroke(); ctx.restore(); }
+  // ===== 9 : le livre (maquette), puis entre les mains d'une lectrice =====
+  const mockA = K(t, [[C.s9 - .4, 0], [C.s9 + .4, 1], [47.2, 1], [47.7, 0]]);
+  if (mockA > 0) { const z = K(t, [[C.s9 - .4, 1.12], [47.7, 1.0]]), FX = 182, FY = 40, FW = 552, FH = 925, s = Math.max(W / FW, H / FH) * z;
+    ctx.save(); ctx.globalAlpha = mockA; ctx.drawImage(MOCK, FX, FY, FW, FH, W / 2 - FW * s / 2, H * .5 - FH * s / 2, FW * s, FH * s);
+    // reflet de lumière qui balaie le livre
+    const sw = (t - C.s9 - .6) / 1.4; if (sw > 0 && sw < 1) { ctx.globalCompositeOperation = 'lighter'; const x = lerp(-300, W + 300, eio(sw)); const g = ctx.createLinearGradient(x - 160, 0, x + 160, 0);
+      g.addColorStop(0, 'rgba(255,230,190,0)'); g.addColorStop(.5, 'rgba(255,230,190,.28)'); g.addColorStop(1, 'rgba(255,230,190,0)'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); }
+    ctx.restore(); const g = ctx.createLinearGradient(0, H * .55, 0, H); g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, `rgba(0,0,0,${.85 * mockA})`); ctx.fillStyle = g; ctx.fillRect(0, H * .55, W, H * .45);
+    txt('Le nouveau roman de', W / 2, 1600, SER(64, 500), '#f3e7d6', mockA * fadeIn(t, C.s9));
+    txt('YassMina', W / 2, 1700, SER(110), '#ffcf8a', mockA * fadeIn(t, C.s9 + 1.0)); }
+  const realA = K(t, [[47.2, 0], [47.8, 1], [50.3, 1], [50.9, 0]]);
+  if (realA > 0) { const z = K(t, [[47.2, 1.0], [50.9, 1.08]]), s = Math.max(W / REAL.width, H / REAL.height) * z;
+    ctx.save(); ctx.globalAlpha = realA; ctx.drawImage(REAL, W / 2 - REAL.width * s / 2 + 40, H * .45 - REAL.height * s / 2, REAL.width * s, REAL.height * s); ctx.restore();
+    const g = ctx.createLinearGradient(0, H * .58, 0, H); g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, `rgba(0,0,0,${.88 * realA})`); ctx.fillStyle = g; ctx.fillRect(0, H * .58, W, H * .42);
+    txt('L\'histoire de', W / 2, 1580, SER(64, 500), '#f3e7d6', realA * fadeIn(t, 47.5)); txt('Khalil Fall', W / 2, 1690, SER(120), '#ffcf8a', realA * fadeIn(t, 47.9)); }
+  // ===== 10 : appel à l'action =====
+  const ctaA = K(t, [[50.3, 0], [51.1, 1]]);
+  if (ctaA > 0) { ctx.save(); ctx.globalAlpha = ctaA; const s = Math.max(W / MOCK.width, H / MOCK.height) * 1.25; ctx.filter = 'blur(18px) brightness(.45)';
+    ctx.drawImage(MOCK, W / 2 - MOCK.width * s / 2, H / 2 - MOCK.height * s / 2, MOCK.width * s, MOCK.height * s); ctx.filter = 'none'; ctx.restore();
+    smoke(t, ctaA * .6, [160, 60, 20]); dust(t, ctaA * .7, [255, 180, 100]);
+    // livre net, en petit, qui flotte
+    const bs = .62, bw = MOCK.width * bs, bh = MOCK.height * bs, by = 170 + Math.sin(t * 1.2) * 8; ctx.save(); ctx.globalAlpha = ctaA * fadeIn(t, 50.5, .9); ctx.shadowColor = 'rgba(0,0,0,.7)'; ctx.shadowBlur = 50;
+    ctx.drawImage(MOCK, 182, 40, 552, 925, W / 2 - 552 * .78 / 2, by, 552 * .78, 925 * .78); ctx.restore();
+    txt('PREMIÈRE ÉDITION · STOCK LIMITÉ', W / 2, 1000, '500 40px Oswald', '#ffcf8a', ctaA * fadeIn(t, C.s10), 'center', 6);
+    txt('Précommandez', W / 2, 1120, '400 150px Bebas', '#f6efe6', fadeIn(t, C.preco - .2), 'center', 3);
+    txt('votre exemplaire', W / 2, 1235, SER(84), '#f3e7d6', fadeIn(t, C.preco + .5));
+    // badge date
+    const ba = fadeIn(t, C.avant - .2), bx = W / 2, byy = 1380; if (ba > 0) { ctx.save(); ctx.globalAlpha = ba; ctx.translate(bx, byy); ctx.scale(lerp(.7, 1, eo((t - C.avant + .2) / .5)), lerp(.7, 1, eo((t - C.avant + .2) / .5)));
+      const g = ctx.createLinearGradient(-330, 0, 330, 0); g.addColorStop(0, '#e9a24f'); g.addColorStop(.5, '#ffd49a'); g.addColorStop(1, '#e9a24f'); ctx.fillStyle = g;
+      ctx.beginPath(); ctx.roundRect(-330, -62, 660, 124, 62); ctx.fill(); ctx.fillStyle = '#2a1408'; ctx.font = '600 58px Mont'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('avant le 5 décembre', 0, 3); ctx.restore(); }
+    const ca = fadeIn(t, 58.2); txt('Contact : 75 635 30 60', W / 2, 1530, '700 46px Mont', '#f6efe6', ca); txt('Pages : LaplumedeYassMina', W / 2, 1600, '500 42px Mont', '#ffcf8a', ca);
+    txt('FRAGMENTS D\'UN RESCAPÉ', W / 2, 1745, '400 64px Bebas', '#e9dccb', fadeIn(t, 59.2), 'center', 4); txt('Le corps survit. Le reste s\'effrite.', W / 2, 1805, SER(44, 500), '#d9c7b0', fadeIn(t, 59.6)); }
+  // phrases
+  PH.forEach(p => phrase(t, p));
+  // flash du titre + vignette + ouverture
+  if (fl > 0) { const g = ctx.createRadialGradient(W / 2, H * .45, 0, W / 2, H * .45, 1100); g.addColorStop(0, `rgba(255,244,225,${fl})`); g.addColorStop(1, `rgba(255,170,90,${fl * .6})`); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); }
+  const vg = ctx.createRadialGradient(W / 2, H / 2, 500, W / 2, H / 2, 1250); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,.55)'); ctx.fillStyle = vg; ctx.fillRect(0, 0, W, H);
+  // bandes cinéma pendant le récit
+  const bars = K(t, [[10.6, 0], [11.6, 1], [C.title - .2, 1], [C.title, 0]]) * 70; if (bars > 0) { ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, bars); ctx.fillRect(0, H - bars, W, bars); }
+  const fade = Math.max(K(t, [[0, 1], [.8, 0]]), K(t, [[TOTAL - 1.5, 0], [TOTAL, 1]])); if (fade > 0) { ctx.fillStyle = `rgba(0,0,0,${fade})`; ctx.fillRect(0, 0, W, H); }
+}
+window.TL = { total: TOTAL };
+window.render = render;
+window.ready = Promise.all([img('img/art.jpg'), img('img/mockup.jpg'), img('img/real.jpg'), img('img/flat_cover.jpg'),
+  ...['400 80px Bebas', '500 40px Oswald', 'italic 600 80px Corm', 'italic 500 80px Corm', '700 40px Mont', '500 40px Mont', '600 40px Mont'].map(f => document.fonts.load(f, 'AaÉé'))])
+  .then(([a, m, r]) => { ART = a; MOCK = m; REAL = r;
+    const c = document.createElement('canvas'); c.width = a.width; c.height = a.height; const x = c.getContext('2d', { willReadFrequently: true }); x.drawImage(a, 0, 0);
+    const d = x.getImageData(0, 0, a.width, a.height).data; artPix = (u, v) => { const i = ((Math.round(v) * a.width) + Math.round(u)) * 4; return [d[i], d[i + 1], d[i + 2]]; };
+    // pré-calcule les particules de toutes les phrases (rendu image par image régulier)
+    [...PH, ...TITLE].forEach(p => particlesOf(p, p.key, p.step || 3)); render(0); });
+</script>
+</body>
+</html>
