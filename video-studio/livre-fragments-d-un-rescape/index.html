@@ -79,7 +79,7 @@ function phrase(t, p) {
 }
 
 // ---------- éléments de décor ----------
-let ART, MOCK, REAL, FLAT, artPix;
+let ART, MOCK, REAL, artPix;
 const R = rng(5);
 const DUST = Array.from({ length: 160 }, () => ({ x: R() * W, y: R() * H, z: .3 + R() * .9, s: .5 + R() * 2.2, ph: R() * 6.3 }));
 function dust(t, a, col = [255, 200, 140]) { DUST.forEach(d => { const x = ((d.x + t * 14 * d.z) % W + W) % W, y = ((d.y - t * 10 * d.z) % H + H) % H;
@@ -210,7 +210,7 @@ function render(t) {
 }
 window.TL = { total: TOTAL };
 window.render = render;
-window.ready = Promise.all([img('img/art.jpg'), img('img/mockup.jpg'), img('img/real.jpg'), img('img/flat_cover.jpg'),
+window.ready = Promise.all([img('img/art.jpg'), img('img/mockup.jpg'), img('img/real.jpg'),
   ...['400 80px Bebas', '500 40px Oswald', 'italic 600 80px Corm', 'italic 500 80px Corm', '700 40px Mont', '500 40px Mont', '600 40px Mont'].map(f => document.fonts.load(f, 'AaÉé'))])
   .then(([a, m, r]) => { ART = a; MOCK = m; REAL = r;
     const c = document.createElement('canvas'); c.width = a.width; c.height = a.height; const x = c.getContext('2d', { willReadFrequently: true }); x.drawImage(a, 0, 0);
