@@ -15,27 +15,27 @@
 html,body{width:1080px;height:1920px;overflow:hidden;background:#04150c}
 #stage{position:relative;width:1080px;height:1920px;overflow:hidden;font-family:Cairo,sans-serif;color:var(--cream)}
 canvas{position:absolute;inset:0}
-.o{position:absolute;left:0;right:0;text-align:center;opacity:0}
+.o{position:absolute;left:110px;right:110px;text-align:center;opacity:0}
 .lora{font-family:Lora;font-weight:700}.it{font-family:Lora;font-style:italic;font-weight:700}
 .ar{font-family:Sch;font-weight:700;direction:rtl}
 .sh{text-shadow:0 4px 24px rgba(0,0,0,.55)}
-.kick{font-weight:800;letter-spacing:10px;font-size:34px;color:var(--gold2)}
+.kick{font-weight:800;letter-spacing:6px;font-size:28px;color:var(--gold2)}
 .red{color:var(--red)}.g{color:var(--gold2)}
-.pair{position:absolute;left:40px;right:40px;display:flex;gap:24px;opacity:0}
-.card{flex:1;border-radius:34px;padding:34px 20px 30px;text-align:center;background:rgba(4,30,16,.75);border:3px solid rgba(240,210,122,.7);box-shadow:0 18px 50px rgba(0,0,0,.35)}
-.card .ar{font-size:240px;line-height:1.15;color:var(--cream)}
+.pair{position:absolute;left:100px;right:100px;display:flex;gap:28px;opacity:0}
+.card{flex:1;min-width:0;border-radius:30px;padding:26px 14px 26px;text-align:center;background:rgba(4,30,16,.75);border:3px solid rgba(240,210,122,.7);box-shadow:0 18px 50px rgba(0,0,0,.35)}
+.card .ar{font-size:190px;line-height:1.15;color:var(--cream)}
 .card .ar b{color:var(--gold2);font-weight:700}
-.card .tr{font-family:Lora;font-style:italic;font-weight:700;font-size:70px;margin-top:4px}
+.card .tr{font-family:Lora;font-style:italic;font-weight:700;font-size:56px;margin-top:4px}
 .card .tr b{color:var(--gold2)}
-.card .m{font-size:50px;font-weight:800;margin-top:10px}
+.card .m{font-size:40px;font-weight:800;margin-top:10px}
 .card.bad{border-color:rgba(255,122,102,.8)}.card.bad .ar b,.card.bad .tr b{color:var(--red)}
 .ne{position:absolute;left:0;right:0;text-align:center;font-family:Lora;font-weight:700;font-size:120px;color:var(--red);opacity:0}
 .map{position:absolute;left:90px;right:90px;display:flex;align-items:center;justify-content:center;gap:34px;opacity:0;font-size:60px;font-weight:800}
-.map .ar{font-size:150px;color:var(--gold2);line-height:1.2}
+.map .ar{font-size:120px;color:var(--gold2);line-height:1.2}
 .map .arrow{font-size:70px;color:rgba(247,241,227,.6)}
-.map .lat{font-family:Lora;font-weight:700;font-size:120px;color:var(--red)}
-.pill{display:inline-block;padding:16px 34px;margin:10px 8px;border-radius:999px;border:2px solid rgba(240,210,122,.85);background:rgba(4,25,12,.6);font-size:44px;font-weight:700}
-.wa{display:inline-flex;align-items:center;gap:24px;padding:24px 48px;border-radius:999px;background:#25d366;color:#fff;font-size:66px;font-weight:800;box-shadow:0 18px 50px rgba(37,211,102,.35)}
+.map .lat{font-family:Lora;font-weight:700;font-size:100px;color:var(--red)}
+.pill{display:inline-block;padding:14px 26px;margin:8px 6px;border-radius:999px;border:2px solid rgba(240,210,122,.85);background:rgba(4,25,12,.6);font-size:36px;font-weight:700}
+.wa{display:inline-flex;align-items:center;gap:20px;padding:20px 40px;border-radius:999px;background:#25d366;color:#fff;font-size:54px;font-weight:800;box-shadow:0 18px 50px rgba(37,211,102,.35)}
 .wa svg{width:84px;height:84px}
 #bar{position:absolute;left:0;top:0;height:8px;background:linear-gradient(90deg,var(--gold),var(--gold2));z-index:9}
 </style>
@@ -45,17 +45,17 @@ canvas{position:absolute;inset:0}
   <canvas id="c" width="1080" height="1920"></canvas>
 
   <!-- A accroche -->
-  <div class="o lora sh" id="a1" style="top:560px;font-size:96px;line-height:1.15">Vous lisez le Coran<br><span class="g">en phonétique ?</span></div>
-  <div class="o lora" id="a2" style="top:900px;font-size:150px;color:var(--red)">Attention.</div>
-  <div class="o it sh" id="a3" style="top:1110px;font-size:58px;color:rgba(247,241,227,.85)">Voici ce que personne ne vous dit.</div>
+  <div class="o lora sh" id="a1" style="top:560px;font-size:77px;line-height:1.15">Vous lisez le Coran<br><span class="g">en phonétique ?</span></div>
+  <div class="o lora" id="a2" style="top:900px;font-size:120px;color:var(--red)">Attention.</div>
+  <div class="o it sh" id="a3" style="top:1110px;font-size:46px;color:rgba(247,241,227,.85)">Voici ce que personne ne vous dit.</div>
 
   <!-- B lettres manquantes -->
   <div class="o kick" id="b0" style="top:240px">DANGER N°1</div>
-  <div class="o lora sh" id="b1" style="top:300px;font-size:76px;line-height:1.2">L'alphabet latin n'a pas<br>les lettres de l'arabe.</div>
+  <div class="o lora sh" id="b1" style="top:300px;font-size:61px;line-height:1.2">L'alphabet latin n'a pas<br>les lettres de l'arabe.</div>
   <div class="map" id="m1" style="top:640px"><span class="ar">ح</span><span class="ar">ه</span><span class="arrow">→</span><span class="lat">h</span></div>
   <div class="map" id="m2" style="top:900px"><span class="ar">ص</span><span class="ar">س</span><span class="arrow">→</span><span class="lat">s</span></div>
   <div class="map" id="m3" style="top:1160px"><span class="ar">ق</span><span class="ar">ك</span><span class="arrow">→</span><span class="lat">k</span></div>
-  <div class="o it sh" id="b2" style="top:1470px;font-size:60px;line-height:1.3">Deux sons différents…<br><span class="red">une seule lettre latine.</span></div>
+  <div class="o it sh" id="b2" style="top:1470px;font-size:48px;line-height:1.3">Deux sons différents…<br><span class="red">une seule lettre latine.</span></div>
 
   <!-- C D E exemples -->
   <div class="o kick" id="ek" style="top:240px">DANGER N°2 · LE SENS CHANGE</div>
@@ -69,29 +69,29 @@ canvas{position:absolute;inset:0}
     <div class="card"><div class="ar"><b>صَ</b>يْف</div><div class="tr">« <b>ṣ</b>ayf »</div><div class="m">l'été</div></div>
     <div class="card bad"><div class="ar"><b>سَ</b>يْف</div><div class="tr">« <b>s</b>ayf »</div><div class="m">l'épée</div></div></div>
   <div class="ne" id="ne" style="top:1130px">≠</div>
-  <div class="o it sh" id="e1" style="top:1380px;font-size:64px;line-height:1.3">Une seule lettre<br><span class="red">et le sens change.</span></div>
-  <div class="o it sh" id="e2" style="top:1380px;font-size:58px;line-height:1.3">Deux mots du Coran…<br><span class="red">presque identiques en phonétique.</span></div>
-  <div class="o it sh" id="e3" style="top:1380px;font-size:58px;line-height:1.3">Et les règles du tajwid<br><span class="red">disparaissent complètement.</span></div>
+  <div class="o it sh" id="e1" style="top:1380px;font-size:51px;line-height:1.3">Une seule lettre<br><span class="red">et le sens change.</span></div>
+  <div class="o it sh" id="e2" style="top:1380px;font-size:46px;line-height:1.3">Deux mots du Coran…<br><span class="red">presque identiques en phonétique.</span></div>
+  <div class="o it sh" id="e3" style="top:1380px;font-size:46px;line-height:1.3">Et les règles du tajwid<br><span class="red">disparaissent complètement.</span></div>
 
   <!-- F béquille -->
   <div class="o kick" id="f0" style="top:240px">DANGER N°3</div>
-  <div class="o lora sh" id="f1" style="top:320px;font-size:84px;line-height:1.2">Le phonétique,<br>c'est une <span class="red">béquille.</span></div>
-  <div class="o it sh" id="f2" style="top:1420px;font-size:62px;line-height:1.3">On s'y habitue…<br><span class="red">et on ne lit jamais vraiment.</span></div>
+  <div class="o lora sh" id="f1" style="top:320px;font-size:67px;line-height:1.2">Le phonétique,<br>c'est une <span class="red">béquille.</span></div>
+  <div class="o it sh" id="f2" style="top:1420px;font-size:50px;line-height:1.3">On s'y habitue…<br><span class="red">et on ne lit jamais vraiment.</span></div>
 
   <!-- G solution -->
   <div class="o kick" id="g0" style="top:240px;color:var(--ok)">LA SOLUTION</div>
-  <div class="o lora sh" id="g1" style="top:320px;font-size:88px;line-height:1.2">Apprendre<br><span class="g">les lettres.</span></div>
-  <div class="o ar" id="g2" style="top:640px;font-size:150px;color:var(--gold2);line-height:1.3">نُورُ الْبَيَان</div>
-  <div class="o it sh" id="g3" style="top:900px;font-size:58px;line-height:1.3">Nour al-Bayan : des lettres<br>jusqu'à la lecture fluide.</div>
+  <div class="o lora sh" id="g1" style="top:320px;font-size:70px;line-height:1.2">Apprendre<br><span class="g">les lettres.</span></div>
+  <div class="o ar" id="g2" style="top:640px;font-size:120px;color:var(--gold2);line-height:1.3">نُورُ الْبَيَان</div>
+  <div class="o it sh" id="g3" style="top:900px;font-size:46px;line-height:1.3">Nour al-Bayan : des lettres<br>jusqu'à la lecture fluide.</div>
   <div class="o" id="g4" style="top:1120px"><span class="pill">Un enseignant pour vous seul</span><br><span class="pill">qui corrige chaque son</span></div>
 
   <!-- H ALIF -->
-  <img class="o" id="h1" src="../shared/a/logo_white.png" style="left:390px;width:300px;height:300px;top:180px">
-  <div class="o lora sh" id="h2" style="top:520px;font-size:92px;letter-spacing:6px">ALIF ACADEMIE</div>
+  <img class="o" id="h1" src="../shared/a/logo_white.png" style="left:405px;right:auto;width:270px;height:270px;top:200px">
+  <div class="o lora sh" id="h2" style="top:520px;font-size:74px;letter-spacing:3px">ALIF ACADEMIE</div>
   <div class="o" id="h3" style="top:650px"><span class="pill">À domicile · Dakar</span><span class="pill">En ligne</span></div>
   <div class="o" id="h4" style="top:820px"><div class="wa"><svg viewBox="0 0 64 64"><path d="M32 8C18.7 8 8 18.2 8 30.8c0 4.6 1.4 8.8 3.9 12.4L9 56l13.3-3.4c3 1.5 6.3 2.2 9.7 2.2 13.3 0 24-10.2 24-22.8S45.3 8 32 8z" fill="#fff"/><path d="M24 22c1-.6 2.2-.4 2.8.7l2.2 4.4c.4.9.2 1.9-.6 2.5l-1.4 1.1c1.6 3.2 4 5.6 7.2 7.2l1.1-1.4c.6-.8 1.6-1 2.5-.6l4.4 2.2c1.1.6 1.3 1.8.7 2.8-1.6 2.7-4.6 3.8-7.6 2.6-6.4-2.6-11.4-7.6-14-14-1.2-3 0-6 2.7-7.5z" fill="#25d366"/></svg><span id="num"></span></div></div>
   <div class="o" id="h5" style="top:1030px"><div style="display:inline-block;background:#fff;border-radius:34px;padding:26px;border:3px solid rgba(212,169,60,.7)"><img src="../shared/a/qr.png" style="width:320px;height:320px;display:block;image-rendering:pixelated"></div></div>
-  <div class="o it" id="h6" style="top:1470px;font-size:58px;line-height:1.3;color:var(--gold2)">Lisez le Coran<br>dans sa vraie langue.</div>
+  <div class="o it" id="h6" style="top:1470px;font-size:46px;line-height:1.3;color:var(--gold2)">Lisez le Coran<br>dans sa vraie langue.</div>
   <div id="bar"></div>
 </div>
 <script>
@@ -143,16 +143,16 @@ function stuck(t, a) { if (a <= 0) return; ctx.save(); ctx.globalAlpha = a; cons
 
 function render(t) {
   bg(t); stuck(t, Math.min(cl((t - S.f) / .5), cl((S.g + .3 - t) / .4)));
-  vis('a1', t, .4, S.b, { blur: 8, d: .8 }); vis('a2', t, P[0] - .3, S.b, { y: 0, s: 1.5, d: .4 }); vis('a3', t, P[0] + .8, S.b, { y: 20 });
+  vis('a1', t, .4, S.b, { blur: 8, d: .8 }); vis('a2', t, P[0] - .3, S.b, { y: 0, s: 1.15, d: .4 }); vis('a3', t, P[0] + .8, S.b, { y: 20 });
   vis('b0', t, S.b + .1, S.c, { y: 20 }); vis('b1', t, S.b + .2, S.c);
-  [['m1', P[1] + .3], ['m2', P[2] - .1], ['m3', P[2] + .9]].forEach(([id, a]) => vis(id, t, a, S.c, { x: -200, y: 0, disp: 'flex' }));
+  [['m1', P[1] + .3], ['m2', P[2] - .1], ['m3', P[2] + .9]].forEach(([id, a]) => vis(id, t, a, S.c, { y: 30, disp: 'flex' }));
   vis('b2', t, P[3] - .3, S.c, { blur: 8 });
   vis('ek', t, S.c + .1, S.f, { y: 20 });
   [['p1', S.c, S.d], ['p2', S.d, S.e], ['p3', S.e, S.f]].forEach(([id, a, b]) => {
     vis(id, t, a + .2, b, { y: 0, s: .8, disp: 'flex' }); const cards = $(id).children;
-    cards[0].style.transform = `translateX(${(1 - eo((t - a - .2) / .6)) * -120}px)`; cards[1].style.opacity = cl((t - a - 1.2) / .5); cards[1].style.transform = `translateX(${(1 - eo((t - a - 1.2) / .6)) * 120}px)`; });
+    cards[0].style.transform = `translateY(${(1 - eo((t - a - .2) / .6)) * 40}px)`; cards[1].style.opacity = cl((t - a - 1.2) / .5); cards[1].style.transform = `translateY(${(1 - eo((t - a - 1.2) / .6)) * 40}px)`; });
   ['ne'].forEach(() => { const on = [[S.c, S.d], [S.d, S.e], [S.e, S.f]].find(([a, b]) => t >= a && t < b + .4); const el = $('ne');
-    if (on) { const [a, b] = on; el.style.opacity = Math.min(cl((t - a - 1.7) / .3), cl((b - t) / .4)); el.style.transform = `scale(${lerp(2, 1, back((t - a - 1.7) / .5))})`; } else el.style.opacity = 0; });
+    if (on) { const [a, b] = on; el.style.opacity = Math.min(cl((t - a - 1.7) / .3), cl((b - t) / .4)); el.style.transform = `scale(${lerp(1.4, 1, back((t - a - 1.7) / .5))})`; } else el.style.opacity = 0; });
   vis('e1', t, S.c + 2.4, S.d, { blur: 8 }); vis('e2', t, S.d + 2.4, S.e, { blur: 8 }); vis('e3', t, S.e + 2.4, S.f, { blur: 8 });
   vis('f0', t, S.f + .1, S.g, { y: 20 }); vis('f1', t, S.f + .2, S.g); vis('f2', t, P[10] - .3, S.g, { blur: 8 });
   vis('g0', t, S.g + .1, S.h, { y: 20 }); vis('g1', t, S.g + .2, S.h); vis('g2', t, S.g + 1.3, S.h, { y: 0, s: .6, ease: back, blur: 8 }); vis('g3', t, P[12] - .3, S.h); vis('g4', t, P[12] + .8, S.h, { y: 0, s: .6, ease: back });
